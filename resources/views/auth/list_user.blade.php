@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @push('css')
 <link href="{{ asset('datatables.net-dt/css/jquery.dataTables.css') }}" rel="stylesheet">
+<link href="{{ asset('datatables.net-buttons-dt/buttons.dataTables.css') }}" rel="stylesheet">
+<link href="{{ asset('datatables.net-select-dt/select.dataTables.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -43,9 +45,42 @@
 @push('script')
   <script src="{{ asset('jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('datatables.net/js/jquery.dataTables.js') }}"></script>
+  <script src="{{ asset('js/twitter.datatables.js') }}"></script>
+  <script src="{{ asset('datatables.net-buttons/dataTables.buttons.js') }}"></script>
+  <script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
   <script>
   $(function() {
-      $('#users-table').DataTable({
+      var table = $('#users-table').DataTable({
+          dom: 'Bfrtip',
+          columnDefs: [ {
+              orderable: false,
+              className: 'select-checkbox',
+              targets:   0
+          } ],
+          select: {
+              style:    'multi',
+              selector: 'td:first-child'
+          },
+          buttons: [
+              {
+                  text: '<i class="icon-user"></i>',
+                  titleAttr: 'Tambah Data',
+                  action: function ( e, dt, node, config ) {
+                    window.location.href = "{{ route('register') }}";
+                  },
+                  enabled: false
+              },
+              {
+                  text: 'Row selected data',
+                  action: function ( e, dt, node, config ) {
+                      alert(
+                          'Row data: '+
+                          JSON.stringify( dt.row( { selected: true } ).data() )
+                      );
+                  },
+                  enabled: false
+              },
+          ],
           processing: true,
           serverSide: true,
           ajax: '{{ url("api/dt_user?api_token=") }}{{ Auth::user()->api_token }}',
@@ -56,6 +91,13 @@
               { data: 'updated_at', name: 'updated_at' }
           ]
       });
+
+      table.on( 'select', function () {
+          var selectedRows = table.rows( { selected: true } ).count();
+
+          table.button( 0 ).enable( selectedRows === 1 );
+          table.button( 1 ).enable( selectedRows > 0 );
+      } );
   });
   </script>
 @endpush

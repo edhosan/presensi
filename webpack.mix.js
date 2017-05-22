@@ -21,3 +21,7 @@ mix.copyDirectory('node_modules/easy-autocomplete', 'public/easy-autocomplete');
 mix.copyDirectory('node_modules/datatables.net', 'public/datatables.net');
 mix.copyDirectory('node_modules/datatables.net-dt', 'public/datatables.net-dt');
 mix.copyDirectory('node_modules/jquery/dist', 'public/jquery');
+mix.copyDirectory('node_modules/datatables.net-buttons/js', 'public/datatables.net-buttons');
+mix.copyDirectory('node_modules/datatables.net-buttons-dt/css', 'public/datatables.net-buttons-dt');
+mix.copyDirectory('node_modules/datatables.net-select/js', 'public/datatables.net-select');
+mix.copyDirectory('node_modules/datatables.net-select-dt/css', 'public/datatables.net-select-dt');
