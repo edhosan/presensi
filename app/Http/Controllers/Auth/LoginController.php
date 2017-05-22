@@ -41,4 +41,15 @@ class LoginController extends Controller
     {
         return 'username';
     }
+
+    public function logout()
+    {
+      \Auth::logout();
+      return redirect('/login');
+    }
+
+    public function index()
+    {
+      return view('auth.login');
+    }
 }

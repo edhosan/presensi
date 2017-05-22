@@ -1,3 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600);
-
-/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInJlc291cmNlcy9hc3NldHMvc2Fzcy9hcHAuc2NzcyJdLCJzb3VyY2VzQ29udGVudCI6WyJcbi8vIEZvbnRzXG5AaW1wb3J0IHVybChodHRwOi8vZm9udHMuZ29vZ2xlYXBpcy5jb20vY3NzP2ZhbWlseT1PcGVuK1NhbnM6NDAwaXRhbGljLDYwMGl0YWxpYyw0MDAsNjAwKTtcblxuLy8gVmFyaWFibGVzXG4vL0BpbXBvcnQgXCJ2YXJpYWJsZXNcIjtcblxuLy8gQm9vdHN0cmFwXG4vL0BpbXBvcnQgXCJub2RlX21vZHVsZXMvYm9vdHN0cmFwLXNhc3MvYXNzZXRzL3N0eWxlc2hlZXRzL2Jvb3RzdHJhcFwiO1xuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUVBLE9BQU8sQ0FBQyxpRkFBSSJ9 */
+.autocomplete {
+  background-image: url("../images/icon_search.png");
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+}

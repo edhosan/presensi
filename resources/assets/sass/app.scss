@@ -7,3 +7,9 @@
 
 // Bootstrap
 //@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+.autocomplete{
+  background-image: url("../images/icon_search.png");
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+}

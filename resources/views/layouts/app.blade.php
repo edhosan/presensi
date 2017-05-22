@@ -20,34 +20,41 @@
     @stack('css')
 </head>
 <body>
-    <div>
-        <nav class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-              <div class="container">
-                  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-            				<span class="icon-bar"></span>
-            				<span class="icon-bar"></span>
-                  </a>
-                  <a class="brand" href="#">
-                    SIM - PRESENSI
-                  </a>
+  <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="#">
+              SIM - PRESENSI
+            </a>
 
-                  @if (Auth::check())
-                    <div class="nav-collapse">
-                      <ul class="nav pull-right">
-                        <li class="dropdown">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
-                            class="icon-user"></i> <b class="caret"></b></a>
-                        </li>
-                      </ul>
-                    </div>
-                  @endif
+            @if (Auth::check())
+              <div class="nav-collapse">
+                <ul class="nav pull-right">
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                      class="icon-user"></i> User: {{ Auth::user()->name }} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="javascript:;">Ganti Password</a></li>
+                      <li><a href="{{ route('logout') }}">Logout</a></li>
+                    </ul>
+                  </li>
+                </ul>
               </div>
-            </div>
-        </nav>
-        @yield('content')
-    </div>
+            @endif
+        </div>
+      </div>
+  </div>
+
+  @yield('content')
+
+  @if(Auth::check())
+    @include('partial.footer')
+  @endif
 
     <!-- Scripts -->
     <script src="{{ asset('admin_template/js/jquery-1.7.2.min.js') }}"></script>

@@ -12,4 +12,12 @@ const { mix } = require('laravel-mix');
  */
 
 mix.js('resources/assets/js/app.js', 'public/js')
-   .sass('resources/assets/sass/app.scss', 'public/css');
+   .sass('resources/assets/sass/app.scss', 'public/css')
+   .options({
+      processCssUrls: false
+   });
+
+mix.copyDirectory('node_modules/easy-autocomplete', 'public/easy-autocomplete');
+mix.copyDirectory('node_modules/datatables.net', 'public/datatables.net');
+mix.copyDirectory('node_modules/datatables.net-dt', 'public/datatables.net-dt');
+mix.copyDirectory('node_modules/jquery/dist', 'public/jquery');

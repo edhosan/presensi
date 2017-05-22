@@ -105,6 +105,8 @@ return [
         ],
     ],
 
+    'is_exists_opd'   => 'OPD tidak terdaftar.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes
