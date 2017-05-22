@@ -4,22 +4,45 @@
 @endpush
 
 @section('content')
-<table class="table table-bordered" id="users-table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>          
-            <th>Created At</th>
-            <th>Updated At</th>
-        </tr>
-    </thead>
-</table>
+@if(Auth::check())
+   @include('partial.subnavbar')
+@endif
+<div class="main">
+  <div class="main-inner">
+    <div class="container">
+      {!! Breadcrumbs::render('user') !!}
+      <div class="row">
+        <div class="span12">
+          <div class="widget">
+            <div class="widget-header">
+              <i class="icon-list"></i>
+              <h3>Daftar User</h3>
+            </div>
+
+            <div class="widget-content">
+              <table class="table table-striped table-bordered" id="users-table">
+                  <thead>
+                      <tr>
+                          <th>Id</th>
+                          <th>Name</th>
+                          <th>Created At</th>
+                          <th>Updated At</th>
+                      </tr>
+                  </thead>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @push('script')
   <script src="{{ asset('jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('datatables.net/js/jquery.dataTables.js') }}"></script>
-
   <script>
   $(function() {
       $('#users-table').DataTable({
