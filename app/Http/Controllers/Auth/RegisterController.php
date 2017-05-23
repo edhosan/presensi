@@ -31,7 +31,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/user';
 
     /**
      * Create a new controller instance.
@@ -53,7 +53,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users',
+            'username' => 'required|string|max:255|unique:users,id,'.$data['id'],
             'password' => 'required|string|min:6|confirmed',
             'id_unker' => 'is_exists_opd'
         ]);
@@ -67,14 +67,15 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'username' => $data['username'],
-            'password' => bcrypt($data['password']),
-            'api_token' => str_random(60),
-            'unker' => $data['id_unker'],
-            'tipe' => 'admin'
-        ]);
+      return User::create([
+          'name' => $data['name'],
+          'username' => $data['username'],
+          'password' => bcrypt($data['password']),
+          'api_token' => str_random(60),
+          'unker' => $data['id_unker'],
+          'nm_unker' => $data['opd'],
+          'tipe' => 'admin'
+      ]);
     }
 
     public function showRegister()
@@ -92,7 +93,7 @@ class RegisterController extends Controller
                   ->join('ref_subunit','peg_stat_duk.id_subunit','=','ref_subunit.id_subunit')
                   ->join('ref_unker','ref_subunit.id_unker','=','ref_unker.id_unker')
                   ->whereNotIn('peg_stat_duk.id_status_pegawai',[3, 4, 5, 5, 6, 7, 8])
-                  ->select('peg_datadasar.nip','peg_datadasar.nama');
+                  ->select('peg_datadasar.nip','peg_datadasar.nama','ref_unker.id_unker','ref_unker.nama_unker');
 
       $query = $query->orderBy('peg_datadasar.nip', 'asc');
 
@@ -140,6 +141,13 @@ class RegisterController extends Controller
     public function getListUser()
     {
       return view('auth.list_user');
+    }
+
+    public function showEdit($id)
+    {
+      $user = User::find($id);
+
+      return view('auth.register')->withData($user);
     }
 
     public function apiUser()

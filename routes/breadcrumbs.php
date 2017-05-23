@@ -12,10 +12,10 @@ Breadcrumbs::register('user', function($breadcrumbs)
     $breadcrumbs->push('Daftar User', route('user'));
 });
 
-// Home > Register
+// Home > Daftar User > Register
 Breadcrumbs::register('register', function($breadcrumbs)
 {
-    $breadcrumbs->parent('home');
+    $breadcrumbs->parent('user');
     $breadcrumbs->push('Register', route('register'));
 });
 

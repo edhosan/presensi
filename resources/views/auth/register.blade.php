@@ -20,14 +20,15 @@
             </div>
 
             <div class="widget-content">
-              <form class="form-horizontal" role="form" method="POST" action="{{ route('register') }}" novalidate="novalidate">
+              <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('user_update'):route('register') }}" novalidate="novalidate">
                   {{ csrf_field() }}
+                  <input type="hidden" name="id" value="{{ $data->id or 0 }}">
                   <fieldset>
                     <div class="control-group {{ $errors->has('username') ? 'error' : '' }}">
                         <label for="username" class="control-label">Username / NIP</label>
 
                         <div class="controls">
-                            <input id="username" type="text" class="span4 autocomplete" name="username" value="{{ old('username') }}" autofocus>
+                            <input id="username" type="text" class="span4 autocomplete" name="username" value="{{ $data->username or old('username') }}" autofocus>
 
                             @if ($errors->has('username'))
                                 <span class="help-block">
@@ -62,7 +63,7 @@
                     <div class="control-group {{ $errors->has('name') ? 'error' : '' }}">
                         <label for="name" class="control-label">Nama </label>
                         <div class="controls">
-                          <input id="name" type="text" class="span6" name="name" value="{{ old('name') }}" required>
+                          <input id="name" type="text" class="span6" name="name" value="{{$data->name or old('name') }}" required>
                           @if ($errors->has('name'))
                               <span class="help-block">
                                   <strong>{{ $errors->first('name') }}</strong>
@@ -75,8 +76,8 @@
                         <label for="opd" class="control-label">Organisasi Perangkat Daerah</label>
 
                         <div class="controls">
-                            <input id="opd" type="text" class="span4 autocomplete" name="opd" value="{{ old('opd') }}">
-                            <input type="hidden" name="id_unker" value="{{ old('id_unker') }}" id="id_unker">
+                            <input id="opd" type="text" class="span4 autocomplete" name="opd" value="{{$data->nm_unker or old('opd') }}">
+                            <input type="hidden" name="id_unker" value="{{$data->unker or old('id_unker') }}" id="id_unker">
                             @if ($errors->has('opd'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('opd') }}</strong>
@@ -89,7 +90,7 @@
                       <button type="submit" class="btn btn-primary">
                           Simpan
                       </button>
-                      <a href="{{ route('home') }} " class="btn">Batal</a>
+                      <a href="{{ route('user') }} " class="btn">Batal</a>
                     </div>
                   </fieldset>
 
@@ -139,8 +140,10 @@
       			enabled: true
       		},
           onSelectItemEvent: function() {
-            var value = $("#username").getSelectedItemData().nama;
-            $("#name").val(value).trigger("change");
+            var value = $("#username").getSelectedItemData();
+            $("#name").val(value.nama).trigger("change");
+            $("#opd").val(value.nama_unker).trigger("change");
+            $("#id_unker").val(value.id_unker).trigger("change");
           }
       	},
 

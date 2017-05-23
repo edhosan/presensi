@@ -22,11 +22,14 @@
             </div>
 
             <div class="widget-content">
-              <table class="table table-striped table-bordered" id="users-table">
+              <table class="table table-striped table-bordered" id="users-table" width="100%" >
                   <thead>
                       <tr>
+                          <th></th>
                           <th>Id</th>
+                          <th>Username</th>
                           <th>Name</th>
+                          <th>OPD</th>
                           <th>Created At</th>
                           <th>Updated At</th>
                       </tr>
@@ -52,26 +55,30 @@
   $(function() {
       var table = $('#users-table').DataTable({
           dom: 'Bfrtip',
-          columnDefs: [ {
-              orderable: false,
-              className: 'select-checkbox',
-              targets:   0
-          } ],
+          scrollX: true,
           select: {
               style:    'multi',
               selector: 'td:first-child'
           },
           buttons: [
               {
-                  text: '<i class="icon-user"></i>',
+                  text: '<i class="icon-plus"> Tambah Data</i>',
                   titleAttr: 'Tambah Data',
                   action: function ( e, dt, node, config ) {
                     window.location.href = "{{ route('register') }}";
+                  }
+              },
+              {
+                  text: '<i class="icon-edit"> Edit</i>',
+                  action: function ( e, dt, node, config ) {
+                      var data = dt.row( { selected: true } ).data();
+                      var newUrl = "{{ url('user_edit') }}";
+                      window.location.href = newUrl+"/"+data.id;
                   },
                   enabled: false
               },
               {
-                  text: 'Row selected data',
+                  text: '<i class="icon-remove"> Hapus</i>',
                   action: function ( e, dt, node, config ) {
                       alert(
                           'Row data: '+
@@ -85,19 +92,29 @@
           serverSide: true,
           ajax: '{{ url("api/dt_user?api_token=") }}{{ Auth::user()->api_token }}',
           columns: [
+              { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
               { data: 'id', name: 'id' },
+              { data: 'username', name: 'username' },
               { data: 'name', name: 'name' },
+              { data: 'nm_unker', name: 'nm_unker', width: "25%" },
               { data: 'created_at', name: 'created_at' },
               { data: 'updated_at', name: 'updated_at' }
           ]
       });
 
-      table.on( 'select', function () {
+      table.on( 'select', function (e, dt, type, indexes) {
           var selectedRows = table.rows( { selected: true } ).count();
 
-          table.button( 0 ).enable( selectedRows === 1 );
-          table.button( 1 ).enable( selectedRows > 0 );
+          table.button( 1 ).enable( selectedRows >= 1 );
+          table.button( 2 ).enable( selectedRows >= 1 );
       } );
+
+      table.on( 'deselect', function ( e, dt, type, indexes ) {
+        var selectedRows = table.rows( { selected: true } ).count();
+
+        table.button( 1 ).enable( selectedRows >= 1 );
+        table.button( 2 ).enable( selectedRows >= 1 );
+    } );
   });
   </script>
 @endpush

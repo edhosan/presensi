@@ -24,5 +24,6 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('home', 'HomeController@index')->name('home');
   Route::get('logout', 'Auth\LoginController@logout');
   Route::get('register', 'Auth\RegisterController@showRegister')->name('register');
+  Route::get('user_edit/{id}', 'Auth\RegisterController@showEdit')->name('user_edit');
   Route::get('user', 'Auth\RegisterController@getListUser')->name('user');
 });
