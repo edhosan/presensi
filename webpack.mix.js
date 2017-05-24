@@ -25,3 +25,4 @@ mix.copyDirectory('node_modules/datatables.net-buttons/js', 'public/datatables.n
 mix.copyDirectory('node_modules/datatables.net-buttons-dt/css', 'public/datatables.net-buttons-dt');
 mix.copyDirectory('node_modules/datatables.net-select/js', 'public/datatables.net-select');
 mix.copyDirectory('node_modules/datatables.net-select-dt/css', 'public/datatables.net-select-dt');
+mix.copyDirectory('node_modules/toastr/build', 'public/toastr');

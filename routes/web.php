@@ -26,4 +26,6 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('register', 'Auth\RegisterController@showRegister')->name('register');
   Route::get('user_edit/{id}', 'Auth\RegisterController@showEdit')->name('user_edit');
   Route::get('user', 'Auth\RegisterController@getListUser')->name('user');
+  Route::post('user_update', 'Auth\RegisterController@updateUser')->name('user_update');
+
 });

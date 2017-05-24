@@ -154,4 +154,20 @@ class RegisterController extends Controller
     {
       return Datatables::of(User::query())->make(true);
     }
+
+    public function updateUser(Request $request)
+    {
+       $data = $request->all();
+
+       $status = User::where('id',$data['id'])->update([
+           'name' => $data['name'],
+           'username' => $data['username'],
+           'password' => bcrypt($data['password']),
+           'unker' => $data['id_unker'],
+           'nm_unker' => $data['opd'],
+           'tipe' => 'admin'
+         ]);
+
+        return redirect('user')->with('success','Data berhasil diupdate!');
+    }
 }
