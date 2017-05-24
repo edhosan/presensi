@@ -64,11 +64,11 @@
     <script src="{{ asset('toastr/toastr.min.js') }}"></script>
     <script type="text/javascript">
       @if(session('success'))
-        toastr.success('{{ session("success") }}','Success',{timeout: 5000});
+        toastr.success('{{ session("success") }}','Success');
       @endif
 
       @if(session('error'))
-        toastr.error('{{ session("error") }}','Error',{timeout: 5000});
+        toastr.error('{{ session("error") }}','Error');
       @endif
     </script>
     @stack('script')

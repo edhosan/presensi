@@ -11,7 +11,8 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "watson/active": "^2.0",
-        "yajra/laravel-datatables-oracle": "^7.4"
+        "yajra/laravel-datatables-oracle": "^7.4",
+        "zizaco/entrust": "5.2.x-dev"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

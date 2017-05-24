@@ -170,4 +170,15 @@ class RegisterController extends Controller
 
         return redirect('user')->with('success','Data berhasil diupdate!');
     }
+
+    public function apiDeleteUser(Request $request)
+    {
+      $data = $request->input('data');
+
+      foreach ($data as $id) {
+        $status = User::where('id',$id)->delete();
+      }
+
+      return response()->json($status);
+    }
 }

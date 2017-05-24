@@ -52,6 +52,10 @@
   <script src="{{ asset('datatables.net-buttons/dataTables.buttons.js') }}"></script>
   <script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
   <script>
+  function deleteUser(id) {
+
+  }
+
   $(function() {
       var table = $('#users-table').DataTable({
           dom: 'Bfrtip',
@@ -80,10 +84,42 @@
               {
                   text: '<i class="icon-remove"> Hapus</i>',
                   action: function ( e, dt, node, config ) {
-                      alert(
-                          'Row data: '+
-                          JSON.stringify( dt.row( { selected: true } ).data() )
-                      );
+                    toastr.info("Apakah anda yakin ingin menghapus data ini?<br/><button type='button' id='confirmYes' class='btn btn-danger'>Ya</button> <button type='button' id='confirmNo' class='btn'>Tidak</button>",'Konfirmasi?',
+                    {
+                        positionClass: "toast-top-center",
+                        timeOut: 0,
+                        tapToDismiss: false,
+                        closeButton: false,
+                        allowHtml: true,
+                        onShown: function (toast) {
+                            $("#confirmYes").click(function(){
+                              var data = dt.rows( { selected: true } ).data().pluck('id');
+
+                              var arrData = [];
+                              $.each(data, function(key, value) {
+                                arrData[key] = value;
+                              });
+
+                              $.ajax({
+                                  url: '{{ url("api/delete_user?api_token=") }}{{ Auth::user()->api_token }}',
+                                  type: 'post',
+                                  dataType: "json",
+                                  data: { data: arrData },
+                                  success: function(response){
+                                    table.ajax.reload();
+                                  },
+                                  error: function(error){
+                                    console.log(error);
+                                  }
+                              });
+                              toastr.remove();
+                            });
+
+                            $("#confirmNo").click(function(){
+                              toastr.remove();
+                            });
+                          }
+                    });
                   },
                   enabled: false
               },
