@@ -14,13 +14,13 @@ use Illuminate\Http\Request;
 */
 
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::group(['middleware' => 'auth:api'], function() {
   Route::post('pegawai', 'Auth\RegisterController@apiGetPegawai');
   Route::post('unker', 'Auth\RegisterController@apiGetUnker');
   Route::get('dt_user', 'Auth\RegisterController@apiUser');
   Route::post('delete_user', 'Auth\RegisterController@apiDeleteUser');
+
+  Route::get('role_list', 'Auth\RoleController@apiGetRole');
+  Route::post('role_delete', 'Auth\RoleController@apiDeleteRole');
+
 });

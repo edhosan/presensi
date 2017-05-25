@@ -86,6 +86,20 @@
                         </div>
                     </div>
 
+                    <div class="control-group {{ $errors->has('tipe') ? 'error' : '' }}">
+                        <label for="tipe" class="control-label">Tipe User</label>
+
+                        <div class="controls">
+                            <?php $selected_tipe = isset($data)?$data->roles->pluck('id'):old('tipe[]') ?>
+                            {{ Form::select('tipe[]', $tipe, $selected_tipe , array('multiple'=>'multiple')) }}
+                            @if ($errors->has('tipe'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('tipe') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="form-actions">
                       <button type="submit" class="btn btn-primary">
                           Simpan

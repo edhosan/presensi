@@ -26,6 +26,7 @@
                   <thead>
                       <tr>
                           <th></th>
+                          <th></th>
                           <th>Id</th>
                           <th>Username</th>
                           <th>Name</th>
@@ -52,8 +53,32 @@
   <script src="{{ asset('datatables.net-buttons/dataTables.buttons.js') }}"></script>
   <script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
   <script>
-  function deleteUser(id) {
+  function format ( d ) {
+      var head = '<thead>'+
+                  '<tr>'+
+                    '<th>Id</th>'+
+                    '<th>Tipe User</th>'+
+                    '<th>Keterangan</th>'+
+                    '<th>Created At</th>'+
+                    '<th>Updated At</th>'+
+                  '</tr>'+
+                '</thead>';
 
+      var content = '';
+      $.each(d.roles, function(key, value) {
+        content += '<tr>'+
+                    '<td>'+value.name+'</td>'+
+                    '<td>'+value.display_name+'</td>'+
+                    '<td>'+value.description+'</td>'+
+                    '<td>'+value.created_at+'</td>'+
+                    '<td>'+value.updated_at+'</td>'+
+                   '</tr>';
+      });
+
+      return '<table class="table table-bordered">'+
+              head+
+              content+
+             '</table>';
   }
 
   $(function() {
@@ -129,6 +154,7 @@
           ajax: '{{ url("api/dt_user?api_token=") }}{{ Auth::user()->api_token }}',
           columns: [
               { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
+              { className: 'details-control', orderable: false, data: null, defaultContent: '', searchable: false },
               { data: 'id', name: 'id' },
               { data: 'username', name: 'username' },
               { data: 'name', name: 'name' },
@@ -146,11 +172,27 @@
       } );
 
       table.on( 'deselect', function ( e, dt, type, indexes ) {
-        var selectedRows = table.rows( { selected: true } ).count();
+          var selectedRows = table.rows( { selected: true } ).count();
 
-        table.button( 1 ).enable( selectedRows >= 1 );
-        table.button( 2 ).enable( selectedRows >= 1 );
-    } );
+          table.button( 1 ).enable( selectedRows >= 1 );
+          table.button( 2 ).enable( selectedRows >= 1 );
+      } );
+
+      $('#users-table').on('click', 'td.details-control', function () {
+         var tr = $(this).closest('tr');
+         var row = table.row( tr );
+
+         if ( row.child.isShown() ) {
+             // This row is already open - close it
+             row.child.hide();
+             tr.removeClass('shown');
+         }
+         else {
+             // Open this row
+             row.child( format(row.data()) ).show();
+             tr.addClass('shown');
+         }
+     } );
   });
   </script>
 @endpush

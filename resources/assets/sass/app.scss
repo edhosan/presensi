@@ -13,3 +13,11 @@
   background-position: right 10px center;
   background-repeat: no-repeat;
 }
+
+td.details-control {
+    background: url('../images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../images/details_close.png') no-repeat center center;
+}

@@ -10,6 +10,7 @@ use DB;
 use Illuminate\Http\Request;
 use App\Model\OPD;
 use Yajra\Datatables\Datatables;
+use App\Model\Role;
 
 class RegisterController extends Controller
 {
@@ -55,7 +56,8 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,id,'.$data['id'],
             'password' => 'required|string|min:6|confirmed',
-            'id_unker' => 'is_exists_opd'
+            'id_unker' => 'is_exists_opd',
+            'tipe'  => 'required|array|min:1'
         ]);
     }
 
@@ -67,20 +69,27 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-      return User::create([
+      $user = User::create([
           'name' => $data['name'],
           'username' => $data['username'],
           'password' => bcrypt($data['password']),
           'api_token' => str_random(60),
           'unker' => $data['id_unker'],
-          'nm_unker' => $data['opd'],
-          'tipe' => 'admin'
+          'nm_unker' => $data['opd']
       ]);
+
+      foreach ($data['tipe'] as $key => $value) {
+        $user->roles()->attach($value);
+      }
+
+      return $user;
     }
 
     public function showRegister()
     {
-        return view('auth.register');
+        $tipe = Role::pluck('display_name','id');
+
+        return view('auth.register')->with('tipe', $tipe);
     }
 
     public function apiGetPegawai(Request $request)
@@ -145,28 +154,36 @@ class RegisterController extends Controller
 
     public function showEdit($id)
     {
+      $tipe = Role::pluck('display_name','id');
       $user = User::find($id);
 
-      return view('auth.register')->withData($user);
+      return view('auth.register')->withData($user)->withTipe($tipe);
     }
 
     public function apiUser()
     {
-      return Datatables::of(User::query())->make(true);
+      return Datatables::of(User::with('roles'))->make(true);
     }
 
     public function updateUser(Request $request)
     {
        $data = $request->all();
+       $arr = array(
+         'name' => $data['name'],
+         'username' => $data['username'],
+         'password' => bcrypt($data['password']),
+         'unker' => $data['id_unker'],
+         'nm_unker' => $data['opd']
+       );
 
-       $status = User::where('id',$data['id'])->update([
-           'name' => $data['name'],
-           'username' => $data['username'],
-           'password' => bcrypt($data['password']),
-           'unker' => $data['id_unker'],
-           'nm_unker' => $data['opd'],
-           'tipe' => 'admin'
-         ]);
+       $user = User::find($data['id']);
+       $user->update($arr);
+
+       $user->roles()->detach();
+
+      foreach ($data['tipe'] as $key => $value) {
+        $user->roles()->attach($value);
+       }
 
         return redirect('user')->with('success','Data berhasil diupdate!');
     }

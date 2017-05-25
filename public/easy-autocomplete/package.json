@@ -2,18 +2,18 @@
   "_args": [
     [
       {
-        "raw": "easy-autocomplete@^1.3.5",
+        "raw": "easy-autocomplete@1.3.5",
         "scope": null,
         "escapedName": "easy-autocomplete",
         "name": "easy-autocomplete",
-        "rawSpec": "^1.3.5",
-        "spec": ">=1.3.5 <2.0.0",
-        "type": "range"
+        "rawSpec": "1.3.5",
+        "spec": "1.3.5",
+        "type": "version"
       },
-      "C:\\laragon2\\www\\presensi"
+      "/home/edo/www/presensi"
     ]
   ],
-  "_from": "easy-autocomplete@>=1.3.5 <2.0.0",
+  "_from": "easy-autocomplete@1.3.5",
   "_id": "easy-autocomplete@1.3.5",
   "_inCache": true,
   "_location": "/easy-autocomplete",
@@ -29,22 +29,23 @@
   "_npmVersion": "3.3.12",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "easy-autocomplete@^1.3.5",
+    "raw": "easy-autocomplete@1.3.5",
     "scope": null,
     "escapedName": "easy-autocomplete",
     "name": "easy-autocomplete",
-    "rawSpec": "^1.3.5",
-    "spec": ">=1.3.5 <2.0.0",
-    "type": "range"
+    "rawSpec": "1.3.5",
+    "spec": "1.3.5",
+    "type": "version"
   },
   "_requiredBy": [
+    "#USER",
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/easy-autocomplete/-/easy-autocomplete-1.3.5.tgz",
   "_shasum": "2a2d2df699f13ddc48661c9375b9437acf1a0a9c",
   "_shrinkwrap": null,
-  "_spec": "easy-autocomplete@^1.3.5",
-  "_where": "C:\\laragon2\\www\\presensi",
+  "_spec": "easy-autocomplete@1.3.5",
+  "_where": "/home/edo/www/presensi",
   "author": {
     "name": "Łukasz Pawełczak",
     "url": "http://github.com/pawelczak"
@@ -96,14 +97,13 @@
   "main": "dist/jquery.easy-autocomplete.js",
   "maintainers": [
     {
-      "name": "Łukasz Pawełczak",
-      "url": "http://github.com/pawelczak"
+      "name": "pawelczak",
+      "email": "lukaspawelczak@gmail.com"
     }
   ],
   "name": "easy-autocomplete",
   "optionalDependencies": {},
-  "readme": "Jquery autocomplete plugin\n\n If you are interested in using this jQuery autocomplete plugin on your site, you can find out more details in the <a href='http://easyautocomplete.com/'>EasyAutocomplete - jquery autocomplete - homepage</a>. You can find there <a href='http://easyautocomplete.com/guide' >full documentation and easy guide</a> on how to use EasyAutocomplete plugin.\n\nFile location:\n--------------------------------------\n - Distribution files Javascript, CSS are in `dist` folder,\n - Source files are in the folder `src`,\n - Simple examples, that presents usage of plugin can be found in folder `demo`,\n - Tests for the plugin are located in folder `test`.\n\nLicense:\n--------------------------------------\nCode released under <a href='http://github.com/pawelczak/EasyAutocomplete/blob/master/LICENSE.txt' >the MIT license</a>.\n",
-  "readmeFilename": "README.md",
+  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pawelczak/EasyAutocomplete.git"

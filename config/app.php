@@ -180,6 +180,8 @@ return [
         Watson\Active\ActiveServiceProvider::class,
         DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
+        Zizaco\Entrust\EntrustServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
 
     ],
 
@@ -232,6 +234,9 @@ return [
         'Active' => Watson\Active\Facades\Active::class,
         'Breadcrumbs' => DaveJamesMiller\Breadcrumbs\Facade::class,
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
+        'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
 
     ],
 

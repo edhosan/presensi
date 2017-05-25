@@ -28,4 +28,9 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('user', 'Auth\RegisterController@getListUser')->name('user');
   Route::post('user_update', 'Auth\RegisterController@updateUser')->name('user_update');
 
+  Route::get('role', 'Auth\RoleController@showRole')->name('role');
+  Route::post('role_create', 'Auth\RoleController@create')->name('role_create');
+  Route::get('role_list', 'Auth\RoleController@index')->name('role_list');
+  Route::get('role_update/{id}', 'Auth\RoleController@showUpdate')->name('role_update');
+  Route::post('save_update', 'Auth\RoleController@update')->name('save_update');
 });
