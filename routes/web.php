@@ -33,4 +33,10 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('role_list', 'Auth\RoleController@index')->name('role_list');
   Route::get('role_update/{id}', 'Auth\RoleController@showUpdate')->name('role_update');
   Route::post('save_update', 'Auth\RoleController@update')->name('save_update');
+
+  Route::get('permission_list', 'Auth\PermissionController@index')->name('permission_list');
+  Route::get('permission', 'Auth\PermissionController@showPermission')->name('permission');
+  Route::get('permission_edit/{id}', 'Auth\PermissionController@showPermissionUpdate')->name('permission_edit');
+  Route::post('permission_update', 'Auth\PermissionController@update')->name('permission_update');
+  Route::post('permission_create', 'Auth\PermissionController@create')->name('permission_create');
 });

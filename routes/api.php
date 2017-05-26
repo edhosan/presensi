@@ -23,4 +23,7 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::get('role_list', 'Auth\RoleController@apiGetRole');
   Route::post('role_delete', 'Auth\RoleController@apiDeleteRole');
 
+  Route::get('permission_list', 'Auth\PermissionController@apiGetPermission');
+  Route::post('permission_delete', 'Auth\PermissionController@apiDeletePermission');
+
 });

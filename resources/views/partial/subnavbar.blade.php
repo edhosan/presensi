@@ -4,11 +4,14 @@
     <div class="container">
       <ul class="mainnav">
         <li class="{{ active('home') }}"><a href="index.html"><i class="icon-dashboard"></i><span>Dashboard</span> </a> </li>
-        <li class="dropdown {{ active(['home/*','register','user','role_list']) }}">
+        <li class="dropdown {{ active(['home/*','register','user','role_list','permission_list']) }}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-list-alt"></i><span>Data Referensi</span> </a>
           <ul class="dropdown-menu">
             <li><a href="{{ route('user') }}">Manajemen User</a></li>
             <li><a href="{{ route('role_list') }}">Tipe User</a></li>
+            @role('super-admin')
+              <li><a href="{{ route('permission_list') }}">Hak Akses</a></li>
+            @endrole
           </ul>
         </li>
         <li><a href="guidely.html"><i class="icon-facetime-video"></i><span>App Tour</span> </a></li>

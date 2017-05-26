@@ -33,4 +33,18 @@ Breadcrumbs::register('role', function($breadcrumbs)
     $breadcrumbs->push('Tipe User', route('role'));
 });
 
+// Home > Daftar Hak Akses
+Breadcrumbs::register('permission_list', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Daftar Hak Akses', route('permission_list'));
+});
+
+// Home > Daftar Hak Akses > Permission
+Breadcrumbs::register('permission', function($breadcrumbs)
+{
+    $breadcrumbs->parent('permission_list');
+    $breadcrumbs->push('Hak Akses', route('permission'));
+});
+
 ?>
