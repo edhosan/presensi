@@ -102,7 +102,8 @@ class RegisterController extends Controller
                   ->join('ref_subunit','peg_stat_duk.id_subunit','=','ref_subunit.id_subunit')
                   ->join('ref_unker','ref_subunit.id_unker','=','ref_unker.id_unker')
                   ->whereNotIn('peg_stat_duk.id_status_pegawai',[3, 4, 5, 5, 6, 7, 8])
-                  ->select('peg_datadasar.nip','peg_datadasar.nama','ref_unker.id_unker','ref_unker.nama_unker');
+                  ->select('peg_datadasar.nip','peg_datadasar.nama','ref_unker.id_unker','ref_unker.nama_unker','peg_datadasar.gelar_depan',
+                           'peg_datadasar.gelar_belakang','ref_subunit.id_subunit','ref_subunit.nama_subunit');
 
       $query = $query->orderBy('peg_datadasar.nip', 'asc');
 

@@ -26,4 +26,7 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::get('permission_list', 'Auth\PermissionController@apiGetPermission');
   Route::post('permission_delete', 'Auth\PermissionController@apiDeletePermission');
 
+  Route::get('get_idfinger', 'Proses\DataIndukController@apiGetId');
+  Route::post('subunit', 'Proses\DataIndukController@apiGetSubUnit');
+
 });

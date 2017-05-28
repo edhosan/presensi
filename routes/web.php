@@ -39,4 +39,9 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('permission_edit/{id}', 'Auth\PermissionController@showPermissionUpdate')->name('permission_edit');
   Route::post('permission_update', 'Auth\PermissionController@update')->name('permission_update');
   Route::post('permission_create', 'Auth\PermissionController@create')->name('permission_create');
+
+  Route::get('datainduk_list', 'Proses\DataIndukController@index')->name('datainduk_list');
+  Route::get('datainduk_form', 'Proses\DataIndukController@showForm')->name('datainduk_form');
+  Route::post('datainduk_create', 'Proses\DataIndukController@create')->name('datainduk_create');
+  Route::post('datainduk_update', 'Proses\DataIndukController@update')->name('datainduk_update');
 });

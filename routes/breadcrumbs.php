@@ -47,4 +47,19 @@ Breadcrumbs::register('permission', function($breadcrumbs)
     $breadcrumbs->push('Hak Akses', route('permission'));
 });
 
+// Home > Daftar Pegawai
+Breadcrumbs::register('datainduk_list', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Daftar Pegawai', route('datainduk_list'));
+});
+
+// Home > Daftar Pegawai > Data Induk Pegawai
+Breadcrumbs::register('datainduk_form', function($breadcrumbs)
+{
+    $breadcrumbs->parent('datainduk_list');
+    $breadcrumbs->push('Data Induk Pegawai', route('datainduk_form'));
+});
+
+
 ?>
