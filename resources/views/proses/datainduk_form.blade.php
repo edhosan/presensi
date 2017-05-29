@@ -20,7 +20,7 @@
                 <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('datainduk_update'):route('datainduk_create') }}" novalidate="novalidate">
                   {{ csrf_field() }}
                   <input type="hidden" name="id" value="{{ $data->id or 0 }}">
-                  <div class="span5">
+                  <div class="span6">
                     <fieldset>
                       <div class="control-group {{ $errors->has('type') ? 'error' : '' }}">
                           <label for="type" class="control-label">Status</label>
@@ -139,17 +139,31 @@
                     </fieldset>
                   </div>
 
-                  <div class="span4">
+                  <div class="span5">
                     <fieldset>
                       <div class="control-group {{ $errors->has('pangkat') ? 'error' : '' }}">
-                          <label for="pangkat" class="control-label">Pangkat</label>
+                          <label for="pangkat" class="control-label">Pangkat / Golongan</label>
 
                           <div class="controls">
-                              <input id="nama_subunit" type="text" class="span4 autocomplete" name="nama_subunit" value="{{$data->nama_subunit or old('nama_subunit') }}">
-                              <input type="hidden" name="subunit" value="{{$data->id_subunit or old('subunit') }}" id="subunit">
-                              @if ($errors->has('subunit'))
+                            <?php $selected_data = isset($data)?$data->id_pangkat:old('pangkat') ?>
+                            {{ Form::select('pangkat', $pangkat, $selected_data, ['placeholder' => 'Please Select'] ) }}
+                              @if ($errors->has('pangkat'))
                                   <span class="help-block">
-                                      <strong>{{ $errors->first('subunit') }}</strong>
+                                      <strong>{{ $errors->first('pangkat') }}</strong>
+                                  </span>
+                              @endif
+                          </div>
+                      </div>
+
+                      <div class="control-group {{ $errors->has('jabatan') ? 'error' : '' }}">
+                          <label for="jabatan" class="control-label">Jabatan</label>
+
+                          <div class="controls">
+                              <input id="nama_jabatan" type="text" class="autocomplete" name="nama_jabatan" value="{{$data->nama_jabatan or old('nama_jabatan') }}">
+                              <input type="hidden" name="jabatan" value="{{$data->id_jabatan or old('jabatan') }}" id="jabatan">
+                              @if ($errors->has('jabatan'))
+                                  <span class="help-block">
+                                      <strong>{{ $errors->first('jabatan') }}</strong>
                                   </span>
                               @endif
                           </div>
@@ -178,28 +192,10 @@
 @endsection
 
 @push('script')
-<script src="{{ asset('js/bootstrap-button.js') }}"></script>
 <script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
 <script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-button.js') }}"></script>
 <script>
-  $('#btnGenerateId').click(function() {
-    var btn = $(this)
-    btn.button('loading')
-    $.ajax({
-      url: '{{ url("api/get_idfinger?api_token=") }}{{ Auth::user()->api_token }}',
-      type: 'get',
-      dataType: "json",
-      success: function(response){
-        btn.button('reset')
-        $('#id_finger').val(response.id_finger)
-      },
-      error: function(error){
-        console.log(error);
-      }
-    })
-
-  });
-
   function fillData(param) {
     if(param != undefined){
       $("#nip").val(param.nip).trigger("change");
@@ -214,6 +210,23 @@
   }
 
 $(function() {
+  $('#btnGenerateId').click(function() {
+    var btn = $(this);
+    btn.button('loading');
+    $.ajax({
+      url: '{{ url("api/get_idfinger?api_token=") }}{{ Auth::user()->api_token }}',
+      type: 'get',
+      dataType: "json",
+      success: function(response){
+        btn.button('reset')
+        $('#id_finger').val(response.id_finger)
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  });
+
   var optPeg = {
       url: function(phrase) {
         return "{{ url('api/pegawai?api_token=') }}{{ Auth::user()->api_token }}";
@@ -391,10 +404,57 @@ $(function() {
             }
           };
 
+          var optJabatan = {
+              url: function(phrase) {
+                return "{{ url('api/jabatan?api_token=') }}{{ Auth::user()->api_token }}";
+              },
+
+              getValue: function(element) {
+                return element.nama_jabatan;
+              },
+
+              ajaxSettings: {
+                dataType: "json",
+                method: "POST",
+                data: {
+                  dataType: "json"
+                }
+              },
+
+              template: {
+                type: "description",
+                fields: {
+                  description: "id_jabatan"
+                }
+              },
+
+              list: {
+                match: {
+                  enabled: true
+                },
+                onSelectItemEvent: function() {
+                  var value = $("#nama_jabatan").getSelectedItemData();
+                  $("#jabatan").val(value.id_jabatan).trigger("change");
+                }
+              },
+
+              preparePostData: function(data) {
+                data.phrase = $("#nama_jabatan").val();
+                @if(Auth::user()->unker != '')
+                  data.unker =  "{{ Auth::user()->unker }}";
+                @else
+                  data.unker = $('#jabatan').val();
+                @endif
+
+                return data;
+              }
+            };
+
     $("#nip").easyAutocomplete(optPeg);
     $("#nama").easyAutocomplete(optPegNama);
     $("#nama_unker").easyAutocomplete(optUnker);
     $("#nama_subunit").easyAutocomplete(optSubUnit);
+    $("#nama_jabatan").easyAutocomplete(optJabatan);
 
 });
 </script>
