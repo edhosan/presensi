@@ -105,6 +105,7 @@ class RegisterController extends Controller
                   ->join(DB::raw('(select max(id_peg_pangkat)id_peg_pangkat,max(id_pangkat)id_pangkat from peg_pangkat group by nip)y'), function($peg_pangkat) {
                       $peg_pangkat->on('y.id_peg_pangkat','=','peg_pangkat.id_peg_pangkat');
                     })
+                  ->join('ref_pangkat','ref_pangkat.id_pangkat','=','peg_pangkat.id_pangkat')
                   ->join('peg_jabatan','peg_jabatan.nip','=','peg_datadasar.nip')
                   ->join(DB::raw('(select max(id_peg_jabatan)id_peg_jabatan from peg_jabatan group by nip)z'), function($peg_jabatan) {
                       $peg_jabatan->on('z.id_peg_jabatan','=','peg_jabatan.id_peg_jabatan');
@@ -115,7 +116,8 @@ class RegisterController extends Controller
                   ->select('peg_datadasar.nip','peg_datadasar.nama','ref_unker.id_unker','ref_unker.nama_unker','peg_datadasar.gelar_depan',
                            'peg_datadasar.gelar_belakang','ref_subunit.id_subunit','ref_subunit.nama_subunit','y.id_pangkat','peg_jabatan.id_jabatan',
                            'ref_jabatan.nama_jabatan',DB::raw('CONCAT(ref_jabatan.nama_jabatan, " - ", ref_eselon.nama) nm_jabatan'),
-                           DB::raw('DATE_FORMAT(peg_pangkat.tmt_pangkat, "%d-%m-%Y") as tmt_pangkat') );
+                           DB::raw('DATE_FORMAT(peg_pangkat.tmt_pangkat, "%d-%m-%Y") as tmt_pangkat'),'ref_pangkat.*', 'ref_eselon.id_eselon'
+                         );
 
       $query = $query->orderBy('peg_datadasar.nip', 'asc');
 
