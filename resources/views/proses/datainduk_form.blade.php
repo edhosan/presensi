@@ -2,6 +2,7 @@
 @push('css')
 <link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.min.css') }}" rel="stylesheet">
 <link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.themes.min.css') }}" rel="stylesheet">
+<link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
   <div class="main">
@@ -20,7 +21,7 @@
                 <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('datainduk_update'):route('datainduk_create') }}" novalidate="novalidate">
                   {{ csrf_field() }}
                   <input type="hidden" name="id" value="{{ $data->id or 0 }}">
-                  <div class="span6">
+                  <div class="span5">
                     <fieldset>
                       <div class="control-group {{ $errors->has('type') ? 'error' : '' }}">
                           <label for="type" class="control-label">Status</label>
@@ -139,14 +140,14 @@
                     </fieldset>
                   </div>
 
-                  <div class="span5">
+                  <div class="span6">
                     <fieldset>
                       <div class="control-group {{ $errors->has('pangkat') ? 'error' : '' }}">
                           <label for="pangkat" class="control-label">Pangkat / Golongan</label>
 
                           <div class="controls">
                             <?php $selected_data = isset($data)?$data->id_pangkat:old('pangkat') ?>
-                            {{ Form::select('pangkat', $pangkat, $selected_data, ['placeholder' => 'Please Select'] ) }}
+                            {{ Form::select('pangkat', $pangkat, $selected_data, ['placeholder' => 'Please Select','id' => 'pangkat'] ) }}
                               @if ($errors->has('pangkat'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('pangkat') }}</strong>
@@ -159,7 +160,7 @@
                           <label for="jabatan" class="control-label">Jabatan</label>
 
                           <div class="controls">
-                              <input id="nama_jabatan" type="text" class="autocomplete" name="nama_jabatan" value="{{$data->nama_jabatan or old('nama_jabatan') }}">
+                              <input id="nama_jabatan" type="text" class="span4 autocomplete" name="nama_jabatan" value="{{$data->nama_jabatan or old('nama_jabatan') }}">
                               <input type="hidden" name="jabatan" value="{{$data->id_jabatan or old('jabatan') }}" id="jabatan">
                               @if ($errors->has('jabatan'))
                                   <span class="help-block">
@@ -168,6 +169,20 @@
                               @endif
                           </div>
                       </div>
+
+                      <div class="control-group {{ $errors->has('tmt_pangkat') ? 'error' : '' }}">
+                          <label for="tmt_pangkat" class="control-label">TMT Pangkat</label>
+
+                          <div class="controls">
+                              <input id="tmt_pangkat" type="text" name="tmt_pangkat" value="{{$data->tmt_pangkat or old('tmt_pangkat') }}">
+                              @if ($errors->has('tmt_pangkat'))
+                                  <span class="help-block">
+                                      <strong>{{ $errors->first('tmt_pangkat') }}</strong>
+                                  </span>
+                              @endif
+                          </div>
+                      </div>
+
                     </fieldset>
                   </div>
 
@@ -195,6 +210,8 @@
 <script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
 <script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-button.js') }}"></script>
+<script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
+<script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
 <script>
   function fillData(param) {
     if(param != undefined){
@@ -206,10 +223,20 @@
       $("#gelar_belakang").val(param.gelar_belakang).trigger("change");
       $("#nama_subunit").val(param.nama_subunit).trigger("change");
       $("#subunit").val(param.id_subunit).trigger("change");
+      $("#pangkat").val(param.id_pangkat).trigger("change");
+      $("#nama_jabatan").val(param.nm_jabatan).trigger("change");
+      $("#jabatan").val(param.id_jabatan).trigger("change");
+      $("#id_jabatan").val(param.id_jabatan).trigger("change");
+      $("#tmt_pangkat").datepicker('update',param.tmt_pangkat);
     }
   }
 
 $(function() {
+  $('#tmt_pangkat').datepicker({
+      format: 'dd-mm-yyyy',
+      language: 'id',
+  });
+
   $('#btnGenerateId').click(function() {
     var btn = $(this);
     btn.button('loading');
@@ -252,9 +279,7 @@ $(function() {
       },
 
       list: {
-        match: {
-          enabled: true
-        },
+        match: { enabled: true },
         onSelectItemEvent: function() {
           var value = $("#nip").getSelectedItemData();
           fillData(value);
@@ -263,11 +288,7 @@ $(function() {
 
       preparePostData: function(data) {
         data.phrase = $("#nip").val();
-        @if(Auth::user()->unker != '')
-          data.unker =  "{{ Auth::user()->unker }}";
-        @else
-          data.unker = $('#id_unker').val();
-        @endif
+        data.unker = "{{ Auth::user()->unker }}";
         return data;
       }
     };
@@ -308,11 +329,7 @@ $(function() {
 
         preparePostData: function(data) {
           data.phrase = $("#nama").val();
-          @if(Auth::user()->unker != '')
-            data.unker =  "{{ Auth::user()->unker }}";
-          @else
-            data.unker = $('#id_unker').val();
-          @endif
+          data.unker = "{{ Auth::user()->unker }}";
           return data;
         }
       };
@@ -346,6 +363,7 @@ $(function() {
               enabled: true
             },
             onSelectItemEvent: function() {
+              $('#id_unker').val("").trigger("change");
               var value = $("#nama_unker").getSelectedItemData().id_unker;
               $("#id_unker").val(value).trigger("change");
             }
@@ -394,11 +412,7 @@ $(function() {
 
             preparePostData: function(data) {
               data.phrase = $("#nama_subunit").val();
-              @if(Auth::user()->unker != '')
-                data.unker =  "{{ Auth::user()->unker }}";
-              @else
-                data.unker = $('#id_unker').val();
-              @endif
+              data.unker = "{{ Auth::user()->unker }}";
 
               return data;
             }
@@ -424,14 +438,13 @@ $(function() {
               template: {
                 type: "description",
                 fields: {
-                  description: "id_jabatan"
+                  description: "nama"
                 }
               },
 
               list: {
-                match: {
-                  enabled: true
-                },
+                maxNumberOfElements: 10,
+                match: { enabled: true },
                 onSelectItemEvent: function() {
                   var value = $("#nama_jabatan").getSelectedItemData();
                   $("#jabatan").val(value.id_jabatan).trigger("change");
@@ -440,11 +453,7 @@ $(function() {
 
               preparePostData: function(data) {
                 data.phrase = $("#nama_jabatan").val();
-                @if(Auth::user()->unker != '')
-                  data.unker =  "{{ Auth::user()->unker }}";
-                @else
-                  data.unker = $('#jabatan').val();
-                @endif
+                data.unker = "{{ Auth::user()->unker }}";
 
                 return data;
               }

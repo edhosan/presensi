@@ -42,7 +42,10 @@ class DataIndukController extends Controller
         'nip' => 'required',
         'nama' => 'required',
         'id_unker' => 'required|is_exists_opd',
-        'subunit' => 'required'
+        'subunit' => 'required',
+        'pangkat' => 'required',
+        'jabatan' => 'required',
+        'tmt_pangkat' => 'required'
       );
     }
 
@@ -94,25 +97,26 @@ class DataIndukController extends Controller
     public function apiGetJabatan(Request $request)
     {
       $jabatan = DB::connection('mysql2')->table('ref_jabatan')
-              ->select('id_jabatan','id_eselon','nama_jabatan')
-              ->orderBy('nama_jabatan','asc');
+              ->join('ref_eselon','ref_eselon.id_eselon','=','ref_jabatan.id_eselon')
+              ->select('ref_jabatan.id_jabatan','ref_jabatan.id_eselon','ref_jabatan.nama_jabatan','ref_eselon.nama')
+              ->orderBy('ref_jabatan.nama_jabatan','asc');
 
       if($request->exists('unker') && !empty($request->unker)){
-        $query->where(function($q) use($request){
+        $jabatan->where(function($q) use($request){
           $value = "{$request->unker}";
           $q->where('id_unker', '=', $value);
         });
       }
 
       if($request->exists('phrase')){
-        $query->where(function($q) use($request){
+        $jabatan->where(function($q) use($request){
           $value = "{$request->phrase}%";
           $q->where('id_jabatan', 'like', $value)
             ->orWhere('nama_jabatan', 'like', $value);
         });
       }
 
-      return response()->json($query->get());
+      return response()->json($jabatan->get());
 
     }
 }

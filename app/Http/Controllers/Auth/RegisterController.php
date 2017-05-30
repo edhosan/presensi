@@ -101,9 +101,21 @@ class RegisterController extends Controller
                     })
                   ->join('ref_subunit','peg_stat_duk.id_subunit','=','ref_subunit.id_subunit')
                   ->join('ref_unker','ref_subunit.id_unker','=','ref_unker.id_unker')
+                  ->join('peg_pangkat','peg_pangkat.nip','=','peg_datadasar.nip')
+                  ->join(DB::raw('(select max(id_peg_pangkat)id_peg_pangkat,max(id_pangkat)id_pangkat from peg_pangkat group by nip)y'), function($peg_pangkat) {
+                      $peg_pangkat->on('y.id_peg_pangkat','=','peg_pangkat.id_peg_pangkat');
+                    })
+                  ->join('peg_jabatan','peg_jabatan.nip','=','peg_datadasar.nip')
+                  ->join(DB::raw('(select max(id_peg_jabatan)id_peg_jabatan from peg_jabatan group by nip)z'), function($peg_jabatan) {
+                      $peg_jabatan->on('z.id_peg_jabatan','=','peg_jabatan.id_peg_jabatan');
+                    })
+                  ->join('ref_jabatan','ref_jabatan.id_jabatan','=','peg_jabatan.id_jabatan')
+                  ->join('ref_eselon','ref_jabatan.id_eselon','=','ref_eselon.id_eselon')
                   ->whereNotIn('peg_stat_duk.id_status_pegawai',[3, 4, 5, 5, 6, 7, 8])
                   ->select('peg_datadasar.nip','peg_datadasar.nama','ref_unker.id_unker','ref_unker.nama_unker','peg_datadasar.gelar_depan',
-                           'peg_datadasar.gelar_belakang','ref_subunit.id_subunit','ref_subunit.nama_subunit');
+                           'peg_datadasar.gelar_belakang','ref_subunit.id_subunit','ref_subunit.nama_subunit','y.id_pangkat','peg_jabatan.id_jabatan',
+                           'ref_jabatan.nama_jabatan',DB::raw('CONCAT(ref_jabatan.nama_jabatan, " - ", ref_eselon.nama) nm_jabatan'),
+                           DB::raw('DATE_FORMAT(peg_pangkat.tmt_pangkat, "%d-%m-%Y") as tmt_pangkat') );
 
       $query = $query->orderBy('peg_datadasar.nip', 'asc');
 

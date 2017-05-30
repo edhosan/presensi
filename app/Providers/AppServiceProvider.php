@@ -16,15 +16,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Validator::extend('is_exists_opd', function($attribute, $value, $parameters, $validator) {
-          if(!empty($value)){
+        
             $opd = OPD::where('id_unker','=',$value)->first();
             if($opd != null) {
               return true;
             }
             return false;
-          }else{
-            return true;
-          }
+
         });
     }
 
