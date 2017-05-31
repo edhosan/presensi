@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
 use App\Model\DataInduk;
+use Illuminate\Support\Collection;
+use Yajra\Datatables\Datatables;
 
 class DataIndukController extends Controller
 {
     public function index()
     {
-
+      return view('proses.datainduk_list');
     }
 
     public function showForm()
@@ -30,7 +32,7 @@ class DataIndukController extends Controller
       if($request->type === 'pns') {
         $this->validate($request, $this->rulePNS());
       }else{
-        $this->validate($request, $this->ruleNonPnsPNS());
+        $this->validate($request, $this->ruleNonPns());
       }
 
       try{
@@ -84,6 +86,34 @@ class DataIndukController extends Controller
         'subunit' => 'required',
         'jabatan' => 'required',
       );
+    }
+
+    public function apiGetDataInduk()
+    {
+      $data = collect();
+
+      $datainduk = DataInduk::orderBy('type','asc')
+                  ->orderBy('id_eselon','asc')
+                  ->orderBy('id_pangkat','desc')
+                  ->orderBy('tmt_pangkat','desc')
+                  ->get();
+
+      $datainduk = $datainduk->each(function($item, $key) {
+        if($item->type === 'nonpns')
+      })
+
+      /*foreach ($datainduk->get() as $item) {
+        $data->push([
+          'id'          => $item->id,
+          'id_finger'   => $item->id_finger,
+          'nip'         => $item->nip,
+          'nama'        => $item->nama,
+          'pangkat'     =>  $item->pangkat.'('.$item->golru.')',
+        ]);
+      }*/
+
+      return Datatables::of($data)->make(true);
+
     }
 
     public function apiGetPangkat(Request $request)

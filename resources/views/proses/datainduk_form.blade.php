@@ -5,9 +5,6 @@
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
-  <pre>
-    {{ $errors->first() }}
-  </pre>
   <div class="main">
     <div class="main-inner">
       <div class="container">
@@ -397,7 +394,6 @@ $(function() {
               enabled: true
             },
             onSelectItemEvent: function() {
-              $('#id_unker').val("").trigger("change");
               var value = $("#nama_unker").getSelectedItemData().id_unker;
               $("#id_unker").val(value).trigger("change");
             }
@@ -446,7 +442,7 @@ $(function() {
 
             preparePostData: function(data) {
               data.phrase = $("#nama_subunit").val();
-              data.unker = "{{ Auth::user()->unker }}";
+              data.unker = $("#id_unker").val();
 
               return data;
             }

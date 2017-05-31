@@ -16,10 +16,12 @@
             @endrole
           </ul>
         </li>
-        <li class="dropdown {{ active(['datainduk_form']) }}">
+        <li class="dropdown {{ active(['datainduk_list']) }}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-book"></i><span>Data Proses</span> </a>
           <ul class="dropdown-menu">
-            <li><a href="{{ route('datainduk_form') }}">Data Induk Pegawai</a></li>
+            @role(['super-admin','admin'])
+              <li><a href="{{ route('datainduk_list') }}">Data Induk Pegawai</a></li>
+            @endrole
           </ul>
         </li>
         <li><a href="charts.html"><i class="icon-bar-chart"></i><span>Charts</span> </a> </li>
