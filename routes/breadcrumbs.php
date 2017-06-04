@@ -61,5 +61,19 @@ Breadcrumbs::register('datainduk_form', function($breadcrumbs)
     $breadcrumbs->push('Data Induk Pegawai', route('datainduk_form'));
 });
 
+// Home > Daftar Kalendar Kerja
+Breadcrumbs::register('kalendar_list', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Daftar Kalendar Kerja', route('kalendar_list'));
+});
+
+// Home > Daftar Kalendar Kerja > Kelendar Kerja
+Breadcrumbs::register('kalendar_form', function($breadcrumbs)
+{
+    $breadcrumbs->parent('kalendar_list');
+    $breadcrumbs->push('Kalendar Kerja', route('kalendar_create'));
+});
+
 
 ?>

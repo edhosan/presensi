@@ -187,7 +187,7 @@ class RegisterController extends Controller
          'name' => $data['name'],
          'username' => $data['username'],
          'password' => bcrypt($data['password']),
-         'unker' => $data['id_unker'],
+         'unker' => isset($data['opd'])?$data['id_unker']:'',
          'nm_unker' => $data['opd']
        );
 

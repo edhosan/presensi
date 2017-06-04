@@ -1,0 +1,92 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "bootstrap-calendar",
+        "scope": null,
+        "escapedName": "bootstrap-calendar",
+        "name": "bootstrap-calendar",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/home/edo/www/presensi"
+    ]
+  ],
+  "_from": "bootstrap-calendar@latest",
+  "_id": "bootstrap-calendar@0.2.4",
+  "_inCache": true,
+  "_location": "/bootstrap-calendar",
+  "_nodeVersion": "5.1.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/bootstrap-calendar-0.2.4.tgz_1459184025505_0.8628596516791731"
+  },
+  "_npmUser": {
+    "name": "gerryfudd",
+    "email": "davehasen@gmail.com"
+  },
+  "_npmVersion": "3.3.12",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "bootstrap-calendar",
+    "scope": null,
+    "escapedName": "bootstrap-calendar",
+    "name": "bootstrap-calendar",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bootstrap-calendar/-/bootstrap-calendar-0.2.4.tgz",
+  "_shasum": "4af891a0f20fdf03a86f2ebfbf867f3dc92cee6e",
+  "_shrinkwrap": null,
+  "_spec": "bootstrap-calendar",
+  "_where": "/home/edo/www/presensi",
+  "author": {
+    "name": "Sergey Romanov"
+  },
+  "bugs": {
+    "url": "https://github.com/Serhioromano/bootstrap-calendar/issues"
+  },
+  "dependencies": {},
+  "description": "Bootstrap full view calendar",
+  "devDependencies": {
+    "bower": "~0.8.5",
+    "grunt": "~0.4.1",
+    "grunt-contrib-less": "~0.7.0",
+    "grunt-contrib-uglify": "~0.2.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "4af891a0f20fdf03a86f2ebfbf867f3dc92cee6e",
+    "tarball": "https://registry.npmjs.org/bootstrap-calendar/-/bootstrap-calendar-0.2.4.tgz"
+  },
+  "gitHead": "fc46075a07e08b1796f959c6562d851acce00751",
+  "homepage": "https://github.com/Serhioromano/bootstrap-calendar#readme",
+  "keywords": [
+    "calendar"
+  ],
+  "license": "BSD",
+  "main": "./js/calendar.js",
+  "maintainers": [
+    {
+      "name": "gerryfudd",
+      "email": "davehasen@gmail.com"
+    }
+  ],
+  "name": "bootstrap-calendar",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Serhioromano/bootstrap-calendar.git"
+  },
+  "scripts": {
+    "test": ""
+  },
+  "version": "0.2.4"
+}

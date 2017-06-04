@@ -31,5 +31,8 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::post('jabatan', 'Proses\DataIndukController@apiGetJabatan');
   Route::post('pangkat', 'Proses\DataIndukController@apiGetPangkat');
   Route::get('datainduk_list', 'Proses\DataIndukController@apiGetDataInduk');
+  Route::post('datainduk_delete', 'Proses\DataIndukController@apiDeleteDataInduk');
+
+  Route::get('kalendar_list', 'Referensi\EventController@apiEvent');
 
 });

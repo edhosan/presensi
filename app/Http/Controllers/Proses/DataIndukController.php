@@ -8,6 +8,10 @@ use DB;
 use App\Model\DataInduk;
 use Illuminate\Support\Collection;
 use Yajra\Datatables\Datatables;
+use Carbon\Carbon;
+use App\Model\TerminalUser;
+use App\Model\Terminal;
+use Auth;
 
 class DataIndukController extends Controller
 {
@@ -19,7 +23,6 @@ class DataIndukController extends Controller
     public function showForm()
     {
       $type = array('pns' => 'PNS', 'nonpns' => 'Non PNS');
-
 
       return view('proses.datainduk_form')
             ->withType($type);
@@ -59,7 +62,6 @@ class DataIndukController extends Controller
         $errorInfo = $exception->errorInfo;
       }
 
-
       return redirect('datainduk_list')->with('success','Data berhasil disimpan!');
     }
 
@@ -90,30 +92,39 @@ class DataIndukController extends Controller
 
     public function apiGetDataInduk()
     {
-      $data = collect();
+      $unker = Auth::user()->unker;
 
       $datainduk = DataInduk::orderBy('type','asc')
                   ->orderBy('id_eselon','asc')
                   ->orderBy('id_pangkat','desc')
-                  ->orderBy('tmt_pangkat','desc')
-                  ->get();
+                  ->orderBy('tmt_pangkat','desc');
 
-      $datainduk = $datainduk->each(function($item, $key) {
-        if($item->type === 'nonpns')
-      })
+      return Datatables::of($datainduk)
+        ->filter(function($query) use($unker) {
+          if(!empty($unker)){
+            $query->where('id_unker', $unker);
+          }
+        })
+        ->editColumn('pangkat','{{ isset($pangkat)?$pangkat." (".$golru.")":"" }}')
+        ->editColumn('nama_jabatan','{{ $nama_jabatan." ".$nama_subunit }}')
+        ->editColumn('terminal',function($data){
+            $terminal = $this->getTerminal($data->id_finger);
+            $str = '';
+            foreach ($terminal as $value) {
+              $str .= $value->Name." ";
+            }
+          return $str;
+        })
+        ->make(true);
+    }
 
-      /*foreach ($datainduk->get() as $item) {
-        $data->push([
-          'id'          => $item->id,
-          'id_finger'   => $item->id_finger,
-          'nip'         => $item->nip,
-          'nama'        => $item->nama,
-          'pangkat'     =>  $item->pangkat.'('.$item->golru.')',
-        ]);
-      }*/
+    private function getTerminal($id_finger)
+    {
+      $terminal = Terminal::whereHas('users', function($query) use($id_finger) {
+        $query->where('UserId',$id_finger);
+      })->get();
 
-      return Datatables::of($data)->make(true);
-
+      return $terminal;
     }
 
     public function apiGetPangkat(Request $request)
@@ -158,9 +169,60 @@ class DataIndukController extends Controller
 
     }
 
+    public function showEdit($id)
+    {
+      $datainduk = DataInduk::findOrFail($id);
+      $type = array('pns' => 'PNS', 'nonpns' => 'Non PNS');
+
+      return view('proses.datainduk_form')
+            ->withType($type)
+            ->withData($datainduk);
+    }
+
     public function update(Request $request)
     {
+      $this->validate($request, ['type' => 'required']);
 
+      if($request->type === 'pns') {
+        $this->validate($request, array_except($this->rulePNS(),['id_finger']) );
+      }else{
+        $this->validate($request, array_except($this->ruleNonPns(),['id_finger']) );
+      }
+
+      $datainduk = DataInduk::findOrFail($request->id);
+
+      $datainduk->update([
+          'id_finger' => $request->id_finger,
+          'type'      => $request->type,
+          'nip'       => $request->nip,
+          'nama'      => $request->nama,
+          'gelar_depan' => $request->gelar_depan,
+          'gelar_belakang'  => $request->gelar_belakang,
+          'id_unker'    => $request->id_unker,
+          'nama_unker'  => isset($request->nama_unker)?$request->nama_unker:"",
+          'id_subunit'  => $request->subunit,
+          'nama_subunit'  => $request->nama_subunit,
+          'id_pangkat'  => $request->id_pangkat,
+          'golru'       => $request->golru,
+          'pangkat'     => $request->nama_pangkat,
+          'id_jabatan'  => $request->jabatan,
+          'nama_jabatan'  => $request->nama_jabatan,
+          'id_eselon'   => $request->id_eselon,
+          'tmt_pangkat'   => date('Y-m-d', strtotime($request->tmt_pangkat)),
+      ]);
+
+      return redirect('datainduk_list')->with('success','Data berhasil disimpan!');
+    }
+
+    public function apiDeleteDataInduk(Request $request)
+    {
+      $data = $request->input('data');
+
+      foreach ($data as $id) {
+        $status = DataInduk::where('id',$id)->delete();
+      }
+
+      return response()->json($status);
     }
 
     public function apiGetId()

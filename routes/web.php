@@ -44,4 +44,12 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('datainduk_form', 'Proses\DataIndukController@showForm')->name('datainduk_form');
   Route::post('datainduk_create', 'Proses\DataIndukController@create')->name('datainduk_create');
   Route::post('datainduk_update', 'Proses\DataIndukController@update')->name('datainduk_update');
+  Route::get('datainduk_edit/{id}', 'Proses\DataIndukController@showEdit')->name('datainduk_edit');
+
+  Route::get('kalendar_create', 'Referensi\EventController@create')->name('kalendar_create');
+  Route::post('kalendar_update', 'Referensi\EventController@update')->name('kalendar_update');
+  Route::post('kalendar_create', 'Referensi\EventController@store')->name('kalendar_create');
+  Route::get('kalendar_list', 'Referensi\EventController@index')->name('kalendar_list');
+  Route::get('kalendar_edit/{id}', 'Referensi\EventController@edit')->name('kalendar_edit');
+  Route::get('kalendar_delete/{id}', 'Referensi\EventController@delete')->name('kalendar_delete');
 });

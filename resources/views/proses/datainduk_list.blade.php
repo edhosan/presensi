@@ -25,6 +25,7 @@
                       <thead>
                           <tr>
                               <th></th>
+                              <th></th>
                               <th>Nip</th>
                               <th>Id Finger</th>
                               <th>OPD</th>
@@ -32,8 +33,6 @@
                               <th>Pangkat / Gol</th>
                               <th>Jabatan</th>
                               <th>Terminal</th>
-                              <th>Created At</th>
-                              <th>Updated At</th>
                           </tr>
                       </thead>
                   </table>
@@ -73,7 +72,7 @@ $(function() {
                 text: '<i class="icon-edit"> Edit</i>',
                 action: function ( e, dt, node, config ) {
                     var data = dt.row( { selected: true } ).data();
-                    var newUrl = "{{ url('role_update') }}";
+                    var newUrl = "{{ url('datainduk_edit') }}";
                     window.location.href = newUrl+"/"+data.id;
                 },
                 enabled: false
@@ -98,7 +97,7 @@ $(function() {
                             });
 
                             $.ajax({
-                                url: '{{ url("api/role_delete?api_token=") }}{{ Auth::user()->api_token }}',
+                                url: '{{ url("api/datainduk_delete?api_token=") }}{{ Auth::user()->api_token }}',
                                 type: 'post',
                                 dataType: "json",
                                 data: { data: arrData },
@@ -126,15 +125,14 @@ $(function() {
         ajax: '{{ url("api/datainduk_list?api_token=") }}{{ Auth::user()->api_token }}',
         columns: [
             { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
-            { data: 'nama_unker', name: 'nama_unker' },
+            { data: 'id', name: 'id', visible: false },
             { data: 'nip', name: 'nip' },
             { data: 'id_finger', name: 'id_finger' },
-            { data: 'type', name: 'type' },
-            { data: 'nama', name: 'nama' },
-            { data: 'pangkat', name: 'pangkat' },
-            { data: 'nama_jabatan', name: 'nama_jabatan' },
-            { data: 'nama_jabatan', name: 'nama_jabatan' },
-            { data: 'nama_jabatan', name: 'nama_jabatan' }
+            { data: 'nama_unker', name: 'nama_unker', width:'250px' },
+            { data: 'nama', name: 'nama', width: '150px' },
+            { data: 'pangkat', name: 'pangkat', width: '140px' },
+            { data: 'nama_jabatan', name: 'nama_jabatan', width: '300px' },
+            { data: 'terminal', name: 'terminal', orderable: false }
         ]
     });
 

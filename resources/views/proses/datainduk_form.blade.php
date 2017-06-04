@@ -112,7 +112,7 @@
                           <label for="opd" class="control-label">Organisasi Perangkat Daerah</label>
 
                           <div class="controls">
-                              <input id="nama_unker" type="text" class="span4 autocomplete" name="nama_unker" value="{{$data->nm_unker or old('nama_unker') }}">
+                              <input id="nama_unker" type="text" class="span4 autocomplete" name="nama_unker" value="{{$data->nama_unker or old('nama_unker') }}">
                               <input type="hidden" name="id_unker" value="{{$data->id_unker or old('id_unker') }}" id="id_unker">
                               @if ($errors->has('id_unker'))
                                   <span class="help-block">
@@ -146,7 +146,7 @@
                           <label for="id_pangkat" class="control-label">Pangkat / Golongan</label>
 
                           <div class="controls">
-                            <input id="nama_pangkat" type="text" class="span4 autocomplete" name="nama_pangkat" value="{{$data->nama_pangkat or old('nama_pangkat') }}">
+                            <input id="nama_pangkat" type="text" class="span4 autocomplete" name="nama_pangkat" value="{{$data->pangkat or old('nama_pangkat') }}">
                             <input type="hidden" name="id_pangkat" value="{{$data->id_pangkat or old('id_pangkat') }}" id="id_pangkat">
                             <input type="hidden" name="golru" value="{{$data->golru or old('golru') }}" id="golru">
 
@@ -192,10 +192,8 @@
 
                   <div class="span11">
                     <div class="form-actions">
-                      <button type="submit" class="btn btn-primary">
-                          Simpan
-                      </button>
-                      <a href="{{ route('datainduk_list') }} " class="btn">Batal</a>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                      <a href="{{ route('datainduk_list') }} " class="btn">Batal</a>                  
                     </div>
                   </div>
 
@@ -239,7 +237,7 @@
   }
 
 $(function() {
-  @if(old('type') === 'pns')
+  @if(isset($data)?$data->type === 'pns': old('type') === 'pns')
     $("#d_nip").show();
     $("#d_pangkat").show();
     $("#d_tmt_pangkat").show();
