@@ -97,7 +97,7 @@ $(document).ready(function() {
         allowHtml: true,
         onShown: function (toast) {
             $("#confirmYes").click(function(){
-              window.location.href = "{{ route('kalendar_delete', ['id' => $data['id']]) }}";
+              window.location.href = "{{ route('kalendar_delete', ['id' => isset($data['id'])?$data['id']:'' ]) }}";
               toastr.remove();
             });
 
