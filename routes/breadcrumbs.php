@@ -75,5 +75,19 @@ Breadcrumbs::register('kalendar_form', function($breadcrumbs)
     $breadcrumbs->push('Kalendar Kerja', route('kalendar_create'));
 });
 
+// Home > Daftar Jadwal Kerja
+Breadcrumbs::register('jadwal_list', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Daftar Jadwal Kerja', route('jadwal_list'));
+});
+
+// Home > Daftar Kalendar Kerja > Kelendar Kerja
+Breadcrumbs::register('jadwal_form', function($breadcrumbs)
+{
+    $breadcrumbs->parent('jadwal_list');
+    $breadcrumbs->push('Jadwal Kerja', route('jadwal_create'));
+});
+
 
 ?>

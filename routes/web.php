@@ -52,4 +52,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('kalendar_list', 'Referensi\EventController@index')->name('kalendar_list');
   Route::get('kalendar_edit/{id}', 'Referensi\EventController@edit')->name('kalendar_edit');
   Route::get('kalendar_delete/{id}', 'Referensi\EventController@delete')->name('kalendar_delete');
+
+  Route::get('jadwal_create', 'Referensi\JadwalController@create')->name('jadwal_create');
+  Route::get('jadwal_list', 'Referensi\JadwalController@index')->name('jadwal_list');
 });
