@@ -25,6 +25,13 @@ class JadwalController extends Controller
       return view('referensi.jadwal_form');
     }
 
+    public function edit($id)
+    {
+      $jadwal = Jadwal::find($id);
+
+      return view('referensi.jadwal_form')->withData($jadwal);
+    }
+
     public function store(Request $request)
     {
         $this->validate($request, $this->rules);
@@ -38,7 +45,7 @@ class JadwalController extends Controller
           'nama_unker' => $request->nama_unker,
         ]);
 
-        return redirect('kalendar_list')->with('success','Data berhasil disimpan!');
+        return redirect('jadwal_list')->with('success','Data berhasil disimpan!');
     }
 
     public function apiJadwalList()

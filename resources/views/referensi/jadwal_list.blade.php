@@ -22,7 +22,7 @@
 
                 <div class="widget-content">
                   <table class="table table-striped table-bordered" id="jadwal-table" width="100%" >
-                      <thead>                      
+                      <thead>
                           <tr>
                               <th></th>
                               <th></th>
@@ -64,14 +64,14 @@ $(function() {
                 text: '<i class="icon-plus"> Tambah Data</i>',
                 titleAttr: 'Tambah Data',
                 action: function ( e, dt, node, config ) {
-                  window.location.href = "{{ route('datainduk_form') }}";
+                  window.location.href = "{{ route('jadwal_create') }}";
                 }
             },
             {
                 text: '<i class="icon-edit"> Edit</i>',
                 action: function ( e, dt, node, config ) {
                     var data = dt.row( { selected: true } ).data();
-                    var newUrl = "{{ url('datainduk_edit') }}";
+                    var newUrl = "{{ url('jadwal_edit') }}";
                     window.location.href = newUrl+"/"+data.id;
                 },
                 enabled: false
