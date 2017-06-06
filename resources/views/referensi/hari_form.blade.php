@@ -10,11 +10,11 @@
         <div class="container">
           <div class="row">
               <div class="span12">
-                {!! Breadcrumbs::render('jadwal_form') !!}
+                {!! Breadcrumbs::render('hari_form') !!}
                 <div class="widget">
                   <div class="widget-header">
                     <i class="icon-file"></i>
-                    <h3>Jadwal Kerja</h3>
+                    <h3>Hari Kerja</h3>
                   </div>
 
                   <div class="widget-content">

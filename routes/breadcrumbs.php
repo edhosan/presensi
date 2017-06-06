@@ -82,11 +82,18 @@ Breadcrumbs::register('jadwal_list', function($breadcrumbs)
     $breadcrumbs->push('Daftar Jadwal Kerja', route('jadwal_list'));
 });
 
-// Home > Daftar Kalendar Kerja > Kelendar Kerja
+// Home > Daftar Jadwal Kerja > Jadwal Kerja
 Breadcrumbs::register('jadwal_form', function($breadcrumbs)
 {
     $breadcrumbs->parent('jadwal_list');
     $breadcrumbs->push('Jadwal Kerja', route('jadwal_create'));
+});
+
+// Home > Daftar Jadwal Kerja > Hari Kerja
+Breadcrumbs::register('hari_form', function($breadcrumbs)
+{
+    $breadcrumbs->parent('jadwal_list');
+    $breadcrumbs->push('Hari Kerja', route('hari_create'));
 });
 
 

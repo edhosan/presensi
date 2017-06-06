@@ -3,20 +3,15 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Validator;
 
 class Jadwal extends Model
 {
   protected $table = 'jadwal_kerja';
 
-  protected $fillable = ['name','title','start','end'];
+  protected $fillable = ['name','title','start','end','id_unker','nama_unker'];
 
-  private $rules = [
-    'name'  => 'required'
-  ];
-
-  public function validate($data)
+  public function hari()
   {
-    $v = Validator::make($data, $this->rules);
+     return $this->hasMany('App\Model\Hari');
   }
 }

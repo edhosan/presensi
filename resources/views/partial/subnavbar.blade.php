@@ -4,7 +4,7 @@
     <div class="container">
       <ul class="mainnav">
         <li class="{{ active('home') }}"><a href="index.html"><i class="icon-dashboard"></i><span>Dashboard</span> </a> </li>
-        <li class="dropdown {{ active(['home/*','register','user','role_list','permission_list','kalendar_list','jadwal_kerja']) }}">
+        <li class="dropdown {{ active(['home/*','register','user','role_list','permission_list','kalendar_list','jadwal_list']) }}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-list-alt"></i><span>Data Referensi</span> </a>
           <ul class="dropdown-menu">
             <li><a href="{{ route('user') }}">Manajemen User</a></li>
@@ -15,7 +15,7 @@
               <li><a href="{{ route('permission_list') }}">Hak Akses</a></li>
             @endrole
             <li><a href="{{ route('kalendar_list') }}">Kalendar Kerja</a></li>
-            <li><a href="{{ route('jadwal_create') }}">Jadwal Kerja</a></li>
+            <li><a href="{{ route('jadwal_list') }}">Jadwal Kerja</a></li>
           </ul>
         </li>
         <li class="dropdown {{ active(['datainduk_list']) }}">
