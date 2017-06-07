@@ -10,6 +10,8 @@ class HariController extends Controller
 {
     public function create($id_jadwal)
     {
-      
+      $jadwal = Jadwal::find($id_jadwal);
+
+      return view('referensi.hari_form')->withJadwal($jadwal);
     }
 }

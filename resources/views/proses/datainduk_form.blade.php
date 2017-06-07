@@ -178,7 +178,13 @@
                           <label for="tmt_pangkat" class="control-label">TMT Pangkat</label>
 
                           <div class="controls">
-                              <input id="tmt_pangkat" type="text" name="tmt_pangkat" value="{{$data->tmt_pangkat or old('tmt_pangkat') }}">
+                              @php
+                                $new_date = old('tmt_pangkat');
+                                if(!empty($data)){
+                                  $new_date = Carbon\Carbon::parse($data->tmt_pangkat)->format('d-m-Y');
+                                }
+                              @endphp
+                              <input id="tmt_pangkat" type="text" name="tmt_pangkat" value="{{ $new_date }}">
                               @if ($errors->has('tmt_pangkat'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('tmt_pangkat') }}</strong>
@@ -193,7 +199,7 @@
                   <div class="span11">
                     <div class="form-actions">
                       <button type="submit" class="btn btn-primary">Simpan</button>
-                      <a href="{{ route('datainduk_list') }} " class="btn">Batal</a>                  
+                      <a href="{{ route('datainduk_list') }} " class="btn">Batal</a>
                     </div>
                   </div>
 

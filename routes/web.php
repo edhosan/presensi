@@ -58,5 +58,5 @@ Route::group(['middleware' => 'auth'], function() {
   Route::post('jadwal_create', 'Referensi\JadwalController@store')->name('jadwal_create');
   Route::get('jadwal_edit/{id}', 'Referensi\JadwalController@edit')->name('jadwal_edit');
 
-  Route::get('hari_create/{id_jadwal}', 'Referensi\HariController@create')->name('hari_create');
+  Route::get('hari_create/{id_jadwal}', 'Referensi\HariController@create')->name('hari.create');;
 });

@@ -68,7 +68,12 @@
                             <label for="start" class="control-label">Berlaku Mulai</label>
 
                             <div class="controls">
-                              <input id="start" type="text" name="start" value="{{ $data['start'] or old('start') }}">
+                              @php
+                                $start = old('start');
+                                if(!empty($data))
+                                  $start = Carbon\Carbon::parse($data['start'])->format('d-m-Y');
+                              @endphp
+                              <input id="start" type="text" name="start" value="{{ $start }}">
 
                                 @if ($errors->has('start'))
                                     <span class="help-block">
@@ -82,7 +87,12 @@
                             <label for="end" class="control-label">Berakhir Sampai</label>
 
                             <div class="controls">
-                              <input id="end" type="text" name="end" value="{{ $data['end'] or old('end') }}">
+                              @php
+                                $end = old('end');
+                                if(!empty($data))
+                                  $end = Carbon\Carbon::parse($data['end'])->format('d-m-Y');
+                              @endphp
+                              <input id="end" type="text" name="end" value="{{ $end }}">
 
                                 @if ($errors->has('end'))
                                     <span class="help-block">

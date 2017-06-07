@@ -96,7 +96,7 @@ $(function() {
                             });
 
                             $.ajax({
-                                url: '{{ url("api/datainduk_delete?api_token=") }}{{ Auth::user()->api_token }}',
+                                url: '{{ url("api/jadwal_delete?api_token=") }}{{ Auth::user()->api_token }}',
                                 type: 'post',
                                 dataType: "json",
                                 data: { data: arrData },

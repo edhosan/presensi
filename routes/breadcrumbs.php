@@ -90,10 +90,10 @@ Breadcrumbs::register('jadwal_form', function($breadcrumbs)
 });
 
 // Home > Daftar Jadwal Kerja > Hari Kerja
-Breadcrumbs::register('hari_form', function($breadcrumbs)
+Breadcrumbs::register('hari', function($breadcrumbs)
 {
     $breadcrumbs->parent('jadwal_list');
-    $breadcrumbs->push('Hari Kerja', route('hari_create'));
+    $breadcrumbs->push('Hari Kerja', route('hari.create', 1));
 });
 
 

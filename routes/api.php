@@ -36,5 +36,6 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::get('kalendar_list', 'Referensi\EventController@apiEvent');
 
   Route::get('jadwal_list', 'Referensi\JadwalController@apiJadwalList');
+  Route::post('jadwal_delete', 'Referensi\JadwalController@apiDeleteJadwal');
 
 });

@@ -10,7 +10,7 @@
         <div class="container">
           <div class="row">
               <div class="span12">
-                {!! Breadcrumbs::render('hari_form') !!}
+                {!! Breadcrumbs::render('hari') !!}
                 <div class="widget">
                   <div class="widget-header">
                     <i class="icon-file"></i>
@@ -21,16 +21,28 @@
                     <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('kalendar_update'):route('jadwal_create') }}" novalidate="novalidate">
                       {{ csrf_field() }}
                       <input type="hidden" name="id" value="{{ $data['id'] or 0 }}">
+                      <input type="hidden" name="id_jadwal" value="{{ $data['id'] or $jadwal->id or old('id_jadwal') }}">
                       <fieldset>
-                        <div class="control-group {{ $errors->has('name') ? 'error' : '' }}">
-                            <label for="name" class="control-label">Nama Jadwal</label>
+                        <div class="control-group {{ $errors->has('hari') ? 'error' : '' }}">
+                            <label for="hari" class="control-label">Hari</label>
 
                             <div class="controls">
-                                <input id="name" type="text" class="span4" name="name" value="{{ $data['name'] or old('name') }}" autofocus>
+                              
+                              {{ Form::select('hari', $hari, $selected_data, ['id' => 'hari', 'placeholder' => "Please Select"]) }}
+                                <select name="hari">
+                                  <option value="0" @if($data[])>Minggu</option>
+                                  <option value="1">Senin</option>
+                                  <option value="2">Selasa</option>
+                                  <option value="3">Rabu</option>
+                                  <option value="4">Kamis</option>
+                                  <option value="5">Jumat</option>
+                                  <option value="6">Saptu</option>
+                                </select>
+                                <input id="hari" type="text" class="span4" name="hari" value="{{ $data['hari'] or old('hari') }}" autofocus>
 
-                                @if ($errors->has('name'))
+                                @if ($errors->has('hari'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('name') }}</strong>
+                                        <strong>{{ $errors->first('hari') }}</strong>
                                     </span>
                                 @endif
                             </div>

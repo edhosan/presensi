@@ -61,8 +61,23 @@ class JadwalController extends Controller
         }
       })
       ->addColumn('action', function ($data) {
-         return '<a href="#edit-'.$data->id.'" class="btn btn-mini btn-info"><i class="icon-plus"></i> Hari Kerja</a>';
+         return '<a href="'.url('hari_create').'/'.$data->id.'" class="btn btn-mini btn-info"><i class="icon-plus"></i> Hari Kerja</a>';
       })
+      ->editColumn('start','{!! Carbon\Carbon::parse($start)->format("d-m-Y") !!}')
+      ->editColumn('end','{!! Carbon\Carbon::parse($end)->format("d-m-Y") !!}')
       ->make(true);
     }
+
+    public function apiDeleteJadwal(Request $request)
+    {
+      $data = $request->input('data');
+
+      foreach ($data as $id) {
+        $status = Jadwal::find($id)->forceDelete();
+      }
+
+      return response()->json($status);
+    }
+
+
 }
