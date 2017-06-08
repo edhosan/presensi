@@ -26,6 +26,7 @@
                           <tr>
                               <th></th>
                               <th></th>
+                              <th></th>
                               <th>OPD</th>
                               <th>Nama</th>
                               <th>Judul</th>
@@ -52,6 +53,46 @@
 <script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
 <script>
 $(function() {
+    function format ( d ) {
+        $.ajax({
+          type: 'post',
+          url: '{{ url("api/hari?api_token=") }}{{ Auth::user()->api_token }}',
+          dataType: 'json',
+          data:{
+            id: d.id
+          },
+          success: function(response){
+            console.log(response);
+          }
+        });
+        var head = '<thead>'+
+                    '<tr>'+
+                      '<th>Id</th>'+
+                      '<th>Tipe User</th>'+
+                      '<th>Keterangan</th>'+
+                      '<th>Created At</th>'+
+                      '<th>Updated At</th>'+
+                    '</tr>'+
+                  '</thead>';
+
+        var content = '';
+        //console.log(d);
+        $.each(d.roles, function(key, value) {
+          content += '<tr>'+
+                      '<td>'+value.name+'</td>'+
+                      '<td>'+value.display_name+'</td>'+
+                      '<td>'+value.description+'</td>'+
+                      '<td>'+value.created_at+'</td>'+
+                      '<td>'+value.updated_at+'</td>'+
+                     '</tr>';
+        });
+
+        return '<table class="table table-bordered">'+
+                head+
+                content+
+               '</table>';
+    }
+
     var table = $('#jadwal-table').DataTable({
         dom: 'Bfrtip',
         scrollX: true,
@@ -124,6 +165,7 @@ $(function() {
         ajax: '{{ url("api/jadwal_list?api_token=") }}{{ Auth::user()->api_token }}',
         columns: [
             { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
+            { className: 'details-control', orderable: false, data: null, defaultContent: '', searchable: false },
             { data: 'id', name: 'id', visible: false },
             { data: 'nama_unker', name: 'nama_unker',width:'250px' },
             { data: 'name', name: 'name' },
@@ -147,6 +189,22 @@ $(function() {
         table.button( 1 ).enable( selectedRows >= 1 );
         table.button( 2 ).enable( selectedRows >= 1 );
     } );
+
+    $('#jadwal-table').on('click', 'td.details-control', function () {
+       var tr = $(this).closest('tr');
+       var row = table.row( tr );
+
+       if ( row.child.isShown() ) {
+           // This row is already open - close it
+           row.child.hide();
+           tr.removeClass('shown');
+       }
+       else {
+           // Open this row
+           row.child( format(row.data()) ).show();
+           tr.addClass('shown');
+       }
+   } );
 });
 </script>
 @endpush

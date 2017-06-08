@@ -1,8 +1,6 @@
 @extends('layouts.app')
 @push('css')
-<link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.min.css') }}" rel="stylesheet">
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.themes.min.css') }}" rel="stylesheet">
+<link href="{{ asset('bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
 <div class="main">
@@ -18,27 +16,17 @@
                   </div>
 
                   <div class="widget-content">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('kalendar_update'):route('jadwal_create') }}" novalidate="novalidate">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('kalendar_update'):route('hari.store') }}" novalidate="novalidate">
                       {{ csrf_field() }}
                       <input type="hidden" name="id" value="{{ $data['id'] or 0 }}">
-                      <input type="hidden" name="id_jadwal" value="{{ $data['id'] or $jadwal->id or old('id_jadwal') }}">
+                      <input type="hidden" name="id_jadwal" value="{{ $data['jadwal_id'] or $jadwal->id }}">
                       <fieldset>
                         <div class="control-group {{ $errors->has('hari') ? 'error' : '' }}">
                             <label for="hari" class="control-label">Hari</label>
 
                             <div class="controls">
-                              
+                              @php $selected_data = isset($data)?$data->hari : old('hari') @endphp
                               {{ Form::select('hari', $hari, $selected_data, ['id' => 'hari', 'placeholder' => "Please Select"]) }}
-                                <select name="hari">
-                                  <option value="0" @if($data[])>Minggu</option>
-                                  <option value="1">Senin</option>
-                                  <option value="2">Selasa</option>
-                                  <option value="3">Rabu</option>
-                                  <option value="4">Kamis</option>
-                                  <option value="5">Jumat</option>
-                                  <option value="6">Saptu</option>
-                                </select>
-                                <input id="hari" type="text" class="span4" name="hari" value="{{ $data['hari'] or old('hari') }}" autofocus>
 
                                 @if ($errors->has('hari'))
                                     <span class="help-block">
@@ -48,57 +36,68 @@
                             </div>
                         </div>
 
-                        <div class="control-group {{ $errors->has('title') ? 'error' : '' }}">
-                            <label for="title" class="control-label">Judul</label>
+                        <div class="control-group {{ $errors->has('jam_masuk') ? 'error' : '' }}">
+                            <label for="jam_masuk" class="control-label">Jam Masuk</label>
 
                             <div class="controls">
-                                <input id="title" type="text" class="span4" name="title" value="{{ $data['title'] or old('title') }}">
+                                <div class="input-append bootstrap-timepicker timepicker">
+                                    <input id="jam_masuk" name="jam_masuk" type="text" class="span2 m-wrap">
+                                    <button type="button" class="btn"><i class="icon-time "></i></button>
+                                </div>
 
-                                @if ($errors->has('title'))
+                                @if ($errors->has('jam_masuk'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('title') }}</strong>
+                                        <strong>{{ $errors->first('jam_masuk') }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
 
-                        <div class="control-group {{ $errors->has('id_unker') ? 'error' : '' }}">
-                            <label for="opd" class="control-label">Organisasi Perangkat Daerah</label>
+                        <div class="control-group {{ $errors->has('jam_pulang') ? 'error' : '' }}">
+                            <label for="jam_pulang" class="control-label">Jam Pulang</label>
 
                             <div class="controls">
-                                <input id="nama_unker" type="text" class="span4 autocomplete" name="nama_unker" value="{{$data->nama_unker or old('nama_unker') }}">
-                                <input type="hidden" name="id_unker" value="{{$data->id_unker or old('id_unker') }}" id="id_unker">
-                                @if ($errors->has('id_unker'))
+                              <div class="input-append bootstrap-timepicker timepicker">
+                                  <input id="jam_pulang" name="jam_pulang" type="text" class="span2 m-wrap">
+                                  <button type="button" class="btn"><i class="icon-time "></i></button>
+                              </div>
+                                @if ($errors->has('jam_pulang'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('id_unker') }}</strong>
+                                        <strong>{{ $errors->first('jam_pulang') }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
 
-                        <div class="control-group {{ $errors->has('start') ? 'error' : '' }}">
-                            <label for="start" class="control-label">Berlaku Mulai</label>
+                        <div class="control-group {{ $errors->has('toleransi_terlambat') ? 'error' : '' }}">
+                            <label for="toleransi_terlambat" class="control-label">Toleransi Keterlambatan</label>
 
                             <div class="controls">
-                              <input id="start" type="text" name="start" value="{{ $data['start'] or old('start') }}">
+                              <div class="input-append bootstrap-timepicker timepicker">
+                                  <input id="toleransi_terlambat" name="toleransi_terlambat" type="text" class="span2 m-wrap">
+                                  <button type="button" class="btn"><i class="icon-time "></i></button>
+                              </div>
 
-                                @if ($errors->has('start'))
+                                @if ($errors->has('toleransi_terlambat'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('start') }}</strong>
+                                        <strong>{{ $errors->first('toleransi_terlambat') }}</strong>
                                     </span>
                                 @endif
                             </div>
                         </div>
 
-                        <div class="control-group {{ $errors->has('end') ? 'error' : '' }}">
-                            <label for="end" class="control-label">Berakhir Sampai</label>
+                        <div class="control-group {{ $errors->has('toleransi_pulang') ? 'error' : '' }}">
+                            <label for="end" class="control-label">Toleransi Pulang Awal</label>
 
                             <div class="controls">
-                              <input id="end" type="text" name="end" value="{{ $data['end'] or old('end') }}">
+                              <div class="input-append bootstrap-timepicker timepicker">
+                                  <input id="toleransi_pulang" name="toleransi_pulang" type="text" class="span2 m-wrap">
+                                  <button type="button" class="btn"><i class="icon-time "></i></button>
+                              </div>
 
-                                @if ($errors->has('end'))
+                                @if ($errors->has('toleransi_pulang'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('end') }}</strong>
+                                        <strong>{{ $errors->first('toleransi_pulang') }}</strong>
                                     </span>
                                 @endif
                             </div>
@@ -119,55 +118,11 @@
 </div>
 @endsection
 @push('script')
-<script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
-<script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
-<script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
-<script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
+<script src="{{ asset('bootstrap-timepicker/js/bootstrap-timepicker.js') }}"></script>
 <script type="text/javascript">
-$('#start').datepicker({ format: 'dd-mm-yyyy', language: 'id' });
-$('#end').datepicker({ format: 'dd-mm-yyyy', language: 'id' });
-
-var optUnker = {
-    url: function(phrase) {
-      return "{{ url('api/unker?api_token=') }}{{ Auth::user()->api_token }}";
-    },
-
-    getValue: function(element) {
-      return element.nama_unker;
-    },
-
-    ajaxSettings: {
-      dataType: "json",
-      method: "POST",
-      data: {
-        dataType: "json"
-      }
-    },
-
-    template: {
-      type: "description",
-      fields: {
-        description: "id_unker"
-      }
-    },
-
-    list: {
-      match: {
-        enabled: true
-      },
-      onSelectItemEvent: function() {
-        var value = $("#nama_unker").getSelectedItemData().id_unker;
-        $("#id_unker").val(value).trigger("change");
-      }
-    },
-
-    preparePostData: function(data) {
-      data.phrase = $("#nama_unker").val();
-      data.unker = "{{ Auth::user()->unker }}";
-      return data;
-    }
-  };
-
-  $("#nama_unker").easyAutocomplete(optUnker);
+$('#jam_masuk').timepicker({ showMeridian: false });
+$('#jam_pulang').timepicker({ showMeridian: false });
+$('#toleransi_terlambat').timepicker({ showMeridian: false });
+$('#toleransi_pulang').timepicker({ showMeridian: false });
 </script>
 @endpush

@@ -38,4 +38,6 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::get('jadwal_list', 'Referensi\JadwalController@apiJadwalList');
   Route::post('jadwal_delete', 'Referensi\JadwalController@apiDeleteJadwal');
 
+  Route::post('hari', 'Referensi\HariController@apiGetHari');
+
 });
