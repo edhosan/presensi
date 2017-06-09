@@ -48,6 +48,24 @@ class JadwalController extends Controller
         return redirect('jadwal_list')->with('success','Data berhasil disimpan!');
     }
 
+    public function update(Request $request)
+    {
+      $this->validate($request, $this->rules);
+
+      $jadwal = Jadwal::find($request->id);
+
+      $jadwal->update([
+        'name' => $request->name,
+        'title' => $request->title,
+        'start' => date('Y-m-d', strtotime($request->start) ),
+        'end' => date('Y-m-d', strtotime($request->end) ),
+        'id_unker' => $request->id_unker,
+        'nama_unker' => $request->nama_unker
+      ]);
+
+      return redirect('jadwal_list')->with('success','Data berhasil diupdate!');
+    }
+
     public function apiJadwalList()
     {
       $unker = Auth::user()->unker;

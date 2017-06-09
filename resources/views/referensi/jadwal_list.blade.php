@@ -54,6 +54,22 @@
 <script>
 $(function() {
     function format ( d ) {
+      var head = '<thead>'+
+                  '<tr>'+
+                    '<th>Id</th>'+
+                    '<th>Hari</th>'+
+                    '<th>Jam Masuk</th>'+
+                    '<th>Jam Pulang</th>'+
+                    '<th>Toleransi Terlambat</th>'+
+                    '<th>Toleransi Pulang</th>'+
+                    '<th>Action</th>'+
+                  '</tr>'+
+                '</thead>';
+
+        var content = '';
+        var urlEdit = '{{ route("hari.edit") }}';
+        var urlDelete = '{{ route("hari.delete") }}';
+
         $.ajax({
           type: 'post',
           url: '{{ url("api/hari?api_token=") }}{{ Auth::user()->api_token }}',
@@ -61,30 +77,23 @@ $(function() {
           data:{
             id: d.id
           },
+          async: false,
           success: function(response){
-            console.log(response);
+            $.each(response, function(key, value) {
+              content += '<tr>'+
+                          '<td>'+value.id+'</td>'+
+                          '<td>'+value.hari+'</td>'+
+                          '<td>'+value.jam_masuk+'</td>'+
+                          '<td>'+value.jam_pulang+'</td>'+
+                          '<td>'+value.toleransi_terlambat+'</td>'+
+                          '<td>'+value.toleransi_pulang+'</td>'+
+                          '<td>'+
+                            '<a href='+urlEdit+'?id='+value.id+' class="btn btn-mini btn-success"><i class="icon-edit"> Edit</i></a> '+
+                            '<a href='+urlDelete+'?id='+value.id+' class="btn btn-mini btn-danger"><i class="icon-remove"> Hapus</i></a> '+
+                          '</td>'+
+                         '</tr>';
+            });
           }
-        });
-        var head = '<thead>'+
-                    '<tr>'+
-                      '<th>Id</th>'+
-                      '<th>Tipe User</th>'+
-                      '<th>Keterangan</th>'+
-                      '<th>Created At</th>'+
-                      '<th>Updated At</th>'+
-                    '</tr>'+
-                  '</thead>';
-
-        var content = '';
-        //console.log(d);
-        $.each(d.roles, function(key, value) {
-          content += '<tr>'+
-                      '<td>'+value.name+'</td>'+
-                      '<td>'+value.display_name+'</td>'+
-                      '<td>'+value.description+'</td>'+
-                      '<td>'+value.created_at+'</td>'+
-                      '<td>'+value.updated_at+'</td>'+
-                     '</tr>';
         });
 
         return '<table class="table table-bordered">'+

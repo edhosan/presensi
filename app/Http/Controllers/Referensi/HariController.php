@@ -9,12 +9,6 @@ use App\Model\Hari;
 
 class HariController extends Controller
 {
-    private $rules = [
-      'hari'  => 'required',
-      'jam_masuk'  => 'required|date_format:G:i',
-      'jam_pulang'  => 'required|date_format:G:i'
-    ];
-
     public function create($id_jadwal)
     {
       $jadwal = Jadwal::find($id_jadwal);
@@ -28,7 +22,11 @@ class HariController extends Controller
 
     public function store(Request $request)
     {
-      $this->validate($request, $this->rules);
+      $validate = $this->validate($request, [
+        'hari'  => 'required|unique:hari_kerja,hari,'.$request->hari,
+        'jam_masuk'  => 'required|date_format:G:i',
+        'jam_pulang'  => 'required|date_format:G:i'
+      ]);
 
       $jadwal = Jadwal::find($request->id_jadwal);
 
@@ -65,5 +63,45 @@ class HariController extends Controller
       }
 
       return response()->json($data);
+    }
+
+    public function edit(Request $request)
+    {
+      $hari = Hari::find($request->id);
+
+      return view('referensi.hari_form')
+        ->withJadwal($hari->jadwal)
+        ->withHari($hari->getHari())
+        ->withData($hari);
+
+    }
+
+    public function update(Request $request)
+    {
+      $hari = Hari::find($request->id);
+
+      $validate = $this->validate($request, [
+        'hari'  => 'required|unique:hari_kerja,hari,'.$request->hari,
+        'jam_masuk'  => 'required|date_format:G:i',
+        'jam_pulang'  => 'required|date_format:G:i'
+      ]);
+
+      $hari->update([
+        'hari'  => $request->hari,
+        'jam_masuk' => $request->jam_masuk,
+        'jam_pulang'  => $request->jam_pulang,
+        'toleransi_terlambat' => $request->toleransi_terlambat,
+        'toleransi_pulang'  => $request->toleransi_pulang
+      ]);
+
+      return redirect('jadwal_list')->with('success','Data berhasil diupdate!');
+    }
+
+    public function delete(Request $request)
+    {
+      $hari = Hari::find($request->id);
+      $hari->delete();
+
+      return redirect('jadwal_list')->with('success','Data berhasil dihapus!');
     }
 }

@@ -16,7 +16,7 @@
                   </div>
 
                   <div class="widget-content">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('kalendar_update'):route('hari.store') }}" novalidate="novalidate">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('hari.update'):route('hari.store') }}" novalidate="novalidate">
                       {{ csrf_field() }}
                       <input type="hidden" name="id" value="{{ $data['id'] or 0 }}">
                       <input type="hidden" name="id_jadwal" value="{{ $data['jadwal_id'] or $jadwal->id }}">
@@ -41,7 +41,7 @@
 
                             <div class="controls">
                                 <div class="input-append bootstrap-timepicker timepicker">
-                                    <input id="jam_masuk" name="jam_masuk" type="text" class="span2 m-wrap">
+                                    <input id="jam_masuk" name="jam_masuk" type="text" class="span2 m-wrap" value="{{ $data->jam_masuk or old('jam_masuk') }}">
                                     <button type="button" class="btn"><i class="icon-time "></i></button>
                                 </div>
 
@@ -58,7 +58,7 @@
 
                             <div class="controls">
                               <div class="input-append bootstrap-timepicker timepicker">
-                                  <input id="jam_pulang" name="jam_pulang" type="text" class="span2 m-wrap">
+                                  <input id="jam_pulang" name="jam_pulang" type="text" class="span2 m-wrap" value="{{ $data->jam_pulang or old('jam_pulang') }}">
                                   <button type="button" class="btn"><i class="icon-time "></i></button>
                               </div>
                                 @if ($errors->has('jam_pulang'))
@@ -74,7 +74,7 @@
 
                             <div class="controls">
                               <div class="input-append bootstrap-timepicker timepicker">
-                                  <input id="toleransi_terlambat" name="toleransi_terlambat" type="text" class="span2 m-wrap">
+                                  <input id="toleransi_terlambat" name="toleransi_terlambat" type="text" class="span2 m-wrap" value="{{ $data->toleransi_terlambat or old('toleransi_terlambat') }}">
                                   <button type="button" class="btn"><i class="icon-time "></i></button>
                               </div>
 
@@ -91,7 +91,7 @@
 
                             <div class="controls">
                               <div class="input-append bootstrap-timepicker timepicker">
-                                  <input id="toleransi_pulang" name="toleransi_pulang" type="text" class="span2 m-wrap">
+                                  <input id="toleransi_pulang" name="toleransi_pulang" type="text" class="span2 m-wrap" value="{{ $data->toleransi_pulang or old('toleransi_pulang') }}">
                                   <button type="button" class="btn"><i class="icon-time "></i></button>
                               </div>
 

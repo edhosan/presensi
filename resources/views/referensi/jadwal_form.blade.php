@@ -18,7 +18,7 @@
                   </div>
 
                   <div class="widget-content">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('kalendar_update'):route('jadwal_create') }}" novalidate="novalidate">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('jadwal.update'):route('jadwal_create') }}" novalidate="novalidate">
                       {{ csrf_field() }}
                       <input type="hidden" name="id" value="{{ $data['id'] or 0 }}">
                       <fieldset>
