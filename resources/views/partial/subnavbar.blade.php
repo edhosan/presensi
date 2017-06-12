@@ -10,8 +10,6 @@
             <li><a href="{{ route('user') }}">Manajemen User</a></li>
             @role(['super-admin'])
               <li><a href="{{ route('role_list') }}">Tipe User</a></li>
-            @endrole
-            @role(['super-admin'])
               <li><a href="{{ route('permission_list') }}">Hak Akses</a></li>
             @endrole
             <li><a href="{{ route('kalendar_list') }}">Kalendar Kerja</a></li>
@@ -23,6 +21,7 @@
           <ul class="dropdown-menu">
             @role(['super-admin','admin'])
               <li><a href="{{ route('datainduk_list') }}">Data Induk Pegawai</a></li>
+              <li><a href="{{ route('peg_jadwal.list') }}">Jadwal Kerja Pegawai</a></li>
             @endrole
           </ul>
         </li>

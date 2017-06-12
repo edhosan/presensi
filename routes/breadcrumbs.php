@@ -96,5 +96,19 @@ Breadcrumbs::register('hari', function($breadcrumbs)
     $breadcrumbs->push('Hari Kerja', route('hari.create', 1));
 });
 
+// Home > Daftar Jadwal Pegawai
+Breadcrumbs::register('peg_jadwal.list', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Daftar Jadwal Pegawai', route('peg_jadwal.list'));
+});
+
+// Home > Daftar Jadwal Pegawai / Form jadwal Pegwai
+Breadcrumbs::register('peg_jadwal.form', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Form Jadwal Pegawai', route('peg_jadwal.create'));
+});
+
 
 ?>

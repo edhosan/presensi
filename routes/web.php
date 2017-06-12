@@ -64,4 +64,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('hari_edit', 'Referensi\HariController@edit')->name('hari.edit');
   Route::post('hari_update', 'Referensi\HariController@update')->name('hari.update');
   Route::get('hari_delete', 'Referensi\HariController@delete')->name('hari.delete');
+
+  Route::get('peg_jadwal_list', 'Proses\PegawaiJadwalController@index')->name('peg_jadwal.list');
+  Route::get('peg_jadwal_create', 'Proses\PegawaiJadwalController@create')->name('peg_jadwal.create');
 });
