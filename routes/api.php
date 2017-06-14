@@ -40,4 +40,6 @@ Route::group(['middleware' => 'auth:api'], function() {
 
   Route::post('hari', 'Referensi\HariController@apiGetHari');
 
+  Route::post('getNamePeg', 'Proses\PegawaiJadwalController@apiNameDataInduk');
+
 });
