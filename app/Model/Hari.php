@@ -11,7 +11,7 @@ class Hari extends Model
   protected $fillable = ['jadwal_id','hari','jam_masuk','jam_pulang','toleransi_terlambat','toleransi_pulang'];
 
   protected $hari = [
-    '0' =>  'Minggu',
+    '7' =>  'Minggu',
     '1' =>  'Senin',
     '2' =>  'Selasa',
     '3' =>  'Rabu',

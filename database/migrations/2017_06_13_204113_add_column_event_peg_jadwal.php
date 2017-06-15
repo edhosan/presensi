@@ -15,8 +15,8 @@ class AddColumnEventPegJadwal extends Migration
     {
         Schema::table('peg_jadwal', function (Blueprint $table) {
              $table->integer('event_id')->unsigned();
-             
-             $table->foreign('peg_id')->references('id')->on('peg_data_induk')
+
+             $table->foreign('event_id')->references('id')->on('event')
                  ->onUpdate('cascade')->onDelete('cascade');
         });
     }
@@ -29,7 +29,7 @@ class AddColumnEventPegJadwal extends Migration
     public function down()
     {
         Schema::table('peg_jadwal', function (Blueprint $table) {
-            //
+            $table->dropColumn(['event_id']);
         });
     }
 }

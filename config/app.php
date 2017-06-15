@@ -182,6 +182,7 @@ return [
         Yajra\Datatables\DatatablesServiceProvider::class,
         Zizaco\Entrust\EntrustServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        browner12\helpers\HelperServiceProvider::class,
 
     ],
 

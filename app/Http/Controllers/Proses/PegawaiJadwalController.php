@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Model\Jadwal;
 use Auth;
 use App\Model\DataInduk;
+use Carbon\Carbon;
+use App\Model\PegawaiJadwal;
 
 class PegawaiJadwalController extends Controller
 {
@@ -38,6 +40,25 @@ class PegawaiJadwalController extends Controller
     public function saveCreate(Request $request)
     {
       $this->validate($request, $this->rules);
+
+      $jadwal = Jadwal::find($request->jadwal);
+
+      $date = dateRange($jadwal->start, $jadwal->end);
+
+      $data = [];
+      foreach ($date as  $value) {
+        $tanggal = Carbon::parse($value);
+        $peg_jadwal = new PegawaiJadwal();
+        $peg_jadwal->tanggal = $value;
+        $peg_jadwal->peg_id = $request->peg_id;
+        $peg_jadwal->jadwal_id = $request->jadwal;
+        $peg_jadwal->hari_id = $tanggal->format('N');
+        $data[] = $peg_jadwal;
+      }
+
+      dd($data);
+
+
     }
 
     public function apiNameDataInduk(Request $request)

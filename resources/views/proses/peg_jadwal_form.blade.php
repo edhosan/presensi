@@ -27,7 +27,7 @@
 
                         <div class="controls">
                             <input id="nama" type="text" class="span5 autocomplete" name="nama" value="{{ $data->nama or old('nama') }}" autofocus>
-                            <input type="hidden" name="id_peg" value="{{ $data->id_peg or old('id_peg') }}">
+                            <input type="hidden" name="id_peg" id="id_peg" value="{{ $data->id_peg or old('id_peg') }}">
 
                             @if ($errors->has('nama'))
                                 <span class="help-block">
@@ -105,7 +105,7 @@ $(function() {
       list: {
         onSelectItemEvent: function() {
           var value = $("#nama").getSelectedItemData();
-          $("#id_peg").val(value.id).trigger("change");
+          $("#id_peg").val(value.id).trigger("change");        
         }
       },
 
