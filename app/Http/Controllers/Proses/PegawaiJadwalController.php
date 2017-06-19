@@ -9,6 +9,9 @@ use Auth;
 use App\Model\DataInduk;
 use Carbon\Carbon;
 use App\Model\PegawaiJadwal;
+use App\Model\Event;
+use Debugbar;
+use DB;
 
 class PegawaiJadwalController extends Controller
 {
@@ -45,19 +48,21 @@ class PegawaiJadwalController extends Controller
 
       $date = dateRange($jadwal->start, $jadwal->end);
 
+      DB::table('peg_jadwal')->where('peg_id', $request->id_peg)->delete();
       $data = [];
       foreach ($date as  $value) {
         $tanggal = Carbon::parse($value);
         $peg_jadwal = new PegawaiJadwal();
         $peg_jadwal->tanggal = $value;
-        $peg_jadwal->peg_id = $request->peg_id;
+        $peg_jadwal->peg_id = $request->id_peg;
         $peg_jadwal->jadwal_id = $request->jadwal;
-        $peg_jadwal->hari_id = $tanggal->format('N');
-        $data[] = $peg_jadwal;
+        //$peg_jadwal->hari_id = $tanggal->format('N');
+        $event = Event::where('start_date', '=',$value)->orWhere('end_date','=',$value)->first();
+        if(!empty($event)){
+          $peg_jadwal->event_id = $event->id;
+        }
+        $peg_jadwal->save();
       }
-
-      dd($data);
-
 
     }
 

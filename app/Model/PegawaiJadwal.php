@@ -11,7 +11,7 @@ class PegawaiJadwal extends Model
 
   protected $table = 'peg_jadwal';
 
-  protected $fillable = ['tanggal','peg_id','jadwal_id','hari_id','event_id'];
+  protected $fillable = ['tanggal','peg_id','jadwal_id','event_id'];
 
   protected $dates = ['deleted_at'];
 
@@ -23,11 +23,6 @@ class PegawaiJadwal extends Model
   public function pegawai()
   {
     return $this->belongsTo('App\Model\DataInduk');
-  }
-
-  public function hari()
-  {
-    return $this->belongsTo('App\Model\Hari');
   }
 
 }

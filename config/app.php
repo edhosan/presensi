@@ -183,6 +183,7 @@ return [
         Zizaco\Entrust\EntrustServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         browner12\helpers\HelperServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
     ],
 
@@ -238,6 +239,7 @@ return [
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],
 
