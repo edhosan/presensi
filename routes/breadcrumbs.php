@@ -106,8 +106,15 @@ Breadcrumbs::register('peg_jadwal.list', function($breadcrumbs)
 // Home > Daftar Jadwal Pegawai / Form jadwal Pegwai
 Breadcrumbs::register('peg_jadwal.form', function($breadcrumbs)
 {
-    $breadcrumbs->parent('home');
+    $breadcrumbs->parent('peg_jadwal.list');
     $breadcrumbs->push('Form Jadwal Pegawai', route('peg_jadwal.create'));
+});
+
+// Home > Daftar Jadwal Pegawai / Detail Jadwal Pegawai
+Breadcrumbs::register('peg_jadwal.detail', function($breadcrumbs)
+{
+    $breadcrumbs->parent('peg_jadwal.list');
+    $breadcrumbs->push('Rincian Jadwal Pegawai', route('peg_jadwal.create'));
 });
 
 

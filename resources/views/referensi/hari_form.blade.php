@@ -26,7 +26,11 @@
 
                             <div class="controls">
                               @php $selected_data = isset($data)?$data->hari : old('hari') @endphp
-                              {{ Form::select('hari', $hari, $selected_data, ['id' => 'hari', 'placeholder' => "Please Select"]) }}
+                              @if(isset($data))
+                                {{ Form::select('hari', $hari, $selected_data, ['id' => 'hari', 'placeholder' => "Please Select", 'disabled' => 'true']) }}
+                              @else
+                                {{ Form::select('hari', $hari, $selected_data, ['id' => 'hari', 'placeholder' => "Please Select"]) }}
+                              @endif
 
                                 @if ($errors->has('hari'))
                                     <span class="help-block">

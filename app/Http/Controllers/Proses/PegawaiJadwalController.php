@@ -10,6 +10,7 @@ use App\Model\DataInduk;
 use Carbon\Carbon;
 use App\Model\PegawaiJadwal;
 use App\Model\Event;
+use App\Model\Hari;
 use Debugbar;
 use DB;
 
@@ -48,10 +49,14 @@ class PegawaiJadwalController extends Controller
 
       $date = dateRange($jadwal->start, $jadwal->end);
 
-      DB::table('peg_jadwal')->where('peg_id', $request->id_peg)->delete();
       $data = [];
       foreach ($date as  $value) {
         $tanggal = Carbon::parse($value);
+
+        PegawaiJadwal::where('peg_id', $request->id_peg)
+          ->where('tanggal', $value)
+          ->forceDelete();
+
         $peg_jadwal = new PegawaiJadwal();
         $peg_jadwal->tanggal = $value;
         $peg_jadwal->peg_id = $request->id_peg;
@@ -64,6 +69,37 @@ class PegawaiJadwalController extends Controller
         $peg_jadwal->save();
       }
 
+      //return view('proses.peg_jadwal_detail')->withId($request->id_peg);
+    }
+
+    public function apiGetJadwalPegawai(Request $request)
+    {
+      $peg_jadwal = PegawaiJadwal::where('peg_id', $request->peg_id)
+                    ->with('jadwal')
+                    ->get();
+      dd($peg_jadwal[0]->jadwal->first());
+      $arr = collect();
+      foreach ($peg_jadwal as  $value) {
+        $tanggal = Carbon::parse($value->tanggal);
+        $hari_id = $tanggal->format('N');
+        $hari = Hari::where('jadwal_id', $value->jadwal_id)->where('hari', $hari_id)->first();
+
+/*        $arr->push([
+          'id' => $value->id,
+          'title' => $value->jadwal->first()->title,
+          'start' => $value->tanggal,
+          'end' => $value->tanggal
+        ]);*/
+      }
+
+      //return response()->json($arr);
+    }
+
+    public function apiGetJadwalPegawai(Request $request)
+    {
+      $unker = Auth::user()->unker;
+
+      $data = PegawaiJadwal::
     }
 
     public function apiNameDataInduk(Request $request)

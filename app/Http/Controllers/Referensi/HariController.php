@@ -81,13 +81,11 @@ class HariController extends Controller
       $hari = Hari::find($request->id);
 
       $validate = $this->validate($request, [
-        'hari'  => 'required|unique:hari_kerja,hari,'.$request->hari,
         'jam_masuk'  => 'required|date_format:G:i',
         'jam_pulang'  => 'required|date_format:G:i'
       ]);
 
       $hari->update([
-        'hari'  => $request->hari,
         'jam_masuk' => $request->jam_masuk,
         'jam_pulang'  => $request->jam_pulang,
         'toleransi_terlambat' => $request->toleransi_terlambat,

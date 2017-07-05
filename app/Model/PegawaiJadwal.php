@@ -22,7 +22,14 @@ class PegawaiJadwal extends Model
 
   public function pegawai()
   {
-    return $this->belongsTo('App\Model\DataInduk');
+    return $this->belongsTo('App\Model\DataInduk','peg_id','id');
   }
+
+  public function event()
+  {
+    return $this->belongsTo('App\Model\Event');
+  }
+
+
 
 }
