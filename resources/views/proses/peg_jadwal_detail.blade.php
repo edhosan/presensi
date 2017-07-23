@@ -43,17 +43,39 @@ $(document).ready(function() {
        },
        selectable: true,
        selectHelper: true,
-       editable: true,
-       events: {
-         url: '{{ url("api/peg_jadwal_detail?api_token=") }}{{ Auth::user()->api_token }}',
-         type: 'POST',
-         data: {
-           peg_id: '{{ $id }}'
+       editable: false,
+       navLinks: false,
+       eventLimit: true,
+       eventSources: [
+         {
+           url: '{{ url("api/peg_jadwal_detail?api_token=") }}{{ Auth::user()->api_token }}',
+           type: 'POST',
+           data: {
+             peg_id: '{{ $id }}'
+           },
+           error: function() {
+                alert('there was an error while fetching events!');
+           },
          },
-         error: function() {
-              alert('there was an error while fetching events!');
-          },
-       }
+         {
+           url: '{{ url("api/kalendar_list?api_token=") }}{{ Auth::user()->api_token }}',
+           error: function() {
+                alert('there was an error while fetching events!');
+           },
+           color: 'red',
+         },
+         {
+           url: '{{ url("api/peg_hari_kerja?api_token=") }}{{ Auth::user()->api_token }}',
+           type: 'POST',
+           data: {
+             peg_id: '{{ $id }}'
+           },
+           error: function() {
+                alert('there was an error while fetching events!');
+           },
+           color: 'green',
+         }
+       ]
      });
 });
 </script>

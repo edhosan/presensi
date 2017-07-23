@@ -18,16 +18,16 @@
               </div>
 
               <div class="widget-content">
-                <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('datainduk_update'):route('peg_jadwal.save') }}" novalidate="novalidate">
+                <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('peg_jadwal.save'):route('peg_jadwal.save') }}" novalidate="novalidate">
                   {{ csrf_field() }}
-                  <input type="hidden" name="id" value="{{ $data->id or 0 }}">
+                  <input type="hidden" name="id" value="{{ $data['pegawai']->id or 0 }}">
                   <fieldset>
                     <div class="control-group {{ $errors->has('nama') ? 'error' : '' }}">
                         <label for="nama" class="control-label">Nama</label>
 
                         <div class="controls">
-                            <input id="nama" type="text" class="span5 autocomplete" name="nama" value="{{ $data->nama or old('nama') }}" autofocus>
-                            <input type="hidden" name="id_peg" id="id_peg" value="{{ $data->id_peg or old('id_peg') }}">
+                            <input id="nama" type="text" class="span5 autocomplete" name="nama" value="{{ $data['pegawai']->nama or old('nama') }}" autofocus>
+                            <input type="hidden" name="id_peg" id="id_peg" value="{{ $data['pegawai']->id or old('id_peg') }}">
 
                             @if ($errors->has('nama'))
                                 <span class="help-block">
@@ -41,7 +41,7 @@
                         <label for="type" class="control-label">Jadwal</label>
 
                         <div class="controls">
-                            <?php $selected_data = isset($data)?$data->jadwal:old('jadwal') ?>
+                            <?php $selected_data = isset($data)?$data['peg_jadwal']->id:old('jadwal') ?>
                             {{ Form::select('jadwal', $jadwal, $selected_data, ['id' => 'jadwal', 'placeholder' => "Please Select"]) }}
 
                             @if ($errors->has('jadwal'))
@@ -54,7 +54,7 @@
 
                     <div class="form-actions">
                       <button type="submit" class="btn btn-primary">Simpan</button>
-                      <a href="{{ route('datainduk_list') }} " class="btn">Batal</a>
+                      <a href="{{ route('peg_jadwal.list') }} " class="btn">Batal</a>
                     </div>
                   </fieldset>
 
@@ -105,7 +105,7 @@ $(function() {
       list: {
         onSelectItemEvent: function() {
           var value = $("#nama").getSelectedItemData();
-          $("#id_peg").val(value.id).trigger("change");        
+          $("#id_peg").val(value.id).trigger("change");
         }
       },
 

@@ -700,7 +700,7 @@ html .fc, .fc table {
 .fc-header-right {
 	text-align: right;
 	position: absolute;
-	top: -82px;
+	/* top: -82px; */
 	right: 10px
 }
 .fc-header-title {

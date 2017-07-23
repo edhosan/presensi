@@ -68,5 +68,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('peg_jadwal_list', 'Proses\PegawaiJadwalController@index')->name('peg_jadwal.list');
   Route::get('peg_jadwal_create', 'Proses\PegawaiJadwalController@create')->name('peg_jadwal.create');
   Route::post('peg_jadwal_save', 'Proses\PegawaiJadwalController@saveCreate')->name('peg_jadwal.save');
-//  Route::get('peg_jadwal_detail', 'Proses\PegawaiJadwalController@saveCreate')->name('peg_jadwal.save');
+  Route::get('peg_jadwal_detail/{id_peg}', 'Proses\PegawaiJadwalController@detail')->name('peg_jadwal.detail');
+  Route::get('peg_jadwal_edit/{id_peg}/{id_jadwal}', 'Proses\PegawaiJadwalController@edit')->name('peg_jadwal.edit');
+  Route::get('peg_jadwal_delete_jadwal/{id_jadwal}', 'Proses\PegawaiJadwalController@deleteJadwal')->name('peg_jadwal.delete.jadwal');
 });

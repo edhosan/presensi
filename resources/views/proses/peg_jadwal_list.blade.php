@@ -26,13 +26,13 @@
                           <tr>
                               <th></th>
                               <th></th>
+                              <th></th>
                               <th>Nip</th>
-                              <th>Id Finger</th>
                               <th>OPD</th>
                               <th>Nama</th>
                               <th>Pangkat / Gol</th>
                               <th>Jabatan</th>
-                              <th>Terminal</th>
+                              <th>Detail</th>
                           </tr>
                       </thead>
                   </table>
@@ -69,15 +69,6 @@ $(function() {
                 }
             },
             {
-                text: '<i class="icon-edit"> Edit</i>',
-                action: function ( e, dt, node, config ) {
-                    var data = dt.row( { selected: true } ).data();
-                    var newUrl = "{{ url('datainduk_edit') }}";
-                    window.location.href = newUrl+"/"+data.id;
-                },
-                enabled: false
-            },
-            {
                 text: '<i class="icon-remove"> Hapus</i>',
                 action: function ( e, dt, node, config ) {
                   toastr.info("Apakah anda yakin ingin menghapus data ini?<br/><button type='button' id='confirmYes' class='btn btn-danger'>Ya</button> <button type='button' id='confirmNo' class='btn'>Tidak</button>",'Konfirmasi?',
@@ -97,7 +88,7 @@ $(function() {
                             });
 
                             $.ajax({
-                                url: '{{ url("api/datainduk_delete?api_token=") }}{{ Auth::user()->api_token }}',
+                                url: '{{ url("api/peg_jadwal_delete_all?api_token=") }}{{ Auth::user()->api_token }}',
                                 type: 'post',
                                 dataType: "json",
                                 data: { data: arrData },
@@ -122,17 +113,17 @@ $(function() {
         ],
         processing: true,
         serverSide: true,
-        ajax: '{{ url("api/datainduk_list?api_token=") }}{{ Auth::user()->api_token }}',
+        ajax: '{{ url("api/peg_jadwal_list?api_token=") }}{{ Auth::user()->api_token }}',
         columns: [
             { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
+            { className: 'details-control', orderable: false, data: null, defaultContent: '', searchable: false },
             { data: 'id', name: 'id', visible: false },
             { data: 'nip', name: 'nip' },
-            { data: 'id_finger', name: 'id_finger' },
             { data: 'nama_unker', name: 'nama_unker', width:'250px' },
             { data: 'nama', name: 'nama', width: '150px' },
             { data: 'pangkat', name: 'pangkat', width: '140px' },
             { data: 'nama_jabatan', name: 'nama_jabatan', width: '300px' },
-            { data: 'terminal', name: 'terminal', orderable: false }
+            { data: 'action', name: 'action', orderable: false, searchable: false}
         ]
     });
 
@@ -149,6 +140,67 @@ $(function() {
         table.button( 1 ).enable( selectedRows >= 1 );
         table.button( 2 ).enable( selectedRows >= 1 );
     } );
+
+    $('#pegjadwal-table').on('click', 'td.details-control', function () {
+       var tr = $(this).closest('tr');
+       var row = table.row( tr );
+
+       if ( row.child.isShown() ) {
+           // This row is already open - close it
+           row.child.hide();
+           tr.removeClass('shown');
+       }
+       else {
+           // Open this row
+           row.child( format(row.data()) ).show();
+           tr.addClass('shown');
+       }
+   } );
+
+    function format ( d ) {
+      var head = '<thead>'+
+                  '<tr>'+
+                    '<th>Id</th>'+
+                    '<th>Nama Jadwal</th>'+
+                    '<th>Mulai</th>'+
+                    '<th>Berakhir</th>'+
+                    '<th>Action</th>'+
+                  '</tr>'+
+                '</thead>';
+
+        var content = '';
+        var urlEdit = '{{ url("peg_jadwal_edit") }}';
+        var urlDelete = '{{ url("peg_jadwal_delete_jadwal") }}';
+
+        $.ajax({
+          type: 'post',
+          url: '{{ url("api/jadwal_detail?api_token=") }}{{ Auth::user()->api_token }}',
+          dataType: 'json',
+          data:{
+            id: d.id
+          },
+          async: false,
+          success: function(response){
+            $.each(response, function(key, value) {
+              content += '<tr>'+
+                          '<td>'+value.id+'</td>'+
+                          '<td>'+value.name+'</td>'+
+                          '<td>'+value.start+'</td>'+
+                          '<td>'+value.end+'</td>'+
+                          '<td>'+
+                            '<a href='+urlEdit+'/'+d.id+'/'+value.id+' class="btn btn-mini btn-success"><i class="icon-edit"> Edit</i></a> '+
+                            '<a href='+urlDelete+'/'+value.id+' class="btn btn-mini btn-danger"><i class="icon-remove"> Hapus</i></a> '+
+                          '</td>'+
+                         '</tr>';
+            });
+          }
+        });
+
+        return '<table class="table table-bordered">'+
+                head+
+                content+
+               '</table>';
+    }
 });
 </script>
 @endpush

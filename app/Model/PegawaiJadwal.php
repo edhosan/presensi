@@ -17,7 +17,7 @@ class PegawaiJadwal extends Model
 
   public function jadwal()
   {
-    return $this->belongsTo('App\Model\Jadwal');
+    return $this->belongsTo('App\Model\Jadwal','jadwal_id','id');
   }
 
   public function pegawai()

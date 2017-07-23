@@ -41,6 +41,10 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::post('hari', 'Referensi\HariController@apiGetHari');
 
   Route::post('getNamePeg', 'Proses\PegawaiJadwalController@apiNameDataInduk');
-  Route::post('peg_jadwal_list', 'Proses\PegawaiJadwalController@apiGetJadwalPegawai');
+  Route::get('peg_jadwal_list', 'Proses\PegawaiJadwalController@apiGetJadwalPegawai');
+  Route::post('peg_jadwal_detail', 'Proses\PegawaiJadwalController@apiGetJadwalPegawaiDetail');
+  Route::post('jadwal_detail', 'Proses\PegawaiJadwalController@apiJadwalDetail');
+  Route::post('peg_hari_kerja', 'Proses\PegawaiJadwalController@apiGetPegawaiHariKerja');
+  Route::post('peg_jadwal_delete_all', 'Proses\PegawaiJadwalController@apiDeleteAll');
 
 });
