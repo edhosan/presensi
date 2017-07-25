@@ -117,5 +117,19 @@ Breadcrumbs::register('peg_jadwal.detail', function($breadcrumbs)
     $breadcrumbs->push('Rincian Jadwal Pegawai', route('peg_jadwal.create'));
 });
 
+// Home > Daftar Ijin List
+Breadcrumbs::register('ref_ijin.list', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Daftar Keterangan Tidak Hadir', route('ref_ijin.list'));
+});
+
+// Home > Form Ijin
+Breadcrumbs::register('ref_ijin.form', function($breadcrumbs)
+{
+    $breadcrumbs->parent('ref_ijin.list');
+    $breadcrumbs->push('Form Data Referensi Keterangan Tidak Hadir', route('ref_ijin.form'));
+});
+
 
 ?>

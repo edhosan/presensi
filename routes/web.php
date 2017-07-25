@@ -71,4 +71,10 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('peg_jadwal_detail/{id_peg}', 'Proses\PegawaiJadwalController@detail')->name('peg_jadwal.detail');
   Route::get('peg_jadwal_edit/{id_peg}/{id_jadwal}', 'Proses\PegawaiJadwalController@edit')->name('peg_jadwal.edit');
   Route::get('peg_jadwal_delete_jadwal/{id_jadwal}', 'Proses\PegawaiJadwalController@deleteJadwal')->name('peg_jadwal.delete.jadwal');
+
+  Route::get('ref_ijin_list', 'Referensi\RefIjinController@index')->name('ref_ijin.list');
+  Route::get('ref_ijin_create', 'Referensi\RefIjinController@create')->name('ref_ijin.form');
+  Route::post('ref_ijin_store', 'Referensi\RefIjinController@store')->name('ref_ijin.store');
+  Route::get('ref_ijin_edit/{id}', 'Referensi\RefIjinController@edit')->name('ref_ijin.edit');
+  Route::post('ref_ijin_update', 'Referensi\RefIjinController@update')->name('ref_ijin.update');
 });
