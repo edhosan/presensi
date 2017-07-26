@@ -131,5 +131,12 @@ Breadcrumbs::register('ref_ijin.form', function($breadcrumbs)
     $breadcrumbs->push('Form Data Referensi Keterangan Tidak Hadir', route('ref_ijin.form'));
 });
 
+// Home > Daftar Ketidakhadiran
+Breadcrumbs::register('ketidakhadiran.list', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Daftar Ketidakhadiran Pegawai', route('ketidakhadiran.list'));
+});
+
 
 ?>

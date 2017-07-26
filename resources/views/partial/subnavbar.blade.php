@@ -17,7 +17,7 @@
             <li><a href="{{ route('ref_ijin.list') }}">Keterangan Tidak Hadir</a></li>
           </ul>
         </li>
-        <li class="dropdown {{ active(['datainduk_list','peg_jadwal.list']) }}">
+        <li class="dropdown {{ active(['datainduk_list','peg_jadwal.list','ketidakhadiran.list']) }}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-book"></i><span>Data Proses</span> </a>
           <ul class="dropdown-menu">
             @role(['super-admin','admin'])

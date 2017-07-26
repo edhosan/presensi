@@ -77,4 +77,6 @@ Route::group(['middleware' => 'auth'], function() {
   Route::post('ref_ijin_store', 'Referensi\RefIjinController@store')->name('ref_ijin.store');
   Route::get('ref_ijin_edit/{id}', 'Referensi\RefIjinController@edit')->name('ref_ijin.edit');
   Route::post('ref_ijin_update', 'Referensi\RefIjinController@update')->name('ref_ijin.update');
+
+  Route::get('ketidakhadiran_list', 'Proses\KetidakhadiranController@index')->name('ketidakhadiran.list');
 });

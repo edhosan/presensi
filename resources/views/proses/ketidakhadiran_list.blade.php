@@ -11,13 +11,13 @@
 <div class="main">
   <div class="main-inner">
       <div class="container">
-          {!! Breadcrumbs::render('datainduk_list') !!}
+          {!! Breadcrumbs::render('ketidakhadiran.list') !!}
           <div class="row">
             <div class="span12">
               <div class="widget">
                 <div class="widget-header">
                   <i class="icon-list"></i>
-                  <h3>Daftar Pegawai</h3>
+                  <h3>Daftar Ketidakhadiran Pegawai</h3>
                 </div>
 
                 <div class="widget-content">
