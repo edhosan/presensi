@@ -23,6 +23,7 @@
             @role(['super-admin','admin'])
               <li><a href="{{ route('datainduk_list') }}">Data Induk Pegawai</a></li>
               <li><a href="{{ route('peg_jadwal.list') }}">Jadwal Kerja Pegawai</a></li>
+              <li><a href="{{ route('ketidakhadiran.list') }}">Ketidakhadiran Pegawai</a></li>
             @endrole
           </ul>
         </li>

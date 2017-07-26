@@ -16,4 +16,9 @@ class DataInduk extends Model
     {
       return $this->hasMany('App\Model\PegawaiJadwal');
     }
+
+    public function ketidakhadiran()
+    {
+      return $this->hasMany('App\Model\Ketidakhadiran','peg_id','id');
+    }
 }
