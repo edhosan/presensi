@@ -65,7 +65,7 @@ $(function() {
                 text: '<i class="icon-plus"> Tambah Data</i>',
                 titleAttr: 'Tambah Data',
                 action: function ( e, dt, node, config ) {
-                  window.location.href = "{{ route('datainduk_form') }}";
+                  window.location.href = "{{ route('ketidakhadiran.create') }}";
                 }
             },
             {

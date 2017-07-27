@@ -138,5 +138,12 @@ Breadcrumbs::register('ketidakhadiran.list', function($breadcrumbs)
     $breadcrumbs->push('Daftar Ketidakhadiran Pegawai', route('ketidakhadiran.list'));
 });
 
+// Home > Daftar Ketidakhadiran / Ketidakhadiran Form
+Breadcrumbs::register('ketidakhadiran.form', function($breadcrumbs)
+{
+    $breadcrumbs->parent('ketidakhadiran.list');
+    $breadcrumbs->push('Form Ketidakhadiran Pegawai', route('ketidakhadiran.create'));
+});
+
 
 ?>
