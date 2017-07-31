@@ -52,22 +52,28 @@
                         </div>
                     </div>
 
-                    <div class="control-group {{ $errors->has('end') ? 'error' : '' }}">
-                        <label for="end" class="control-label">Berakhir Sampai</label>
-
-                        <div class="controls">
+                    <div class="control-group {{ $errors->has('start') ? 'error' : '' }}">
+                        <label for="start" class="control-label">Tanggal</label>
+                        <div class="controls controls-row">
+                          @php
+                            $start = old('start');
+                            if(!empty($data))
+                              $start = Carbon\Carbon::parse($data['start'])->format('d-m-Y');
+                          @endphp
+                          <input id="start" type="text" class="span2" name="start" value="{{ $start }}">
+                          &nbsp;s/d&nbsp;
                           @php
                             $end = old('end');
                             if(!empty($data))
                               $end = Carbon\Carbon::parse($data['end'])->format('d-m-Y');
                           @endphp
-                          <input id="end" type="text" name="end" value="{{ $end }}">
+                          <input id="end" type="text" class="span2" name="end" value="{{ $end }}">
 
-                            @if ($errors->has('end'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('end') }}</strong>
-                                </span>
-                            @endif
+                          @if ($errors->has('start'))
+                              <span class="help-block">
+                                  <strong>{{ $errors->first('start') }}</strong>
+                              </span>
+                          @endif
                         </div>
                     </div>
 
@@ -96,6 +102,30 @@
 <script>
 
 $(function() {
+
+$.changeDate = function () {
+  var dateStart = $('#start').datepicker('getDate');
+  var dateEnd = $('#end').datepicker('getDate');
+  var d = (dateEnd - dateStart) / (1000 * 60 * 60 * 24);
+  console.log(Math.round(d));
+
+  if(dateStart === dateEnd){
+    alert('test');
+  }
+};
+
+var formatCalendar = {
+  format: 'dd-mm-yyyy',
+  language: 'id',
+  autoclose : true,
+  todayHighlight : true
+};
+
+$('#start').datepicker( formatCalendar );
+$('#end').datepicker( formatCalendar );
+
+$('#start').change( $.changeDate );
+$('#end').change( $.changeDate );
 
   var optPeg = {
       url: function(phrase) {
