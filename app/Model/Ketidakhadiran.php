@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ketidakhadiran extends Model
 {
@@ -10,7 +11,7 @@ class Ketidakhadiran extends Model
 
     protected $table = 'ketidakhadiran';
 
-    protected $fillable = ['keterangan_id','start','end','jam_start','jam_end','keperluaan'];
+    protected $fillable = ['keterangan_id','start','end','jam_start','jam_end','keperluan','peg_id'];
 
     protected $dates = ['deleted_at'];
 
@@ -21,6 +22,6 @@ class Ketidakhadiran extends Model
 
     public function pegawai()
     {
-      return $this->belongsTo('App\Model\DataInduk');
+      return $this->belongsTo('App\Model\DataInduk','peg_id','id');
     }
 }

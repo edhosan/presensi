@@ -21,18 +21,19 @@
                 </div>
 
                 <div class="widget-content">
-                  <table class="table table-striped table-bordered" id="datainduk-table" width="100%" >
+                  <table class="table table-striped table-bordered" id="ketidakhadiran-table" width="100%" >
                       <thead>
                           <tr>
                               <th></th>
                               <th></th>
                               <th>Nip</th>
-                              <th>Id Finger</th>
                               <th>OPD</th>
                               <th>Nama</th>
-                              <th>Pangkat / Gol</th>
                               <th>Jabatan</th>
-                              <th>Terminal</th>
+                              <th>Status</th>
+                              <th>Tanggal</th>
+                              <th>Jumlah</th>
+                              <th>Keperluan</th>
                           </tr>
                       </thead>
                   </table>
@@ -53,7 +54,7 @@
 <script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
 <script>
 $(function() {
-    var table = $('#datainduk-table').DataTable({
+    var table = $('#ketidakhadiran-table').DataTable({
         dom: 'Bfrtip',
         scrollX: true,
         select: {
@@ -72,7 +73,7 @@ $(function() {
                 text: '<i class="icon-edit"> Edit</i>',
                 action: function ( e, dt, node, config ) {
                     var data = dt.row( { selected: true } ).data();
-                    var newUrl = "{{ url('datainduk_edit') }}";
+                    var newUrl = "{{ url('ketidakhadiran_edit') }}";
                     window.location.href = newUrl+"/"+data.id;
                 },
                 enabled: false
@@ -97,7 +98,7 @@ $(function() {
                             });
 
                             $.ajax({
-                                url: '{{ url("api/datainduk_delete?api_token=") }}{{ Auth::user()->api_token }}',
+                                url: '{{ url("api/ketidakhadiran_delete?api_token=") }}{{ Auth::user()->api_token }}',
                                 type: 'post',
                                 dataType: "json",
                                 data: { data: arrData },
@@ -122,17 +123,18 @@ $(function() {
         ],
         processing: true,
         serverSide: true,
-        ajax: '{{ url("api/datainduk_list?api_token=") }}{{ Auth::user()->api_token }}',
+        ajax: '{{ url("api/ketidakhadiran_list?api_token=") }}{{ Auth::user()->api_token }}',
         columns: [
             { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
             { data: 'id', name: 'id', visible: false },
             { data: 'nip', name: 'nip' },
-            { data: 'id_finger', name: 'id_finger' },
             { data: 'nama_unker', name: 'nama_unker', width:'250px' },
             { data: 'nama', name: 'nama', width: '150px' },
-            { data: 'pangkat', name: 'pangkat', width: '140px' },
             { data: 'nama_jabatan', name: 'nama_jabatan', width: '300px' },
-            { data: 'terminal', name: 'terminal', orderable: false }
+            { data: 'status', name: 'status', width:'30px' },
+            { data: 'tanggal', name: 'tanggal', width:'230px' },
+            { data: 'jumlah', name: 'jumlah', width:'30px' },
+            { data: 'keperluan', name: 'keperluan' }
         ]
     });
 

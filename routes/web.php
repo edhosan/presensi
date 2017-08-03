@@ -80,4 +80,7 @@ Route::group(['middleware' => 'auth'], function() {
 
   Route::get('ketidakhadiran_list', 'Proses\KetidakhadiranController@index')->name('ketidakhadiran.list');
   Route::get('ketidakhadiran_create', 'Proses\KetidakhadiranController@create')->name('ketidakhadiran.create');
+  Route::get('ketidakhadiran_edit/{id}', 'Proses\KetidakhadiranController@edit')->name('ketidakhadiran.edit');
+  Route::post('ketidakhadiran_save', 'Proses\KetidakhadiranController@saveCreate')->name('ketidakhadiran.save');
+  Route::post('ketidakhadiran_update', 'Proses\KetidakhadiranController@saveUpdate')->name('ketidakhadiran.update');
 });

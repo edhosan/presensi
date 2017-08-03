@@ -50,4 +50,6 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::get('ref_ijin_list', 'Referensi\RefIjinController@apiListRefIjin');
   Route::post('ref_ijin_delete', 'Referensi\RefIjinController@apiDeleteRefIjin');
 
+  Route::get('ketidakhadiran_list', 'Proses\KetidakhadiranController@apiListKetidakhadiran');
+  Route::post('ketidakhadiran_delete', 'Proses\KetidakhadiranController@apiDeleteKetidakhadiran');
 });
