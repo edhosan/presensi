@@ -11,6 +11,7 @@ use App\Model\DataInduk;
 use Auth;
 use DB;
 use Carbon\Carbon;
+use File;
 
 class KetidakhadiranController extends Controller
 {
@@ -19,7 +20,8 @@ class KetidakhadiranController extends Controller
       'ijin'  => 'required',
       'start' => 'required',
       'end' => 'required',
-      'keperluan' => 'required'
+      'keperluan' => 'required',
+      'file' => 'mimes:pdf'
     ];
 
     public function index()
@@ -47,6 +49,13 @@ class KetidakhadiranController extends Controller
     {
       $this->validate($request, $this->rules);
 
+      $file_name = '';
+      if($request->hasFile('file')){
+        $file_name = $request->id_peg.'_'.date('Ymd', strtotime($request->start)).'.'.$request->file->extension();
+
+        $request->file('file')->move('catalog/surat/', $file_name);
+      }
+
       Ketidakhadiran::create([
         'peg_id'        => $request->id_peg,
         'keterangan_id' => $request->ijin,
@@ -54,7 +63,8 @@ class KetidakhadiranController extends Controller
         'end'           => date('Y-m-d', strtotime($request->end) ),
         'jam_start'     => $request->jam_start,
         'jam_end'       => $request->jam_end,
-        'keperluan'     => $request->keperluan
+        'keperluan'     => $request->keperluan,
+        'filename'      => $file_name
       ]);
 
       return redirect()->route('ketidakhadiran.list')->with('success','Data berhasil disimpan!');
@@ -66,6 +76,16 @@ class KetidakhadiranController extends Controller
 
       $ketidakhadiran = Ketidakhadiran::find($request->id);
 
+      $file_name = '';
+      if($request->hasFile('file')){
+        $file_name = $request->id_peg.'_'.date('Ymd', strtotime($request->start)).'.'.$request->file->extension();
+
+        File::delete('catalog/surat/'.$ketidakhadiran->filename);
+
+        $request->file('file')->move('catalog/surat/', $file_name);
+      }
+
+
       $ketidakhadiran->update([
         'peg_id'        => $request->id_peg,
         'keterangan_id' => $request->ijin,
@@ -73,7 +93,8 @@ class KetidakhadiranController extends Controller
         'end'           => date('Y-m-d', strtotime($request->end) ),
         'jam_start'     => $request->jam_start,
         'jam_end'       => $request->jam_end,
-        'keperluan'     => $request->keperluan
+        'keperluan'     => $request->keperluan,
+        'filename'      => $file_name
       ]);
 
       return redirect()->route('ketidakhadiran.list')->with('success','Data berhasil disimpan!');
@@ -123,7 +144,11 @@ class KetidakhadiranController extends Controller
       $data = $request->input('data');
 
       foreach ($data as $id) {
-        $status = Ketidakhadiran::find($id)->forceDelete();
+        $ketidakhadiran = Ketidakhadiran::find($id);
+
+        File::delete('catalog/surat/'.$ketidakhadiran->filename);
+
+        $status = $ketidakhadiran->forceDelete();
       }
 
       return response()->json($status);

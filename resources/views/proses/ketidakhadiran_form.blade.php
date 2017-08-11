@@ -19,7 +19,7 @@
               </div>
 
               <div class="widget-content">
-                <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('ketidakhadiran.update'):route('ketidakhadiran.save') }}" novalidate="novalidate">
+                <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('ketidakhadiran.update'):route('ketidakhadiran.save') }}" novalidate="novalidate" enctype="multipart/form-data">
                   {{ csrf_field() }}
                   <input type="hidden" name="id" value="{{ $data->id or 0 }}">
                   <fieldset>
@@ -119,6 +119,31 @@
                             @endif
                         </div>
                     </div>
+
+                    <div class="control-group {{ $errors->has('file') ? 'error' : '' }}">
+                      <label for="file" class="control-label">Upload File</label>
+
+                      <div class="controls">
+                          {!! Form::file('file', null) !!}
+
+                          @if ($errors->has('file'))
+                              <span class="help-block">
+                                  <strong>{{ $errors->first('file') }}</strong>
+                              </span>
+                          @endif
+                      </div>
+                    </div>
+
+                    @if(isset($data->filename))
+                    <div class="control-group">
+                      <label for="" class="control-label"></label>
+                      <div class="controls">
+                        <iframe src="{{ URL::to('/') }}/catalog/surat/{{ $data->filename }}" width="30%" height="5%"></iframe>
+                        <a href="{{ URL::to('/') }}/catalog/surat/{{ $data->filename }}">Download file surat</a>
+                      </div>
+                    </div>
+                    @endif
+
 
                     <div class="form-actions">
                       <button type="submit" class="btn btn-primary">Simpan</button>

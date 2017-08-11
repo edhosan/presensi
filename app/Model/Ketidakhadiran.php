@@ -11,7 +11,7 @@ class Ketidakhadiran extends Model
 
     protected $table = 'ketidakhadiran';
 
-    protected $fillable = ['keterangan_id','start','end','jam_start','jam_end','keperluan','peg_id'];
+    protected $fillable = ['keterangan_id','start','end','jam_start','jam_end','keperluan','peg_id','filename'];
 
     protected $dates = ['deleted_at'];
 
