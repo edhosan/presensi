@@ -145,5 +145,19 @@ Breadcrumbs::register('ketidakhadiran.form', function($breadcrumbs)
     $breadcrumbs->push('Form Ketidakhadiran Pegawai', route('ketidakhadiran.create'));
 });
 
+// Home > Kalkulasi Kehadiran
+Breadcrumbs::register('kalkulasi.form', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Kalkulasi Kehadiran Pegawai', route('kalkulasi.form'));
+});
+
+// Home > Auth Log
+Breadcrumbs::register('authlog.list', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Auth Log', route('authlog.list'));
+});
+
 
 ?>

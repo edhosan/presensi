@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="widget-content">
-                  <table class="table table-striped table-bordered" id="pegjadwal-table" width="100%" >
+                  <table class="table table-striped table-bordered display nowrap" id="pegjadwal-table" width="100%" >
                       <thead>
                           <tr>
                               <th></th>

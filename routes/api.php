@@ -52,4 +52,10 @@ Route::group(['middleware' => 'auth:api'], function() {
 
   Route::get('ketidakhadiran_list', 'Proses\KetidakhadiranController@apiListKetidakhadiran');
   Route::post('ketidakhadiran_delete', 'Proses\KetidakhadiranController@apiDeleteKetidakhadiran');
+
+  Route::get('authlog_list', 'Referensi\AuthLogController@apiAuthLogList');
+  Route::post('authlog_delete', 'Referensi\AuthLogController@apiDeleteAuthLog');
+
+  Route::post('kalkulasi_proses', 'Proses\KalkulasiController@prosesKalkulasi')->name('kalkulasi.proses');
+
 });

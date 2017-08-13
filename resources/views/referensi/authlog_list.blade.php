@@ -11,27 +11,23 @@
 <div class="main">
   <div class="main-inner">
       <div class="container">
-          {!! Breadcrumbs::render('datainduk_list') !!}
+          {!! Breadcrumbs::render('authlog.list') !!}
           <div class="row">
             <div class="span12">
               <div class="widget">
                 <div class="widget-header">
                   <i class="icon-list"></i>
-                  <h3>Daftar Pegawai</h3>
+                  <h3>Auth Log</h3>
                 </div>
 
                 <div class="widget-content">
-                  <table class="table table-striped table-bordered display nowrap" id="datainduk-table" width="100%" >
+                  <table class="table table-striped table-bordered display nowrap" id="authlog-table" width="100%" >
                       <thead>
                           <tr>
                               <th></th>
                               <th></th>
-                              <th>Nip</th>
-                              <th>Id Finger</th>
-                              <th>OPD</th>
-                              <th>Nama</th>
-                              <th>Pangkat / Gol</th>
-                              <th>Jabatan</th>
+                              <th>Id Fingerprint</th>
+                              <th>Transaction Time</th>
                               <th>Terminal</th>
                           </tr>
                       </thead>
@@ -53,7 +49,8 @@
 <script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
 <script>
 $(function() {
-    var table = $('#datainduk-table').DataTable({
+
+    var table = $('#authlog-table').DataTable({
         dom: 'Bfrtip',
         scrollX: true,
         select: {
@@ -61,22 +58,6 @@ $(function() {
             selector: 'td:first-child'
         },
         buttons: [
-            {
-                text: '<i class="icon-plus"> Tambah Data</i>',
-                titleAttr: 'Tambah Data',
-                action: function ( e, dt, node, config ) {
-                  window.location.href = "{{ route('datainduk_form') }}";
-                }
-            },
-            {
-                text: '<i class="icon-edit"> Edit</i>',
-                action: function ( e, dt, node, config ) {
-                    var data = dt.row( { selected: true } ).data();
-                    var newUrl = "{{ url('datainduk_edit') }}";
-                    window.location.href = newUrl+"/"+data.id;
-                },
-                enabled: false
-            },
             {
                 text: '<i class="icon-remove"> Hapus</i>',
                 action: function ( e, dt, node, config ) {
@@ -89,7 +70,7 @@ $(function() {
                       allowHtml: true,
                       onShown: function (toast) {
                           $("#confirmYes").click(function(){
-                            var data = dt.rows( { selected: true } ).data().pluck('id');
+                            var data = dt.rows( { selected: true } ).data().pluck('IndexKey');
 
                             var arrData = [];
                             $.each(data, function(key, value) {
@@ -97,7 +78,7 @@ $(function() {
                             });
 
                             $.ajax({
-                                url: '{{ url("api/datainduk_delete?api_token=") }}{{ Auth::user()->api_token }}',
+                                url: '{{ url("api/authlog_delete?api_token=") }}{{ Auth::user()->api_token }}',
                                 type: 'post',
                                 dataType: "json",
                                 data: { data: arrData },
@@ -122,32 +103,26 @@ $(function() {
         ],
         processing: true,
         serverSide: true,
-        ajax: '{{ url("api/datainduk_list?api_token=") }}{{ Auth::user()->api_token }}',
+        ajax: '{{ url("api/authlog_list?api_token=") }}{{ Auth::user()->api_token }}',
         columns: [
             { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
-            { data: 'id', name: 'id', visible: false },
-            { data: 'nip', name: 'nip' },
-            { data: 'id_finger', name: 'id_finger' },
-            { data: 'nama_unker', name: 'nama_unker', width:'250px' },
-            { data: 'nama', name: 'nama', width: '150px' },
-            { data: 'pangkat', name: 'pangkat', width: '140px' },
-            { data: 'nama_jabatan', name: 'nama_jabatan', width: '300px' },
-            { data: 'terminal', name: 'terminal', orderable: false }
+            { data: 'IndexKey', name: 'IndexKey', visible: false },
+            { data: 'UserID', name: 'UserID' },
+            { data: 'TransactionTime', name: 'TransactionTime' },
+            { data: 'terminal.Name', name: 'terminal', orderable: false, searchable: false },
         ]
     });
 
     table.on( 'select', function (e, dt, type, indexes) {
         var selectedRows = table.rows( { selected: true } ).count();
 
-        table.button( 1 ).enable( selectedRows >= 1 );
-        table.button( 2 ).enable( selectedRows >= 1 );
+        table.button( 0 ).enable( selectedRows >= 1 );
     } );
 
     table.on( 'deselect', function ( e, dt, type, indexes ) {
         var selectedRows = table.rows( { selected: true } ).count();
 
-        table.button( 1 ).enable( selectedRows >= 1 );
-        table.button( 2 ).enable( selectedRows >= 1 );
+        table.button( 0 ).enable( selectedRows >= 1 );
     } );
 });
 </script>

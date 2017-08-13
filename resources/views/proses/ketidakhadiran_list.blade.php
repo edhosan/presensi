@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="widget-content">
-                  <table class="table table-striped table-bordered" id="ketidakhadiran-table" width="100%" >
+                  <table class="table table-striped table-bordered display nowrap" id="ketidakhadiran-table" width="100%" >
                       <thead>
                           <tr>
                               <th></th>

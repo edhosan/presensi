@@ -14,4 +14,9 @@ class Terminal extends Model
       {
         return $this->hasMany('App\Model\TerminalUser','TerminalID');
       }
+
+      public function authlog()
+      {
+        return $this->hasMany('App\Model\AuthLog','TerminalID');
+      }
 }

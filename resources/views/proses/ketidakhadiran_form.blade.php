@@ -139,7 +139,7 @@
                       <label for="" class="control-label"></label>
                       <div class="controls">
                         <iframe src="{{ URL::to('/') }}/catalog/surat/{{ $data->filename }}" width="30%" height="5%"></iframe>
-                        <a href="{{ URL::to('/') }}/catalog/surat/{{ $data->filename }}">Download file surat</a>
+                        <a href="{{ URL::to('/') }}/catalog/surat/{{ $data->filename }}">&nbsp;Download File</a>
                       </div>
                     </div>
                     @endif
