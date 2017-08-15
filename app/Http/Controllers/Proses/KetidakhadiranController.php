@@ -8,6 +8,7 @@ use App\Model\Ketidakhadiran;
 use Yajra\Datatables\Datatables;
 use App\Model\RefIjin;
 use App\Model\DataInduk;
+use App\Model\PegawaiJadwal;
 use Auth;
 use DB;
 use Carbon\Carbon;
@@ -18,7 +19,7 @@ class KetidakhadiranController extends Controller
     private $rules = [
       'nama'  => 'required|exists:peg_data_induk,nama',
       'ijin'  => 'required',
-      'start' => 'required',
+      'start' => 'required|before:end',
       'end' => 'required',
       'keperluan' => 'required',
       'file' => 'mimes:pdf'
@@ -56,7 +57,7 @@ class KetidakhadiranController extends Controller
         $request->file('file')->move('catalog/surat/', $file_name);
       }
 
-      Ketidakhadiran::create([
+      $ketidakhadiran = Ketidakhadiran::create([
         'peg_id'        => $request->id_peg,
         'keterangan_id' => $request->ijin,
         'start'         => date('Y-m-d', strtotime($request->start) ),
@@ -66,6 +67,8 @@ class KetidakhadiranController extends Controller
         'keperluan'     => $request->keperluan,
         'filename'      => $file_name
       ]);
+
+      $this->updateKalkulasi($request->id_peg, $request->start, $request->end, $ketidakhadiran->id);
 
       return redirect()->route('ketidakhadiran.list')->with('success','Data berhasil disimpan!');
     }
@@ -85,7 +88,6 @@ class KetidakhadiranController extends Controller
         $request->file('file')->move('catalog/surat/', $file_name);
       }
 
-
       $ketidakhadiran->update([
         'peg_id'        => $request->id_peg,
         'keterangan_id' => $request->ijin,
@@ -96,6 +98,8 @@ class KetidakhadiranController extends Controller
         'keperluan'     => $request->keperluan,
         'filename'      => $file_name
       ]);
+
+      $this->updateKalkulasi($request->id_peg, $request->start, $request->end, $ketidakhadiran->id);
 
       return redirect()->route('ketidakhadiran.list')->with('success','Data berhasil disimpan!');
     }
@@ -124,13 +128,13 @@ class KetidakhadiranController extends Controller
             ->editColumn('jumlah', function($peg_ijin_list){
               $start = Carbon::parse($peg_ijin_list->start);
               $end =  Carbon::parse($peg_ijin_list->end);
-              $interval = $end->diffInDays($start);
+              $interval = $end->diffInDays($start) + 1;
 
               $time1 = Carbon::parse($peg_ijin_list->jam_start);
               $time2 =  Carbon::parse($peg_ijin_list->jam_end);
               $interval_time = $time2->diffInHours($time1);
 
-              if($interval > 0) {
+              if($interval > 1) {
                 return $interval.' hari';
               }else{
                 return $interval_time.' jam';
@@ -152,5 +156,17 @@ class KetidakhadiranController extends Controller
       }
 
       return response()->json($status);
+    }
+
+    private function updateKalkulasi($peg_id, $start, $end, $ketidakhadiran_id)
+    {
+      PegawaiJadwal::where('ketidakhadiran_id', $ketidakhadiran_id)
+                    ->update(['ketidakhadiran_id' => 0]);
+
+      PegawaiJadwal::where('peg_id', $peg_id)
+                    ->where('tanggal','>=', date('Y-m-d', strtotime($start) ))
+                    ->where('tanggal','<=', date('Y-m-d', strtotime($end) ))
+                    ->update(['ketidakhadiran_id' => $ketidakhadiran_id]);
+
     }
 }

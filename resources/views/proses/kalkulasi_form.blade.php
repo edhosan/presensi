@@ -174,7 +174,7 @@ $(function() {
           /* and display the numeric value */
           $("#progress").html(data+'%');
         })
-      }, 1000);
+      }, 500);
 
       $.ajax({
         url       : form.attr('action'),
@@ -184,6 +184,7 @@ $(function() {
         success   : function( json ) {
           console.log(json);
           clearInterval(progresspump);
+          $("#progress").css('width',json+'%');
           $("#progressouter").removeClass("active");
           $("#progress").html("Done");
         },

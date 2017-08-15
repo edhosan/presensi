@@ -11,7 +11,7 @@ class PegawaiJadwal extends Model
 
   protected $table = 'peg_jadwal';
 
-  protected $fillable = ['tanggal','peg_id','jadwal_id','event_id'];
+  protected $fillable = ['tanggal','peg_id','jadwal_id','event_id','ketidakhadiran_id','in','out','terlambat','pulang_awal','jam_kerja','status'];
 
   protected $dates = ['deleted_at'];
 
