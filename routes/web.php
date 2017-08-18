@@ -89,4 +89,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('kalkulasi_progress', 'Proses\KalkulasiController@apiGetProgress')->name('kalkulasi.progress');
 
   Route::get('authlog_list', 'Referensi\AuthLogController@index')->name('authlog.list');
+
+  Route::get('lap_bulanan', 'Laporan\RekapOPDController@index')->name('laporan.bulanan');
+  Route::post('lap_bulanan_view', 'Laporan\RekapOPDController@viewReport')->name('laporan.bulanan.report');
 });

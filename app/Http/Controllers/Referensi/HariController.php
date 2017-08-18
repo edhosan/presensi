@@ -25,7 +25,11 @@ class HariController extends Controller
       $validate = $this->validate($request, [
         'hari'  => 'required|unique:hari_kerja,hari,'.$request->hari,
         'jam_masuk'  => 'required|date_format:G:i',
-        'jam_pulang'  => 'required|date_format:G:i'
+        'jam_pulang'  => 'required|date_format:G:i',
+        'scan_in1'  => 'required|date_format:G:i',
+        'scan_in2'  => 'required|date_format:G:i',
+        'scan_out1'  => 'required|date_format:G:i',
+        'scan_out2'  => 'required|date_format:G:i'
       ]);
 
       $jadwal = Jadwal::find($request->id_jadwal);
@@ -35,7 +39,11 @@ class HariController extends Controller
         'jam_masuk' => $request->jam_masuk,
         'jam_pulang'  => $request->jam_pulang,
         'toleransi_terlambat' => $request->toleransi_terlambat,
-        'toleransi_pulang'  => $request->toleransi_pulang
+        'toleransi_pulang'  => $request->toleransi_pulang,
+        'scan_in1'  => $request->scan_in1,
+        'scan_in2'  => $request->scan_in2,
+        'scan_out1'  => $request->scan_out1,
+        'scan_out2'  => $request->scan_out2
       ]);
 
       return redirect('jadwal_list')->with('success','Data berhasil disimpan!');
@@ -58,7 +66,9 @@ class HariController extends Controller
           'jam_pulang'  => $item->jam_pulang,
           'toleransi_terlambat' => $item->toleransi_terlambat,
           'toleransi_pulang'  => $item->toleransi_pulang,
-          'val_hari'  => $item->hari
+          'val_hari'  => $item->hari,
+          'absensi_masuk' => $item->scan_in1.' - '.$item->scan_in2,
+          'absensi_pulang' => $item->scan_out1.' - '.$item->scan_out1
         ]);
       }
 
@@ -82,14 +92,22 @@ class HariController extends Controller
 
       $validate = $this->validate($request, [
         'jam_masuk'  => 'required|date_format:G:i',
-        'jam_pulang'  => 'required|date_format:G:i'
+        'jam_pulang'  => 'required|date_format:G:i',
+        'scan_in1'  => 'required|date_format:G:i',
+        'scan_in2'  => 'required|date_format:G:i',
+        'scan_out1'  => 'required|date_format:G:i',
+        'scan_out2'  => 'required|date_format:G:i'
       ]);
 
       $hari->update([
         'jam_masuk' => $request->jam_masuk,
         'jam_pulang'  => $request->jam_pulang,
         'toleransi_terlambat' => $request->toleransi_terlambat,
-        'toleransi_pulang'  => $request->toleransi_pulang
+        'toleransi_pulang'  => $request->toleransi_pulang,
+        'scan_in1'  => $request->scan_in1,
+        'scan_in2'  => $request->scan_in2,
+        'scan_out1'  => $request->scan_out1,
+        'scan_out2'  => $request->scan_out2
       ]);
 
       return redirect('jadwal_list')->with('success','Data berhasil diupdate!');

@@ -8,7 +8,7 @@ class Hari extends Model
 {
   protected $table = 'hari_kerja';
 
-  protected $fillable = ['jadwal_id','hari','jam_masuk','jam_pulang','toleransi_terlambat','toleransi_pulang'];
+  protected $fillable = ['jadwal_id','hari','jam_masuk','jam_pulang','toleransi_terlambat','toleransi_pulang','scan_in1','scan_in2','scan_out1','scan_out2'];
 
   protected $hari = [
     '7' =>  'Minggu',

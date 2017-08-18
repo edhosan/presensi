@@ -107,6 +107,62 @@
                             </div>
                         </div>
 
+                        <div class="control-group {{ $errors->has('scan_in1') ? 'error' : '' }} {{ $errors->has('scan_in2') ? 'error' : '' }}">
+                            <label for="scan_in1" class="control-label">Batas Waktu Absensi Masuk</label>
+
+                            <div class="controls">
+                              <div class="input-append bootstrap-timepicker timepicker">
+                                  <input id="scan_in1" name="scan_in1" type="text" class="span2 m-wrap" value="{{ $data->scan_in1 or old('scan_in1') }}">
+                                  <button type="button" class="btn"><i class="icon-time "></i></button>
+                              </div>
+                              &nbsp;s/d&nbsp;
+                              <div class="input-append bootstrap-timepicker timepicker">
+                                  <input id="scan_in2" name="scan_in2" type="text" class="span2 m-wrap" value="{{ $data->scan_in2 or old('scan_in2') }}">
+                                  <button type="button" class="btn"><i class="icon-time "></i></button>
+                              </div>
+
+                                @if ($errors->has('scan_in1'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('scan_in1') }}</strong>
+                                    </span>
+                                @endif
+
+                                @if ($errors->has('scan_in2'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('scan_in2') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="control-group {{ $errors->has('scan_out1') ? 'error' : '' }} {{ $errors->has('scan_out2') ? 'error' : '' }}">
+                            <label for="scan_out1" class="control-label">Batas Waktu Absensi Pulang</label>
+
+                            <div class="controls">
+                              <div class="input-append bootstrap-timepicker timepicker">
+                                  <input id="scan_out1" name="scan_out1" type="text" class="span2 m-wrap" value="{{ $data->scan_out1 or old('scan_out1') }}">
+                                  <button type="button" class="btn"><i class="icon-time "></i></button>
+                              </div>
+                              &nbsp;s/d&nbsp;
+                              <div class="input-append bootstrap-timepicker timepicker">
+                                  <input id="scan_out2" name="scan_out2" type="text" class="span2 m-wrap" value="{{ $data->scan_out2 or old('scan_out2') }}">
+                                  <button type="button" class="btn"><i class="icon-time "></i></button>
+                              </div>
+
+                                @if ($errors->has('scan_out1'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('scan_out1') }}</strong>
+                                    </span>
+                                @endif
+
+                                @if ($errors->has('scan_out2'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('scan_out2') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-actions">
                           <button type="submit" class="btn btn-primary">Simpan</button>
                           <a href="{{ route('jadwal_list') }} " class="btn">Batal</a>
@@ -128,5 +184,9 @@ $('#jam_masuk').timepicker({ showMeridian: false });
 $('#jam_pulang').timepicker({ showMeridian: false });
 $('#toleransi_terlambat').timepicker({ showMeridian: false });
 $('#toleransi_pulang').timepicker({ showMeridian: false });
+$('#scan_in1').timepicker({ showMeridian: false });
+$('#scan_in2').timepicker({ showMeridian: false });
+$('#scan_out1').timepicker({ showMeridian: false });
+$('#scan_out2').timepicker({ showMeridian: false });
 </script>
 @endpush

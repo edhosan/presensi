@@ -19,7 +19,7 @@ class KalkulasiController extends Controller
 {
     private $rules = [
       'opd' => 'required',
-      'start' => 'required',
+      'start' => 'required|before:end',
       'end' => 'required'
     ];
 
@@ -77,6 +77,24 @@ class KalkulasiController extends Controller
 
       $total = $peg_jadwal->count();
       $i = 1;
+      PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
+                    ->where('peg_data_induk.id_unker','=', $request->opd)
+                    ->where('peg_jadwal.tanggal','>=', date('Y-m-d', strtotime($request->start)) )
+                    ->where('peg_jadwal.tanggal','<=', date('Y-m-d', strtotime($request->end)) )
+                    ->where(function($query) use($request) {
+                      if($request->has('id_peg')) {
+                        $query->where('peg_jadwal.peg_id', $request->id_peg);
+                      }
+                    })
+                    ->update([
+                      'peg_jadwal.ketidakhadiran_id' => 0,
+                      'peg_jadwal.in'  => '00:00:00',
+                      'peg_jadwal.out' => '00:00:00',
+                      'peg_jadwal.terlambat' => 0,
+                      'peg_jadwal.pulang_awal' => 0,
+                      'peg_jadwal.jam_kerja' => '00:00:00'
+                    ]);
+
       foreach ($peg_jadwal as $jadwal) {
         if($jadwal->ketidakhadiran_id == 0 || empty($jadwal->event_id)){
           $log = AuthLog::where('UserID', $jadwal->id_finger)
@@ -91,33 +109,56 @@ class KalkulasiController extends Controller
 
           if($hari){
             $jm = Carbon::parse($hari->jam_masuk);
+            $toleransi_terlambat = Carbon::parse($hari->toleransi_terlambat);
+            $jm = $jm->addMinutes($toleransi_terlambat->minute);
             $jp = Carbon::parse($hari->jam_pulang);
+            $toleransi_pulang = Carbon::parse($hari->toleransi_pulang);
+            $jp = $jp->subMinutes($toleransi_pulang->minute);
+            $in = Carbon::createFromTime(0, 0, 0);
+            $jam_kerja = Carbon::createFromTime(0, 0, 0);
 
             foreach ($log as $authlog) {
-              $trans = Carbon::parse($authlog->TransactionTime);
-              $time = $trans->toTimeString();
-
-              $in = '00:00:00';
-              $out = '00:00:00';
-              if($trans->hour < 12){
-                $in = $trans->toTimeString();
-              }else if($trans->hour > 14){
-                $out = $trans->toTimeString();
-              }
+              $date = Carbon::parse($authlog->TransactionTime);
+              $time = Carbon::parse($date->toTimeString());
+              $scan_in1 = Carbon::parse($hari->scan_in1);
+              $scan_in2 = Carbon::parse($hari->scan_in2);
+              $scan_out1 = Carbon::parse($hari->scan_out1);
+              $scan_out2 = Carbon::parse($hari->scan_out2);
+              $terlambat = Carbon::createFromTime(0, 0, 0);
+              $pulang_awal = Carbon::createFromTime(0, 0, 0);
 
               $peg_jadwal = PegawaiJadwal::find($jadwal->id);
-              $peg_jadwal->update([
-                'in'  => $in,
-                'out' => $out
-              ]);
+
+              if($time->gte($scan_in1) && $time->lte($scan_in2)){
+                $in = $time;
+                if( $time->gt($jm) ) {
+                  $terlambat = $time->diff($jm)->format('%H:%I:%S');
+                }
+
+                $peg_jadwal->update([
+                  'in'  => $time->toTimeString(),
+                  'terlambat' => $terlambat
+                ]);
+              }
+
+              if($time->gte($scan_out1) && $time->lte($scan_out2) ){
+                if($in->toTimeString() != '00:00:00' && $time->toTimeString() != '00:00:00'){
+                  $jam_kerja = $time->diff($in)->format('%H:%I:%S');
+                }
+
+                if($time->lt($jp)) {
+                  $pulang_awal = $jp->diff($time)->format('%H:%I:%S');
+                }
+
+                $peg_jadwal->update([
+                  'out'  => $time->toTimeString(),
+                  'pulang_awal' => $pulang_awal,
+                  'jam_kerja' => $jam_kerja
+                ]);
+              }
             }
           }
-
-
-
-
         }
-
 
         $status = round($i * 100 / $total);
         Session::put('progress', $status);

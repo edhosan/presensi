@@ -62,6 +62,8 @@ $(function() {
                     '<th>Jam Pulang</th>'+
                     '<th>Toleransi Terlambat</th>'+
                     '<th>Toleransi Pulang</th>'+
+                    '<th>Batas Absensi Masuk</th>'+
+                    '<th>Batas Absensi Pulang</th>'+
                     '<th>Action</th>'+
                   '</tr>'+
                 '</thead>';
@@ -87,6 +89,8 @@ $(function() {
                           '<td>'+value.jam_pulang+'</td>'+
                           '<td>'+value.toleransi_terlambat+'</td>'+
                           '<td>'+value.toleransi_pulang+'</td>'+
+                          '<td>'+value.absensi_masuk+'</td>'+
+                          '<td>'+value.absensi_pulang+'</td>'+
                           '<td>'+
                             '<a href='+urlEdit+'?id='+value.id+' class="btn btn-mini btn-success"><i class="icon-edit"> Edit</i></a> '+
                             '<a href='+urlDelete+'?id='+value.id+' class="btn btn-mini btn-danger"><i class="icon-remove"> Hapus</i></a> '+

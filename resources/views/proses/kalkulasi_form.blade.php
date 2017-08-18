@@ -165,6 +165,9 @@ $(function() {
   var form = $('#form');
 
   form.on('submit', function() {
+    $("#progress").css('width','0%');
+    $("#progress").html("");
+
     var progresspump = setInterval(function(){
         /* query the completion percentage from the server */
         $.get("{{ url('kalkulasi_progress') }}", function(data){

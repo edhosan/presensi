@@ -159,5 +159,19 @@ Breadcrumbs::register('authlog.list', function($breadcrumbs)
     $breadcrumbs->push('Auth Log', route('authlog.list'));
 });
 
+// Home > Laporan Kehadiran Bulanan
+Breadcrumbs::register('laporan.bulanan', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Laporan Kehadiran Per OPD', route('laporan.bulanan'));
+});
+
+// Home > Laporan Kehadiran Bulanan / View Laporan OPD
+Breadcrumbs::register('laporan.bulanan.view', function($breadcrumbs)
+{
+    $breadcrumbs->parent('laporan.bulanan');
+    $breadcrumbs->push('Cetak Laporan Kehadiran Per OPD', route('laporan.bulanan'));
+});
+
 
 ?>

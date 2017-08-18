@@ -29,7 +29,14 @@
             @endrole
           </ul>
         </li>
-        <li><a href="charts.html"><i class="icon-bar-chart"></i><span>Charts</span> </a> </li>
+        <li class="dropdown {{ active(['laporan.bulanan']) }}">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-bar-chart"></i><span>Laporan</span> </a>
+          <ul class="dropdown-menu">
+            @role(['super-admin','admin'])
+              <li><a href="{{ route('laporan.bulanan') }}">Laporan Kehadiran Per OPD</a></li>
+            @endrole
+          </ul>
+        </li>
         <li><a href="shortcodes.html"><i class="icon-code"></i><span>Shortcodes</span> </a> </li>
         <li class="dropdown"><a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-long-arrow-down"></i><span>Drops</span> <b class="caret"></b></a>
           <ul class="dropdown-menu">
