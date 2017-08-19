@@ -27,6 +27,7 @@
                               <th></th>
                               <th></th>
                               <th>Nama</th>
+                              <th>Symbol</th>
                           </tr>
                       </thead>
                   </table>
@@ -122,6 +123,7 @@ $(function() {
             { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
             { data: 'id', name: 'id', visible: false },
             { data: 'name', name: 'name' },
+            { data: 'symbol', name: 'symbol' },
         ]
     });
 

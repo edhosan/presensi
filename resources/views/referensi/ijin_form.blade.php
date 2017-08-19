@@ -34,6 +34,20 @@
                             </div>
                         </div>
 
+                        <div class="control-group {{ $errors->has('symbol') ? 'error' : '' }}">
+                            <label for="symbol" class="control-label">Symbol</label>
+
+                            <div class="controls">
+                                <input id="symbol" name="symbol" type="text" class="span1" value="{{ $data->symbol or old('symbol') }}">
+
+                                @if ($errors->has('symbol'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('symbol') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-actions">
                           <button type="submit" class="btn btn-primary">Simpan</button>
                           <a href="{{ route('ref_ijin.list') }} " class="btn">Batal</a>

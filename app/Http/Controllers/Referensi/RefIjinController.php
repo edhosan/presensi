@@ -10,7 +10,8 @@ use Yajra\Datatables\Datatables;
 class RefIjinController extends Controller
 {
   private $rules = [
-    'name'  => 'required'
+    'name'  => 'required',
+    'symbol' => 'required'
   ];
 
   public function index()
@@ -35,7 +36,8 @@ class RefIjinController extends Controller
     $this->validate($request, $this->rules);
 
     RefIjin::create([
-      'name' => $request->name
+      'name' => $request->name,
+      'symbol' => $request->symbol
     ]);
 
     return redirect('ref_ijin_list')->with('success','Data berhasil disimpan!');
@@ -48,7 +50,8 @@ class RefIjinController extends Controller
     $ref_ijin = RefIjin::find($request->id);
 
     $ref_ijin->update([
-      'name' => $request->name
+      'name' => $request->name,
+      'symbol' => $request->symbol
     ]);
 
     return redirect('ref_ijin_list')->with('success','Data berhasil disimpan!');

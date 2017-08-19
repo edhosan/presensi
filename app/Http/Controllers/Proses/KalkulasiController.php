@@ -103,6 +103,7 @@ class KalkulasiController extends Controller
 
           $tanggal = Carbon::parse($jadwal->tanggal);
           $hari_id = $tanggal->format('N');
+          $status = '';
           $hari = Hari::where('hari', $hari_id)
                   ->where('jadwal_id',$jadwal->jadwal_id)
                   ->first();
@@ -115,6 +116,7 @@ class KalkulasiController extends Controller
             $toleransi_pulang = Carbon::parse($hari->toleransi_pulang);
             $jp = $jp->subMinutes($toleransi_pulang->minute);
             $in = Carbon::createFromTime(0, 0, 0);
+            $out = Carbon::createFromTime(0, 0, 0);
             $jam_kerja = Carbon::createFromTime(0, 0, 0);
 
             foreach ($log as $authlog) {
@@ -157,6 +159,9 @@ class KalkulasiController extends Controller
                 ]);
               }
             }
+          }
+          else{
+            PegawaiJadwal::find($jadwal->id)->update(['status' => 'L']);
           }
         }
 

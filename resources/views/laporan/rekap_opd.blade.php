@@ -1,3 +1,28 @@
+@php
+  $bulan = [
+    '1' =>  'Januari',
+    '2' =>  'Februari',
+    '3' =>  'Maret',
+    '4' =>  'April',
+    '5' =>  'Mei',
+    '6' =>  'Juni',
+    '7' =>  'Juli',
+    '8' =>  'Agustus',
+    '9' =>  'September',
+    '10'  =>  'Oktober',
+    '11'  =>  'November',
+    '12'  =>  'Desember'
+  ];
+
+  $year = [];
+  $t_year = Carbon\Carbon::now();
+  $i_year = date("Y");
+  for($i=0;$i<=4;$i++){
+    $i_year= $i_year - 1;
+    $year[$i_year+1] = $i_year+1;
+  }
+@endphp
+
 @extends('layouts.app')
 @push('css')
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
@@ -37,32 +62,21 @@
                           </div>
                       </div>
 
-                      <div class="control-group {{ $errors->has('start') ? 'error' : '' }} {{ $errors->has('end') ? 'error' : '' }}">
-                          <label for="start" class="control-label">Tanggal</label>
+                      <div class="control-group {{ $errors->has('bulan') ? 'error' : '' }} {{ $errors->has('tahun') ? 'error' : '' }}">
+                          <label for="start" class="control-label">Bulan</label>
                           <div class="controls controls-row">
-                            @php
-                              $start = old('start');
-                              if(!empty($data))
-                                $start = Carbon\Carbon::parse($data['start'])->format('d-m-Y');
-                            @endphp
-                            <input id="start" type="text" class="span2" name="start" value="{{ $start }}">
-                            &nbsp;s/d&nbsp;
-                            @php
-                              $end = old('end');
-                              if(!empty($data))
-                                $end = Carbon\Carbon::parse($data['end'])->format('d-m-Y');
-                            @endphp
-                            <input id="end" type="text" class="span2" name="end" value="{{ $end }}">
+                            {{ Form::select('bulan', $bulan, old('bulan'), ['id' => 'bulan', 'placeholder' => "Please Select", 'class' => 'span2']) }}
+                            {{ Form::select('tahun', $year, old('tahun'), ['id' => 'tahun', 'placeholder' => "Please Select"]) }}
 
-                            @if ($errors->has('start'))
+                            @if ($errors->has('bulan'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('start') }}</strong>
+                                    <strong>{{ $errors->first('bulan') }}</strong>
                                 </span>
                             @endif
 
-                            @if ($errors->has('end'))
+                            @if ($errors->has('tahun'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('end') }}</strong>
+                                    <strong>{{ $errors->first('tahun') }}</strong>
                                 </span>
                             @endif
                           </div>

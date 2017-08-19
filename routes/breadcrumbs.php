@@ -170,7 +170,7 @@ Breadcrumbs::register('laporan.bulanan', function($breadcrumbs)
 Breadcrumbs::register('laporan.bulanan.view', function($breadcrumbs)
 {
     $breadcrumbs->parent('laporan.bulanan');
-    $breadcrumbs->push('Cetak Laporan Kehadiran Per OPD', route('laporan.bulanan'));
+    $breadcrumbs->push('Cetak Laporan Kehadiran Bulanan', route('laporan.bulanan'));
 });
 
 

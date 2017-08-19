@@ -33,7 +33,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-bar-chart"></i><span>Laporan</span> </a>
           <ul class="dropdown-menu">
             @role(['super-admin','admin'])
-              <li><a href="{{ route('laporan.bulanan') }}">Laporan Kehadiran Per OPD</a></li>
+              <li><a href="{{ route('laporan.bulanan') }}">Laporan Kehadiran Bulanan</a></li>
             @endrole
           </ul>
         </li>

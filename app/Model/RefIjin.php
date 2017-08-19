@@ -8,7 +8,7 @@ class RefIjin extends Model
 {
   protected $table = 'ref_ijin';
 
-  protected $fillable = ['name'];
+  protected $fillable = ['name','symbol'];
 
   public function ketidakhadiran()
   {
