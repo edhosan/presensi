@@ -95,7 +95,8 @@ class KalkulasiController extends Controller
                       'peg_jadwal.out' => '00:00:00',
                       'peg_jadwal.terlambat' => 0,
                       'peg_jadwal.pulang_awal' => 0,
-                      'peg_jadwal.jam_kerja' => '00:00:00'
+                      'peg_jadwal.jam_kerja' => '00:00:00',
+                      'status'  => ''
                     ]);
 
       foreach ($peg_jadwal as $jadwal) {
@@ -105,17 +106,12 @@ class KalkulasiController extends Controller
 
         $tanggal = Carbon::parse($jadwal->tanggal);
         $hari_id = $tanggal->format('N');
-        $status_hadir = '';
         $hari = Hari::where('hari', $hari_id)
                 ->where('jadwal_id',$jadwal->jadwal_id)
                 ->first();
 
         if(!empty($jadwal->event_id)){
-          PegawaiJadwal::find($jadwal->id)->update(['status' => 'L']);
-        }
-
-        if($jadwal->ketidakhadiran_id != 0) {
-          PegawaiJadwal::find($jadwal->id)->update(['status' => $jadwal->symbol]);
+          PegawaiJadwal::where('id',$jadwal->id)->update(['status' => 'L']);
         }
 
         if($hari){
@@ -128,6 +124,7 @@ class KalkulasiController extends Controller
           $in = Carbon::createFromTime(0, 0, 0);
           $out = Carbon::createFromTime(0, 0, 0);
           $jam_kerja = Carbon::createFromTime(0, 0, 0);
+          $status_hadir = '';
 
           foreach ($log as $authlog) {
             $date = Carbon::parse($authlog->TransactionTime);
@@ -138,7 +135,6 @@ class KalkulasiController extends Controller
             $scan_out2 = Carbon::parse($hari->scan_out2);
             $terlambat = Carbon::createFromTime(0, 0, 0);
             $pulang_awal = Carbon::createFromTime(0, 0, 0);
-
             $peg_jadwal = PegawaiJadwal::find($jadwal->id);
 
             if($time->gte($scan_in1) && $time->lte($scan_in2)){
@@ -180,17 +176,25 @@ class KalkulasiController extends Controller
               PegawaiJadwal::find($jadwal->id)->update(['status' => 'H']);
             }
           }
+
+          if($in->toTimeString() == '00:00:00' || $out->toTimeString() == '00:00:00'){
+              PegawaiJadwal::find($jadwal->id)->update(['status' => 'A']);
+          }
+
+          if($jadwal->ketidakhadiran_id != 0) {
+            PegawaiJadwal::where('id',$jadwal->id)->update(['ketidakhadiran_id' => $jadwal->ketidakhadiran_id, 'status' => $jadwal->symbol]);
+          }
         }
         else{
           PegawaiJadwal::find($jadwal->id)->update(['status' => 'L']);
         }
-      
+
         $status = round($i * 100 / $total);
         Session::put('progress', $status);
         $i++;
       }
 
-      return response()->json($peg_jadwal);
+      return response()->json($status);
     }
 
     public function apiGetProgress()
