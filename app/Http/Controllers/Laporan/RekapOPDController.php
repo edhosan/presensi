@@ -91,6 +91,11 @@ class RekapOPDController extends Controller
 
         $no++;
       }
-      return view('laporan.rpt_opd')->withOpd($opd)->withBulan($request->bulan)->withTahun($request->tahun)->withData($data);
+      return view('laporan.cetak_laporan_bulanan')->withOpd($opd)->withBulan($request->bulan)->withTahun($request->tahun)->withData($data);
+    }
+
+    public function cetak()
+    {
+      return view('laporan.cetak_laporan_bulanan');
     }
 }

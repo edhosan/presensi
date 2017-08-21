@@ -92,4 +92,6 @@ Route::group(['middleware' => 'auth'], function() {
 
   Route::get('lap_bulanan', 'Laporan\RekapOPDController@index')->name('laporan.bulanan');
   Route::post('lap_bulanan_view', 'Laporan\RekapOPDController@viewReport')->name('laporan.bulanan.report');
+
+  Route::get('cetak_laporan_bulanan', 'Laporan\RekapOPDController@cetak')->name('cetak.laporan.bulanan');
 });

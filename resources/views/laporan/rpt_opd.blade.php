@@ -95,6 +95,12 @@ $tot_day = $date->endOfMonth()->day;
                 <small>I = Ijin&nbsp;&nbsp;&nbsp;S = Sakit&nbsp;&nbsp;&nbsp;C = Cuti&nbsp;&nbsp;&nbsp;DL = Dinas Luar&nbsp;&nbsp;&nbsp;TB = Tugas Belajar</small>
               </blockquote>
             </div>
+
+            <div class="span12">
+              <div class="form-actions">
+                <a href="{{ route('cetak.laporan.bulanan') }}" class="btn btn-primary" target="_blank">Cetak</a>
+              </div>
+            </div>
           </div>
 
       </div>

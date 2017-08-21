@@ -27,3 +27,5 @@ mix.copyDirectory('node_modules/datatables.net-select/js', 'public/datatables.ne
 mix.copyDirectory('node_modules/datatables.net-select-dt/css', 'public/datatables.net-select-dt');
 mix.copyDirectory('node_modules/toastr/build', 'public/toastr');
 mix.copyDirectory('node_modules/bootstrap-timepicker', 'public/bootstrap-timepicker');
+mix.copyDirectory('node_modules/paper-css', 'public/paper-css');
+mix.copyDirectory('node_modules/normalize.css', 'public/normalize.css');
