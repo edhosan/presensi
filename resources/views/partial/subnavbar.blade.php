@@ -34,6 +34,7 @@
           <ul class="dropdown-menu">
             @role(['super-admin','admin'])
               <li><a href="{{ route('laporan.bulanan') }}">Laporan Kehadiran Bulanan</a></li>
+              <li><a href="{{ route('laporan.harian') }}">Laporan Kehadiran Harian</a></li>
             @endrole
           </ul>
         </li>

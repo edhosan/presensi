@@ -40,11 +40,11 @@
               <div class="widget">
                 <div class="widget-header">
                   <i class="icon-file"></i>
-                  <h3>Laporan Kehadiran Per OPD</h3>
+                  <h3>Laporan Kehadiran Bulanan</h3>
                 </div>
 
                 <div class="widget-content">
-                  <form class="form-horizontal" role="form" method="POST" id="form" action="{{ route('laporan.bulanan.report') }}" novalidate="novalidate">
+                  <form target="_blank" class="form-horizontal" role="form" method="POST" id="form" action="{{ route('laporan.bulanan.report') }}" novalidate="novalidate">
                     {{ csrf_field() }}
                     <fieldset>
                       <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
@@ -83,7 +83,7 @@
                       </div>
 
                       <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Tampilkan</button>
+                        <button type="submit" class="btn btn-primary">Cetak</button>
                       </div>
                     </fieldset>
 

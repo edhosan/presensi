@@ -30,7 +30,7 @@
               <span class="icon-bar"></span>
             </a>
             <a class="brand" href="#">
-              SIM - PRESENSI
+             SIM - PRESENSI
             </a>
 
             @if (Auth::check())
