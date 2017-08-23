@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="widget-content">
-                  <form class="form-horizontal" role="form" method="POST" id="form" action="{{ route('cetak.laporan.harian') }}" novalidate="novalidate">
+                  <form class="form-horizontal" target="_blank" role="form" method="POST" id="form" action="{{ route('cetak.laporan.harian') }}" novalidate="novalidate">
                     {{ csrf_field() }}
                     <fieldset>
                       <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">

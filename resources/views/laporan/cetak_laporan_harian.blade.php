@@ -46,29 +46,50 @@
                 </tr>
                 </thead>
                 <tbody>
-                  @for($i=1;$i<=$interval;$i++)
+                  @for($i=0;$i<=$interval;$i++)
                     <tr>
                       <td colspan='10' class="sub-title"><h5>Tanggal: {{ $start->format('d-m-Y') }}</h5></td>
                     </tr>
+                    @if(!empty($data[$start->day]['event']->event_id))
+                      <tr>
+                        <td colspan='10'>{{ $data[$start->day]['event']->title }}</td>
+                      </tr>
+                    @elseif($data[$start->day]['jadwal']->isEmpty())
+                      <tr>
+                        <td colspan='10'>Hari Libur</td>
+                      </tr>
+                    @endif
                     @php $no = 1 @endphp
-                    @foreach($data[$start->day] as $value)
-                    <tr>
-                      <td align="center">{{ $no }}</td>
-                      <td>{{ $value->nama }}</td>
-                      <td align="center">{{ $value->nip }}</td>
-                      <td align="center">{{ $value->jam_masuk }}</td>
-                      <td align="center">{{ $value->jam_pulang }}</td>
-                    </tr>
-                    @php $no++ @endphp
+                    @foreach($data[$start->day]['jadwal'] as $value)
+                      <tr>
+                        <td align="center">{{ $no }}</td>
+                        <td>{{ $value->nama }}</td>
+                        <td align="center">{{ $value->nip }}</td>
+                        <td align="center">{{ $value->jam_masuk }}</td>
+                        <td align="center">{{ $value->jam_pulang }}</td>
+                        <td align="center">{{ $value->in }}</td>
+                        <td align="center">{{ $value->out }}</td>
+                        <td align="center">{{ $value->terlambat }}</td>
+                        <td align="center">{{ $value->pulang_awal }}</td>
+                        @if(!empty($value->name))
+                          <td align="center">{{ $value->name }}</td>
+                        @elseif($value->status === 'H')
+                          <td align="center">Hadir</td>
+                        @elseif($value->status === 'HT')
+                          <td align="center">Hadir Terlambat</td>
+                        @elseif($value->status === 'HP')
+                            <td align="center">Hadir Pulang Awal</td>
+                        @elseif($value->status === 'A')
+                            <td align="center">Absent</td>
+                        @else
+                            <td align="center">N/A</td>
+                        @endif
+                      </tr>
+                      @php $no++ @endphp
                     @endforeach
                     @php $start->addDay() @endphp
                   @endfor
                 </tbody>
-                <tfoot>
-                  <tr>
-                    <td>Test</td>
-                  </tr>
-                </tfoot>
             </table>
           </td>
         </tr>
