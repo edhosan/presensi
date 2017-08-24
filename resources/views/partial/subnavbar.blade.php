@@ -29,12 +29,13 @@
             @endrole
           </ul>
         </li>
-        <li class="dropdown {{ active(['laporan.bulanan']) }}">
+        <li class="dropdown {{ active(['laporan.bulanan','laporan.harian','laporan.ketidakhadiran']) }}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-bar-chart"></i><span>Laporan</span> </a>
           <ul class="dropdown-menu">
             @role(['super-admin','admin'])
               <li><a href="{{ route('laporan.bulanan') }}">Laporan Kehadiran Bulanan</a></li>
               <li><a href="{{ route('laporan.harian') }}">Laporan Kehadiran Harian</a></li>
+              <li><a href="{{ route('laporan.ketidakhadiran') }}">Laporan Ketidakhadiran Pegawai</a></li>
             @endrole
           </ul>
         </li>

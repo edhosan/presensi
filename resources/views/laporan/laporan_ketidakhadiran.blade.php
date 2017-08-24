@@ -1,30 +1,7 @@
-@php
-  $bulan = [
-    '1' =>  'Januari',
-    '2' =>  'Februari',
-    '3' =>  'Maret',
-    '4' =>  'April',
-    '5' =>  'Mei',
-    '6' =>  'Juni',
-    '7' =>  'Juli',
-    '8' =>  'Agustus',
-    '9' =>  'September',
-    '10'  =>  'Oktober',
-    '11'  =>  'November',
-    '12'  =>  'Desember'
-  ];
-
-  $year = [];
-  $t_year = Carbon\Carbon::now();
-  $i_year = date("Y");
-  for($i=0;$i<=4;$i++){
-    $i_year= $i_year - 1;
-    $year[$i_year+1] = $i_year+1;
-  }
-@endphp
-
 @extends('layouts.app')
 @push('css')
+<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.min.css') }}" rel="stylesheet">
+<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.themes.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
@@ -34,17 +11,17 @@
 <div class="main">
   <div class="main-inner">
       <div class="container">
-          {!! Breadcrumbs::render('laporan.bulanan') !!}
+          {!! Breadcrumbs::render('laporan.ketidakhadiran') !!}
           <div class="row">
             <div class="span12">
               <div class="widget">
                 <div class="widget-header">
                   <i class="icon-file"></i>
-                  <h3>Laporan Kehadiran Bulanan</h3>
+                  <h3>Cetak Laporan Ketidakhadiran Pegawai</h3>
                 </div>
 
                 <div class="widget-content">
-                  <form target="_blank" class="form-horizontal" role="form" method="POST" id="form" action="{{ route('laporan.bulanan.report') }}" novalidate="novalidate">
+                  <form class="form-horizontal" target="_blank" role="form" method="POST" id="form" action="{{ route('cetak.laporan.ketidakhadiran') }}" novalidate="novalidate">
                     {{ csrf_field() }}
                     <fieldset>
                       <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
@@ -62,21 +39,32 @@
                           </div>
                       </div>
 
-                      <div class="control-group {{ $errors->has('bulan') ? 'error' : '' }} {{ $errors->has('tahun') ? 'error' : '' }}">
-                          <label for="start" class="control-label">Bulan</label>
+                      <div class="control-group {{ $errors->has('start') ? 'error' : '' }} {{ $errors->has('end') ? 'error' : '' }}">
+                          <label for="start" class="control-label">Tanggal</label>
                           <div class="controls controls-row">
-                            {{ Form::select('bulan', $bulan, old('bulan'), ['id' => 'bulan', 'placeholder' => "Please Select", 'class' => 'span2']) }}
-                            {{ Form::select('tahun', $year, old('tahun'), ['id' => 'tahun', 'placeholder' => "Please Select"]) }}
+                            @php
+                              $start = old('start');
+                              if(!empty($data))
+                                $start = Carbon\Carbon::parse($data['start'])->format('d-m-Y');
+                            @endphp
+                            <input id="start" type="text" class="span2" name="start" value="{{ $start }}">
+                            &nbsp;s/d&nbsp;
+                            @php
+                              $end = old('end');
+                              if(!empty($data))
+                                $end = Carbon\Carbon::parse($data['end'])->format('d-m-Y');
+                            @endphp
+                            <input id="end" type="text" class="span2" name="end" value="{{ $end }}">
 
-                            @if ($errors->has('bulan'))
+                            @if ($errors->has('start'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('bulan') }}</strong>
+                                    <strong>{{ $errors->first('start') }}</strong>
                                 </span>
                             @endif
 
-                            @if ($errors->has('tahun'))
+                            @if ($errors->has('end'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('tahun') }}</strong>
+                                    <strong>{{ $errors->first('end') }}</strong>
                                 </span>
                             @endif
                           </div>
@@ -99,6 +87,8 @@
 @endsection
 
 @push('script')
+<script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
+<script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
 <script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
 <script>
@@ -113,6 +103,7 @@ $(function() {
 
   $('#start').datepicker( formatCalendar );
   $('#end').datepicker( formatCalendar );
+
 
 });
 

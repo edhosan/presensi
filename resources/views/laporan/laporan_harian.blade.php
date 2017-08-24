@@ -86,11 +86,7 @@
                       </div>
 
                       <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Proses</button>
-                      </div>
-
-                      <div class="progress progress-striped active" id="progressouter">
-                       <div class="bar" id="progress"></div>
+                        <button type="submit" class="btn btn-primary">Cetak Laporan</button>
                       </div>
                     </fieldset>
 

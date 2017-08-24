@@ -180,5 +180,12 @@ Breadcrumbs::register('laporan.harian', function($breadcrumbs)
     $breadcrumbs->push('Cetak Laporan Kehadiran Harian', route('laporan.harian'));
 });
 
+// Home > Laporan Ketidakhadiran Pegawai
+Breadcrumbs::register('laporan.ketidakhadiran', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Cetak Laporan Ketidakhadiran Pegawai', route('laporan.ketidakhadiran'));
+});
+
 
 ?>

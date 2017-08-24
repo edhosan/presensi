@@ -3,6 +3,7 @@
 <link href="{{ asset('datatables.net-dt/css/jquery.dataTables.css') }}" rel="stylesheet">
 <link href="{{ asset('datatables.net-buttons-dt/buttons.dataTables.css') }}" rel="stylesheet">
 <link href="{{ asset('datatables.net-select-dt/select.dataTables.css') }}" rel="stylesheet">
+<link href="{{ asset('css/rowGroup.dataTables.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
 @if(Auth::check())
@@ -51,6 +52,7 @@
 <script src="{{ asset('js/twitter.datatables.js') }}"></script>
 <script src="{{ asset('datatables.net-buttons/dataTables.buttons.js') }}"></script>
 <script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
+<script src="{{ asset('js/dataTables.rowGroup.min.js') }}"></script>
 <script>
 $(function() {
     var table = $('#datainduk-table').DataTable({
@@ -128,12 +130,27 @@ $(function() {
             { data: 'id', name: 'id', visible: false },
             { data: 'nip', name: 'nip' },
             { data: 'id_finger', name: 'id_finger' },
-            { data: 'nama_unker', name: 'nama_unker', width:'250px' },
+            { data: 'nama_unker', name: 'nama_unker', width:'250px', visible: false },
             { data: 'nama', name: 'nama', width: '150px' },
             { data: 'pangkat', name: 'pangkat', width: '140px' },
             { data: 'nama_jabatan', name: 'nama_jabatan', width: '300px' },
             { data: 'terminal', name: 'terminal', orderable: false }
-        ]
+        ],
+        drawCallback: function( settings ){
+          var api = this.api();
+          var rows = api.rows( {page:'current'} ).nodes();
+          var last=null;
+
+          api.column(4, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group"><td colspan="9">'+group+'</td></tr>'
+                    );
+
+                    last = group;
+                }
+            } );
+        }
     });
 
     table.on( 'select', function (e, dt, type, indexes) {

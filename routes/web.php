@@ -96,4 +96,7 @@ Route::group(['middleware' => 'auth'], function() {
 
   Route::get('laporan_harian', 'Laporan\LapHarianController@index')->name('laporan.harian');
   Route::post('cetak_laporan_harian', 'Laporan\LapHarianController@cetak')->name('cetak.laporan.harian');
+
+  Route::get('laporan_ketidakhadiran', 'Laporan\LapKetidakhadiranController@index')->name('laporan.ketidakhadiran');
+  Route::post('cetak_laporan_ketidakhadiran', 'Laporan\LapKetidakhadiranController@cetak')->name('cetak.laporan.ketidakhadiran');
 });

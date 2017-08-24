@@ -3,6 +3,7 @@
 <link href="{{ asset('datatables.net-dt/css/jquery.dataTables.css') }}" rel="stylesheet">
 <link href="{{ asset('datatables.net-buttons-dt/buttons.dataTables.css') }}" rel="stylesheet">
 <link href="{{ asset('datatables.net-select-dt/select.dataTables.css') }}" rel="stylesheet">
+<link href="{{ asset('css/rowGroup.dataTables.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
 @if(Auth::check())
@@ -51,6 +52,7 @@
 <script src="{{ asset('js/twitter.datatables.js') }}"></script>
 <script src="{{ asset('datatables.net-buttons/dataTables.buttons.js') }}"></script>
 <script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
+<script src="{{ asset('js/dataTables.rowGroup.min.js') }}"></script>
 <script>
 $(function() {
     function format ( d ) {
@@ -180,13 +182,28 @@ $(function() {
             { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
             { className: 'details-control', orderable: false, data: null, defaultContent: '', searchable: false },
             { data: 'id', name: 'id', visible: false },
-            { data: 'nama_unker', name: 'nama_unker',width:'250px' },
+            { data: 'nama_unker', name: 'nama_unker',width:'250px', visible: false },
             { data: 'name', name: 'name' },
             { data: 'title', name: 'title' },
             { data: 'start', name: 'start' },
             { data: 'end', name: 'end' },
             { data: 'action', name: 'action', orderable: false, searchable: false}
-        ]
+        ],
+        drawCallback: function( settings ){
+          var api = this.api();
+          var rows = api.rows( {page:'current'} ).nodes();
+          var last=null;
+
+          api.column(3, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group"><td colspan="9">'+group+'</td></tr>'
+                    );
+
+                    last = group;
+                }
+            } );
+        }
     });
 
     table.on( 'select', function (e, dt, type, indexes) {
@@ -218,6 +235,17 @@ $(function() {
            tr.addClass('shown');
        }
    } );
+
+   // Order by the grouping
+    $('#jadwal-table').on( 'click', 'tr.group', function () {
+        var currentOrder = table.order()[0];
+        if ( currentOrder[0] === 2 && currentOrder[1] === 'asc' ) {
+            table.order( [ 3, 'desc' ] ).draw();
+        }
+        else {
+            table.order( [ 3, 'asc' ] ).draw();
+        }
+    } );
 });
 </script>
 @endpush
