@@ -15,9 +15,13 @@
     <table>
       <thead>
         <tr>
+          <td align="right" width="5">
+            <img src="{{ asset('images/logo.png') }}" alt="" height="62">
+          </td>
           <td align="center" >
-            <h4>LAPORAN KEHADIRAN</h4>
-            <h3>{{ $opd->nama_unker }}</h3>
+            <h2>PEMERINTAH KABUPATEN BERAU</h2>
+            <h1>{{ $opd->nama_unker }}</h1>
+            <h4>LAPORAN KEHADIRAN HARIAN</h4>
             <h5>Tanggal: {{ $start->format('d-m-Y')  }}&nbsp;s/d&nbsp;{{ $end->format('d-m-Y') }}</h5>
             <br>
           </td>
@@ -25,7 +29,7 @@
       </thead>
       <tbody>
         <tr>
-          <td align="center" >
+          <td align="center" colspan="2">
             <table class="border thick data">
               <thead>
                 <tr class="thick">

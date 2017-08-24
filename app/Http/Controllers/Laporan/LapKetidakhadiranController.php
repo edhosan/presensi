@@ -57,13 +57,14 @@ class LapKetidakhadiranController extends Controller
              ->where('id_unker', $request->opd)
              ->first();
 
-      $peg_jadwal = PegawaiJadwal::join('peg_jadwal.ketidakhadiran_id')
+      $peg_jadwal = PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
+                    ->join('ketidakhadiran','ketidakhadiran.id','=','peg_jadwal.ketidakhadiran_id')
+                    ->join('ref_ijin','ref_ijin.id','=','ketidakhadiran.keterangan_id')
                     ->where('peg_jadwal.tanggal','>=',$start->format('Y-m-d'))
                     ->where('peg_jadwal.tanggal','<=',$end->format('Y-m-d'))
+                    ->select('peg_data_induk.nip','peg_data_induk.nama','peg_jadwal.tanggal','ref_ijin.name','ketidakhadiran.keperluan')
                     ->get();
 
-
-
-     return view('laporan.cetak_laporan_ketidakhadiran')->withOpd($opd)->withStart($request->start)->withEnd($request->end);
+     return view('laporan.cetak_laporan_ketidakhadiran')->withOpd($opd)->withStart($request->start)->withEnd($request->end)->withData($peg_jadwal);
     }
 }

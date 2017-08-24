@@ -14,10 +14,14 @@
 @section('content')
 <table>
   <thead>
-    <tr>
+    <tr valign="middle">
+      <td align="right" width="5">
+        <img src="{{ asset('images/logo.png') }}" alt="" height="62">
+      </td>
       <td align="center">
-        <h4>LAPORAN KETIDAKHADIRAN</h4>
-        <h3>{{ $opd->nama_unker }}</h3>
+        <h3>PEMERINTAH KABUPATEN BERAU</h3>
+        <h1>{{ $opd->nama_unker }}</h1>
+        <h4>LAPORAN KETIDAKHADIRAN PEGAWAI</h4>
         <h5>Tanggal: {{ $start->format('d-m-Y')  }}&nbsp;s/d&nbsp;{{ $end->format('d-m-Y') }}</h5>
         <br>
       </td>
@@ -25,22 +29,31 @@
   </thead>
   <tbody>
     <tr>
-      <td align="center">
+      <td align="center" colspan="2">
         <table class="border thick data">
           <thead>
             <tr class="thick">
               <th width="5">NO</th>
+              <th>TANGGAL</th>
               <th>NAMA</th>
               <th>NIP</th>
-              <th>TANGGAL</th>
               <th>KETERANGAN</th>
               <th>ALASAN TIDAK HADIR</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td></td>
-            </tr>
+            @php $no = 1 @endphp
+            @foreach($data as $value)
+              <tr>
+                <td align="center">{{ $no }}</td>
+                <td align="center">{{ $value->tanggal }}</td>
+                <td>{{ $value->nama }}</td>
+                <td align="center">{{ $value->nip }}</td>
+                <td align="center">{{ $value->name }}</td>
+                <td>{{ $value->keperluan }}</td>
+              </tr>
+            @php $no++ @endphp
+            @endforeach
           </tbody>
         </table>
       </td>

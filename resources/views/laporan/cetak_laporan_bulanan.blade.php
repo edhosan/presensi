@@ -29,9 +29,13 @@ $tot_day = $date->endOfMonth()->day;
 <table>
   <thead>
     <tr>
+      <td align="right" width="5">
+        <img src="{{ asset('images/logo.png') }}" alt="" height="62">
+      </td>
       <td align="center">
-        <h4>LAPORAN KETIDAKHADIRAN PEGAWAI</h4>
-        <h3>{{ $opd->nama_unker }}</h3>
+        <h1>PEMERINTAH KABUPATEN BERAU</h1>
+        <h2>{{ $opd->nama_unker }}</h2>
+        <h4>REKAPITULASI KEHADIRAN PEGAWAI</h4>
         <h5>Bulan {{ $month_name[$bulan]  }}&nbsp;-&nbsp;{{ $tahun }}</h5>
         <br>
       </td>
@@ -39,7 +43,7 @@ $tot_day = $date->endOfMonth()->day;
   </thead>
   <tbody>
     <tr>
-      <td align="center">
+      <td align="center" colspan="2">
         <table class="border thick data">
           <thead>
             <tr class="thick">
