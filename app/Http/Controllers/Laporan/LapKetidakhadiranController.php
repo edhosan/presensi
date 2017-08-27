@@ -60,6 +60,7 @@ class LapKetidakhadiranController extends Controller
       $peg_jadwal = PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
                     ->join('ketidakhadiran','ketidakhadiran.id','=','peg_jadwal.ketidakhadiran_id')
                     ->join('ref_ijin','ref_ijin.id','=','ketidakhadiran.keterangan_id')
+                    ->where('peg_data_induk.id_unker', $request->opd)
                     ->where('peg_jadwal.tanggal','>=',$start->format('Y-m-d'))
                     ->where('peg_jadwal.tanggal','<=',$end->format('Y-m-d'))
                     ->select('peg_data_induk.nip','peg_data_induk.nama','peg_jadwal.tanggal','ref_ijin.name','ketidakhadiran.keperluan')

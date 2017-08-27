@@ -24,14 +24,12 @@
   <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </a>
             <a class="brand" href="#">
-             SIM - PRESENSI
+              <img src="{{ asset('images/logo.png') }}" alt="" height="42" width="42">
+                <em>Attendance System</em>
+              </img>
             </a>
+
 
             @if (Auth::check())
               <div class="nav-collapse">
