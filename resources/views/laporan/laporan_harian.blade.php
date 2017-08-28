@@ -1,7 +1,5 @@
 @extends('layouts.app')
 @push('css')
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.min.css') }}" rel="stylesheet">
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.themes.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
 @endpush
@@ -75,10 +73,8 @@
                           <label for="nama" class="control-label">Nama / NIP Pegawai</label>
 
                           <div class="controls">
-                              <input id="nama" type="text" class="span5 autocomplete" name="nama" value="{{ $data->pegawai->nama or old('nama') }}" autofocus>
-                              <input type="hidden" name="id_peg" id="id_peg" value="{{ $data->peg_id or old('id_peg') }}">
-
-                              <select name="peg" id="peg" class="span5"></select>
+                              <select name="peg" id="peg" class="span5">                                 
+                              </select>
 
                               @if ($errors->has('nama'))
                                   <span class="help-block">
@@ -105,8 +101,6 @@
 @endsection
 
 @push('script')
-<script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
-<script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
 <script src="{{ asset('js/select2.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
 <script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
@@ -135,7 +129,8 @@ $(function() {
       data: function(params){
         return {
           q: params.term,
-          page: params.page
+          page: params.page,
+          opd: $('#opd').val()
         };
       },
       processResults: function(data, params) {
@@ -143,7 +138,7 @@ $(function() {
         return {
           results: data.data,
           pagination: {
-            more: (params.page * 2) < data.total
+            more: (params.page * 10) < data.per_page
           }
         };
       },
@@ -156,7 +151,7 @@ $(function() {
   })
 
   function formatRepo (repo) {
-      if (repo.loading) return repo.text;
+      if (repo.loading) return repo.nama;
 
       var markup = "<div class='select2-result-repository clearfix'>" +
         "<div class='select2-result-repository__meta'>" +
@@ -172,51 +167,11 @@ $(function() {
       "</div></div>";
 
       return markup;
-    }
+  }
 
-    function formatRepoSelection (repo) {
-      return repo.nama || repo.nip;
-    }
-
-
-  var optPeg = {
-      url: function(phrase) {
-        return "{{ url('api/getNamePeg?api_token=') }}{{ Auth::user()->api_token }}";
-      },
-
-      getValue: function(element) {
-        return element.nama;
-      },
-
-      ajaxSettings: {
-        dataType: "json",
-        method: "POST",
-        data: {
-          dataType: "json"
-        }
-      },
-
-      template: {
-        type: "description",
-        fields: {
-          description: "nip"
-        }
-      },
-
-      list: {
-        onSelectItemEvent: function() {
-          var value = $("#nama").getSelectedItemData();
-          $("#id_peg").val(value.id).trigger("change");
-        }
-      },
-
-      preparePostData: function(data) {
-        data.phrase = $("#nama").val();
-        return data;
-      }
-    };
-
-    $("#nama").easyAutocomplete(optPeg);
+  function formatRepoSelection (repo) {
+    return repo.nama || repo.nip;
+  }
 
 
 });

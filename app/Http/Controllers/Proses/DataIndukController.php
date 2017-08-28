@@ -252,6 +252,10 @@ class DataIndukController extends Controller
     {
       $unker = Auth::user()->unker;
 
+      if($request->exists('opd')){
+        $unker = $request->opd;
+      }
+
       $term = trim($request->q);
 
       if(empty($term)) {
@@ -263,7 +267,6 @@ class DataIndukController extends Controller
         $page = $request->page;
       }
 
-      $row = $page * 2;
       $dataInduk = DataInduk::orderBy('nama', 'asc')
                   ->select('id','nama','nip')
                   ->where(function($query) use($unker) {
@@ -278,7 +281,7 @@ class DataIndukController extends Controller
                         ->orWhere('nip', 'like', $value);
                     }
                   })
-                  ->paginate($row);
+                  ->paginate($page * 10);
 
       return response()->json($dataInduk);
     }
