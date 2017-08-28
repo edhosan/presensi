@@ -247,4 +247,39 @@ class DataIndukController extends Controller
 
       return response()->json($jabatan->get());
     }
+
+    public function apiSearchPegawai(Request $request)
+    {
+      $unker = Auth::user()->unker;
+
+      $term = trim($request->q);
+
+      if(empty($term)) {
+        return response()->json([]);
+      }
+
+      $page = 1;
+      if($request->exists('page')){
+        $page = $request->page;
+      }
+
+      $row = $page * 2;
+      $dataInduk = DataInduk::orderBy('nama', 'asc')
+                  ->select('id','nama','nip')
+                  ->where(function($query) use($unker) {
+                    if(!empty($unker)) {
+                      $query->where('id_unker', $unker);
+                    }
+                  })
+                  ->where(function($query) use($request) {
+                    if($request->exists('q')) {
+                      $value = "{$request->q}%";
+                      $query->where('nama', 'like', $value)
+                        ->orWhere('nip', 'like', $value);
+                    }
+                  })
+                  ->paginate($row);
+
+      return response()->json($dataInduk);
+    }
 }

@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @push('css')
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.min.css') }}" rel="stylesheet">
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.themes.min.css') }}" rel="stylesheet">
+<link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
@@ -88,7 +87,7 @@
 
 @push('script')
 <script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
-<script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
+<script src="{{ asset('js/select2.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
 <script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
 <script>
@@ -103,6 +102,11 @@ $(function() {
 
   $('#start').datepicker( formatCalendar );
   $('#end').datepicker( formatCalendar );
+  $('#opd').select2({
+    placeholder: "Pilih OPD",
+    allowClear: true
+  });
+
 
 
 });

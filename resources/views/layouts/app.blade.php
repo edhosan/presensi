@@ -25,8 +25,8 @@
       <div class="navbar-inner">
         <div class="container">
             <a class="brand" href="#">
-              <img src="{{ asset('images/logo.png') }}" alt="" height="42" width="42">
-                <em>Attendance System</em>
+              <img src="{{ asset('images/logo.png') }}" alt="" height="50" width="50">
+                <em>Attendance Information System</em>
               </img>
             </a>
 

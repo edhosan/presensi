@@ -58,4 +58,6 @@ Route::group(['middleware' => 'auth:api'], function() {
 
   Route::post('kalkulasi_proses', 'Proses\KalkulasiController@prosesKalkulasi')->name('kalkulasi.proses');
 
+  Route::get('search_peg', 'Proses\DataIndukController@apiSearchPegawai');
+
 });
