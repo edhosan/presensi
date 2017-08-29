@@ -262,11 +262,6 @@ class DataIndukController extends Controller
         return response()->json([]);
       }
 
-      $page = 1;
-      if($request->exists('page')){
-        $page = $request->page;
-      }
-
       $dataInduk = DataInduk::orderBy('nama', 'asc')
                   ->select('id','nama','nip')
                   ->where(function($query) use($unker) {
@@ -281,7 +276,7 @@ class DataIndukController extends Controller
                         ->orWhere('nip', 'like', $value);
                     }
                   })
-                  ->paginate($page * 10);
+                  ->paginate($request->per_page);
 
       return response()->json($dataInduk);
     }

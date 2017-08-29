@@ -73,7 +73,7 @@
                           <label for="nama" class="control-label">Nama / NIP Pegawai</label>
 
                           <div class="controls">
-                              <select name="peg" id="peg" class="span5">                                 
+                              <select name="peg[]" id="peg" class="span5" multiple="multiple">
                               </select>
 
                               @if ($errors->has('nama'))
@@ -122,6 +122,7 @@ $(function() {
 
   $('#peg').select2({
     placeholder: 'Pilih Pegawai',
+    allowClear: true,
     ajax: {
       url: "{{ url('api/search_peg?api_token=') }}{{ Auth::user()->api_token }}",
       dataType: 'json',
@@ -130,6 +131,7 @@ $(function() {
         return {
           q: params.term,
           page: params.page,
+          per_page: 10,
           opd: $('#opd').val()
         };
       },
@@ -138,7 +140,7 @@ $(function() {
         return {
           results: data.data,
           pagination: {
-            more: (params.page * 10) < data.per_page
+            more: (params.page * data.per_page) < data.total
           }
         };
       },

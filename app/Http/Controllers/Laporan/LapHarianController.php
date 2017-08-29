@@ -72,7 +72,7 @@ class LapHarianController extends Controller
                       ->where('peg_jadwal.tanggal','=', $start->format('Y-m-d'))
                       ->where(function($query) use($request) {
                         if($request->has('peg')) {
-                          $query->where('peg_jadwal.peg_id', $request->peg);
+                          $query->whereIn('peg_jadwal.peg_id', $request->peg);
                         }
                       })
                       ->orderBy('peg_data_induk.type','asc')
@@ -90,7 +90,7 @@ class LapHarianController extends Controller
                   ->where('peg_jadwal.tanggal','=', $start->format('Y-m-d'))
                   ->where(function($query) use($request) {
                     if($request->has('peg')) {
-                      $query->where('peg_jadwal.peg_id', $request->peg);
+                      $query->whereIn('peg_jadwal.peg_id', $request->peg);
                     }
                   })
                   ->select('peg_jadwal.event_id','event.title')

@@ -58,10 +58,10 @@ class KalkulasiController extends Controller
       });
 
       if($validator->fails()) {
+        Session::put('progress', -1);
         return response()->json($validator->messages(), 422);
       }
 
-      Session::put('progress', 0);
       $peg_jadwal = PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
                     ->leftJoin('ketidakhadiran','ketidakhadiran.id','=','peg_jadwal.ketidakhadiran_id')
                     ->leftJoin('ref_ijin','ref_ijin.id','=','ketidakhadiran.keterangan_id')
@@ -69,8 +69,8 @@ class KalkulasiController extends Controller
                     ->where('peg_jadwal.tanggal','>=', date('Y-m-d', strtotime($request->start)) )
                     ->where('peg_jadwal.tanggal','<=', date('Y-m-d', strtotime($request->end)) )
                     ->where(function($query) use($request) {
-                      if($request->has('id_peg')) {
-                        $query->where('peg_jadwal.peg_id', $request->id_peg);
+                      if($request->has('peg')) {
+                        $query->whereIn('peg_jadwal.peg_id', $request->peg);
                       }
                     })
                     ->select('peg_jadwal.id','peg_jadwal.peg_id','peg_jadwal.jadwal_id','peg_jadwal.ketidakhadiran_id','peg_jadwal.tanggal','peg_jadwal.event_id',
@@ -79,14 +79,16 @@ class KalkulasiController extends Controller
                     ->get();
 
       $total = $peg_jadwal->count();
+
       $i = 1;
+      Session::put('progress', 0);
       PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
                     ->where('peg_data_induk.id_unker','=', $request->opd)
                     ->where('peg_jadwal.tanggal','>=', date('Y-m-d', strtotime($request->start)) )
                     ->where('peg_jadwal.tanggal','<=', date('Y-m-d', strtotime($request->end)) )
                     ->where(function($query) use($request) {
-                      if($request->has('id_peg')) {
-                        $query->where('peg_jadwal.peg_id', $request->id_peg);
+                      if($request->has('peg')) {
+                        $query->whereIn('peg_jadwal.peg_id', $request->peg);
                       }
                     })
                     ->update([
