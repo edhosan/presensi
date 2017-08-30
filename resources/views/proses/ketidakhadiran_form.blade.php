@@ -22,7 +22,7 @@
                   {{ csrf_field() }}
                   <input type="hidden" name="id" value="{{ $data->id or 0 }}">
                   <fieldset>
-                    <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
+                  <!--  <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
                         <label for="type" class="control-label">OPD</label>
 
                         <div class="controls">
@@ -35,7 +35,7 @@
                                 </span>
                             @endif
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="control-group {{ $errors->has('pegawai') ? 'error' : '' }}">
                         <label for="nama" class="control-label">Nama / NIP Pegawai</label>
@@ -226,8 +226,7 @@ $('#pegawai').select2({
       return {
         q: params.term,
         page: params.page,
-        per_page: 10,
-        opd: $('#opd').val()
+        per_page: 10
       };
     },
     processResults: function(data, params) {

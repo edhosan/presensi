@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @push('css')
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.min.css') }}" rel="stylesheet">
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.themes.min.css') }}" rel="stylesheet">
+<link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
@@ -22,16 +21,16 @@
                   {{ csrf_field() }}
                   <input type="hidden" name="id" value="{{ $data['pegawai']->id or 0 }}">
                   <fieldset>
-                    <div class="control-group {{ $errors->has('nama') ? 'error' : '' }}">
-                        <label for="nama" class="control-label">Nama</label>
+                    <div class="control-group {{ $errors->has('pegawai') ? 'error' : '' }}">
+                        <label for="nama" class="control-label">Nama / NIP Pegawai</label>
 
                         <div class="controls">
-                            <input id="nama" type="text" class="span5 autocomplete" name="nama" value="{{ $data['pegawai']->nama or old('nama') }}" autofocus>
-                            <input type="hidden" name="id_peg" id="id_peg" value="{{ $data['pegawai']->id or old('id_peg') }}">
+                            <?php $selected_pegawai = isset($data)?$data->peg_id:old('pegawai') ?>
+                            {{ Form::select('pegawai[]', $pegawai, $selected_pegawai, ['id' => 'pegawai','class'=>'span4', 'multiple' => 'multiple']) }}
 
-                            @if ($errors->has('nama'))
+                            @if ($errors->has('pegawai'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('nama') }}</strong>
+                                    <strong>{{ $errors->first('pegawai') }}</strong>
                                 </span>
                             @endif
                         </div>
@@ -42,7 +41,7 @@
 
                         <div class="controls">
                             <?php $selected_data = isset($data)?$data['peg_jadwal']->id:old('jadwal') ?>
-                            {{ Form::select('jadwal', $jadwal, $selected_data, ['id' => 'jadwal', 'placeholder' => "Please Select"]) }}
+                            {{ Form::select('jadwal[]', $jadwal, $selected_data, ['id' => 'jadwal', 'class' => "span4", 'multiple' => 'multiple']) }}
 
                             @if ($errors->has('jadwal'))
                                 <span class="help-block">
@@ -70,7 +69,7 @@
 
 @push('script')
 <script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
-<script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
+<script src="{{ asset('js/select2.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-button.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
 <script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
@@ -78,44 +77,59 @@
 
 $(function() {
 
-  var optPeg = {
-      url: function(phrase) {
-        return "{{ url('api/getNamePeg?api_token=') }}{{ Auth::user()->api_token }}";
+  $('#pegawai').select2({
+    placeholder: 'Pilih Pegawai',
+    allowClear: true,
+    ajax: {
+      url: "{{ url('api/search_peg?api_token=') }}{{ Auth::user()->api_token }}",
+      dataType: 'json',
+      delay: 250,
+      data: function(params){
+        return {
+          q: params.term,
+          page: params.page,
+          per_page: 10
+        };
       },
-
-      getValue: function(element) {
-        return element.nama;
+      processResults: function(data, params) {
+        params.page = params.page || 1;
+        return {
+          results: data.data,
+          pagination: {
+            more: (params.page * data.per_page) < data.total
+          }
+        };
       },
+      cache: true
+    },
+    escapeMarkup: function( markup ){ return markup; },
+    minimumInputLength: 1,
+    templateResult: formatRepo,
+    templateSelection: formatRepoSelection
+  })
 
-      ajaxSettings: {
-        dataType: "json",
-        method: "POST",
-        data: {
-          dataType: "json"
-        }
-      },
+  function formatRepo (repo) {
+      if (repo.loading) return repo.text;
 
-      template: {
-        type: "description",
-        fields: {
-          description: "nip"
-        }
-      },
+      var markup = "<div class='select2-result-repository clearfix'>" +
+        "<div class='select2-result-repository__meta'>" +
+          "<div class='select2-result-repository__title'>" + repo.nama + "</div>";
 
-      list: {
-        onSelectItemEvent: function() {
-          var value = $("#nama").getSelectedItemData();
-          $("#id_peg").val(value.id).trigger("change");
-        }
-      },
-
-      preparePostData: function(data) {
-        data.phrase = $("#nama").val();
-        return data;
+      if (repo.description) {
+        markup += "<div class='select2-result-repository__description'>" + repo.id + "</div>";
       }
-    };
 
-    $("#nama").easyAutocomplete(optPeg);
+      markup += "<div class='select2-result-repository__statistics'>" +
+        "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i>NIP: " + repo.nip + "</div>" +
+      "</div>" +
+      "</div></div>";
+
+      return markup;
+  }
+
+  function formatRepoSelection (repo) {
+    return repo.nama || repo.text;
+  }
 
 });
 </script>

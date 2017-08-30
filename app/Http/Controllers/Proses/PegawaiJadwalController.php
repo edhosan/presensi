@@ -17,7 +17,7 @@ use Debugbar;
 class PegawaiJadwalController extends Controller
 {
     private $rules = [
-      'nama'  => 'required|exists:peg_data_induk,nama',
+      'pegawai'  => 'required',
       'jadwal'  => 'required'
     ];
 
@@ -43,7 +43,7 @@ class PegawaiJadwalController extends Controller
                   })
                   ->pluck('name','id');
 
-      return view('proses.peg_jadwal_form')->withJadwal($jadwal);
+      return view('proses.peg_jadwal_form')->withJadwal($jadwal)->withPegawai([]);
     }
 
     public function edit($peg_id, $jadwal_id)

@@ -63,6 +63,8 @@ $(function() {
             selector: 'td:first-child'
         },
         buttons: [
+          'selectAll',
+          'selectNone',
             {
                 text: '<i class="icon-plus"> Tambah Data</i>',
                 titleAttr: 'Tambah Data',
@@ -148,14 +150,14 @@ $(function() {
         var selectedRows = table.rows( { selected: true } ).count();
 
         table.button( 1 ).enable( selectedRows >= 1 );
-        table.button( 2 ).enable( selectedRows >= 1 );
+        table.button( 3 ).enable( selectedRows >= 1 );
     } );
 
     table.on( 'deselect', function ( e, dt, type, indexes ) {
         var selectedRows = table.rows( { selected: true } ).count();
 
         table.button( 1 ).enable( selectedRows >= 1 );
-        table.button( 2 ).enable( selectedRows >= 1 );
+        table.button( 3 ).enable( selectedRows >= 1 );
     } );
 
     $('#pegjadwal-table').on('click', 'td.details-control', function () {

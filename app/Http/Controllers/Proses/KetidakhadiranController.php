@@ -17,7 +17,7 @@ use File;
 class KetidakhadiranController extends Controller
 {
     private $rules = [
-      'opd' => 'required',
+    /*  'opd' => 'required',*/
       'pegawai'  => 'required',
       'ijin'  => 'required',
       'start' => 'required|before:end',
@@ -149,7 +149,7 @@ class KetidakhadiranController extends Controller
             })
             ->editColumn('nama_jabatan','{{ $nama_jabatan." ".$nama_subunit }}')
             ->editColumn('pangkat','{{ isset($pangkat)?$pangkat." (".$golru.")":"" }}')
-            ->editColumn('tanggal','{{ date("Y-m-d", strtotime($start))." s/d ".date("Y-m-d", strtotime($end)) }}')
+            ->editColumn('tanggal','{{ date("d-m-Y", strtotime($start))." s/d ".date("d-m-Y", strtotime($end)) }}')
             ->editColumn('jumlah', function($peg_ijin_list){
               $start = Carbon::parse($peg_ijin_list->start);
               $end =  Carbon::parse($peg_ijin_list->end);
