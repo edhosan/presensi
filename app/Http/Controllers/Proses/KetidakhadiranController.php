@@ -17,7 +17,8 @@ use File;
 class KetidakhadiranController extends Controller
 {
     private $rules = [
-      'nama'  => 'required|exists:peg_data_induk,nama',
+      'opd' => 'required',
+      'pegawai'  => 'required',
       'ijin'  => 'required',
       'start' => 'required|before:end',
       'end' => 'required',
@@ -32,18 +33,42 @@ class KetidakhadiranController extends Controller
 
     public function create()
     {
+      $unker = Auth::user()->unker;
+
+      $opd = DataInduk::orderBy('nama_unker','asc')
+             ->groupBy('id_unker','nama_unker')
+             ->where(function($query) use($unker) {
+               if(!empty($unker)) {
+                 $query->where('id_unker',$unker);
+               }
+             })
+             ->pluck('nama_unker','id_unker');
+
       $ijin = RefIjin::orderBy('name','asc')->pluck('name','id');
 
-      return view('proses.ketidakhadiran_form')->withIjin($ijin);
+      return view('proses.ketidakhadiran_form')->withIjin($ijin)->withOpd($opd)->withPegawai([]);;
     }
 
     public function edit($id)
     {
+      $unker = Auth::user()->unker;
+
+      $opd = DataInduk::orderBy('nama_unker','asc')
+             ->groupBy('id_unker','nama_unker')
+             ->where(function($query) use($unker) {
+               if(!empty($unker)) {
+                 $query->where('id_unker',$unker);
+               }
+             })
+             ->pluck('nama_unker','id_unker');
+
       $ijin = RefIjin::orderBy('name','asc')->pluck('name','id');
 
       $data = Ketidakhadiran::with('pegawai')->where('id',$id)->first();
 
-      return view('proses.ketidakhadiran_form')->withIjin($ijin)->withData($data);
+      $pegawai = DataInduk::where('id_unker', $data->pegawai->id_unker)->pluck('nama','id');
+
+      return view('proses.ketidakhadiran_form')->withIjin($ijin)->withData($data)->withOpd($opd)->withPegawai($pegawai);
     }
 
     public function saveCreate(Request $request)
@@ -52,13 +77,13 @@ class KetidakhadiranController extends Controller
 
       $file_name = '';
       if($request->hasFile('file')){
-        $file_name = $request->id_peg.'_'.date('Ymd', strtotime($request->start)).'.'.$request->file->extension();
+        $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->start)).'.'.$request->file->extension();
 
         $request->file('file')->move('catalog/surat/', $file_name);
       }
 
       $ketidakhadiran = Ketidakhadiran::create([
-        'peg_id'        => $request->id_peg,
+        'peg_id'        => $request->pegawai,
         'keterangan_id' => $request->ijin,
         'start'         => date('Y-m-d', strtotime($request->start) ),
         'end'           => date('Y-m-d', strtotime($request->end) ),
@@ -68,7 +93,7 @@ class KetidakhadiranController extends Controller
         'filename'      => $file_name
       ]);
 
-      $this->updateKalkulasi($request->id_peg, $request->start, $request->end, $ketidakhadiran->id);
+      $this->updateKalkulasi($request->pegawai, $request->start, $request->end, $ketidakhadiran->id);
 
       return redirect()->route('ketidakhadiran.list')->with('success','Data berhasil disimpan!');
     }
@@ -81,7 +106,7 @@ class KetidakhadiranController extends Controller
 
       $file_name = '';
       if($request->hasFile('file')){
-        $file_name = $request->id_peg.'_'.date('Ymd', strtotime($request->start)).'.'.$request->file->extension();
+        $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->start)).'.'.$request->file->extension();
 
         File::delete('catalog/surat/'.$ketidakhadiran->filename);
 
@@ -89,7 +114,7 @@ class KetidakhadiranController extends Controller
       }
 
       $ketidakhadiran->update([
-        'peg_id'        => $request->id_peg,
+        'peg_id'        => $request->pegawai,
         'keterangan_id' => $request->ijin,
         'start'         => date('Y-m-d', strtotime($request->start) ),
         'end'           => date('Y-m-d', strtotime($request->end) ),
@@ -99,7 +124,7 @@ class KetidakhadiranController extends Controller
         'filename'      => $file_name
       ]);
 
-      $this->updateKalkulasi($request->id_peg, $request->start, $request->end, $ketidakhadiran->id);
+      $this->updateKalkulasi($request->pegawai, $request->start, $request->end, $ketidakhadiran->id);
 
       return redirect()->route('ketidakhadiran.list')->with('success','Data berhasil disimpan!');
     }

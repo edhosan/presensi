@@ -181,19 +181,23 @@ $(function() {
       $("#progress").html("");
 
       var progresspump = setInterval(function(){
-          /* query the completion percentage from the server */
-          $.get("{{ url('kalkulasi_progress') }}", function(data){
-            if(data === -1){
-              console.log(data);
-              $("#progress").css('width','100%');
-              $("#progressouter").removeClass("active");
-              $("#progress").html("Error Kalkulasi Data");
-              clearInterval(progresspump);
+          $.ajax({
+            url       : "{{ url('kalkulasi_progress') }}",
+            type      : "GET",
+            dataType  : "JSON",
+            async     : true,
+            success   : function(data) {
+              if(data === -1){
+                $("#progress").css('width','100%');
+                $("#progressouter").removeClass("active");
+                $("#progress").html("Error Kalkulasi Data");
+                clearInterval(progresspump);
+              }
+              /* update the progress bar width */
+              $("#progress").css('width',data+'%');
+              /* and display the numeric value */
+              $("#progress").html(data+'%');
             }
-            /* update the progress bar width */
-            $("#progress").css('width',data+'%');
-            /* and display the numeric value */
-            $("#progress").html(data+'%');
           })
         }, 500);
         $.ajax({
@@ -201,21 +205,21 @@ $(function() {
           type      : form.attr('method'),
           data      : form.serialize(),
           dataType  : 'json',
+          async     : true,
           success   : function( json ) {
             clearInterval(progresspump);
             $("#progress").css('width',json+'%');
-            $("#progressouter").removeClass("active");
+            $("#progr essouter").removeClass("active");
             $("#progress").html("Done");
           },
           error     : function( jqXhr, json, errorThrown) {
             clearInterval(progresspump);
             var errors = $.parseJSON(jqXhr.responseText);
-            console.log(errors);
             var errorsHtml= '';
             $.each( errors, function( key, value ) {
                errorsHtml += '<li>' + value[0] + '</li>';
             });
-            toastr.error( errorsHtml , "Error " + jqXhr.status +': '+ errorThrown);
+            toastr.error( errorsHtml , "Error " + jqXhr.status +': ');
           }
         });
         return false;

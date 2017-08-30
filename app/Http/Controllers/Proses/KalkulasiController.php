@@ -44,24 +44,6 @@ class KalkulasiController extends Controller
     {
       set_time_limit(0);
 
-      $validator = Validator::make($request->all(), $this->rules);
-
-      $validator->after(function($validator) use($request) {
-        $start =  Carbon::parse($request->start);
-        $end   =  Carbon::parse($request->end);
-        $interval = $end->diffInDays($start);
-
-        if($interval > 31){
-          $validator->errors()->add('date_range', 'Maksimum range tanggal tidak lebih dari 31 hari!');
-        }
-
-      });
-
-      if($validator->fails()) {
-        Session::put('progress', -1);
-        return response()->json($validator->messages(), 422);
-      }
-
       $peg_jadwal = PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
                     ->leftJoin('ketidakhadiran','ketidakhadiran.id','=','peg_jadwal.ketidakhadiran_id')
                     ->leftJoin('ref_ijin','ref_ijin.id','=','ketidakhadiran.keterangan_id')
@@ -79,6 +61,28 @@ class KalkulasiController extends Controller
                     ->get();
 
       $total = $peg_jadwal->count();
+
+      $validator = Validator::make($request->all(), $this->rules);
+
+      $validator->after(function($validator) use($request, $total) {
+        $start =  Carbon::parse($request->start);
+        $end   =  Carbon::parse($request->end);
+        $interval = $end->diffInDays($start);
+
+        if($interval > 31){
+          $validator->errors()->add('date_range', 'Maksimum range tanggal tidak lebih dari 31 hari!');
+        }
+
+        if($total <= 0){
+          $validator->errors()->add('nama', 'Jadwal kerja pegawai belum ditetapkan!');
+        }
+
+      });
+
+      if($validator->fails()) {
+        Session::put('progress', -1);
+        return response()->json($validator->messages(), 422);
+      }
 
       $i = 1;
       Session::put('progress', 0);

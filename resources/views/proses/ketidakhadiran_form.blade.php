@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @push('css')
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.min.css') }}" rel="stylesheet">
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.themes.min.css') }}" rel="stylesheet">
+<link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
 <link href="{{ asset('bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}" rel="stylesheet">
 @endpush
@@ -23,16 +22,31 @@
                   {{ csrf_field() }}
                   <input type="hidden" name="id" value="{{ $data->id or 0 }}">
                   <fieldset>
-                    <div class="control-group {{ $errors->has('nama') ? 'error' : '' }}">
+                    <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
+                        <label for="type" class="control-label">OPD</label>
+
+                        <div class="controls">
+                            <?php $selected_data = isset($data)?$data->pegawai->id_unker:old('opd') ?>
+                            {{ Form::select('opd', $opd, $selected_data, ['id' => 'opd', 'placeholder' => "Please Select", 'class' => 'span5']) }}
+
+                            @if ($errors->has('opd'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('opd') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="control-group {{ $errors->has('pegawai') ? 'error' : '' }}">
                         <label for="nama" class="control-label">Nama / NIP Pegawai</label>
 
                         <div class="controls">
-                            <input id="nama" type="text" class="span5 autocomplete" name="nama" value="{{ $data->pegawai->nama or old('nama') }}" autofocus>
-                            <input type="hidden" name="id_peg" id="id_peg" value="{{ $data->peg_id or old('id_peg') }}">
+                            <?php $selected_pegawai = isset($data)?$data->peg_id:old('pegawai') ?>
+                            {{ Form::select('pegawai', $pegawai, $selected_pegawai, ['id' => 'pegawai', 'placeholder' => "Please Select", 'class' => 'span5']) }}
 
-                            @if ($errors->has('nama'))
+                            @if ($errors->has('pegawai'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('nama') }}</strong>
+                                    <strong>{{ $errors->first('pegawai') }}</strong>
                                 </span>
                             @endif
                         </div>
@@ -162,8 +176,7 @@
 @endsection
 
 @push('script')
-<script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
-<script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
+<script src="{{ asset('js/select2.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-button.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
 <script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
@@ -177,11 +190,11 @@ $.changeDate = function () {
   var dateEnd = $('#end').datepicker('getDate');
   var d = (dateEnd - dateStart) / (1000 * 60 * 60 * 24);
 
-  if(Math.round(d) === 0){
+/*  if(Math.round(d) === 0){
     $('#div_jam').show();
   }else{
     $('#div_jam').hide();
-  }
+  }*/
 };
 
 var formatCalendar = {
@@ -201,45 +214,61 @@ $('#jam_start').timepicker({ showMeridian: false });
 $('#jam_end').timepicker({ showMeridian: false });
 
 $('#div_jam').hide();
-
-  var optPeg = {
-      url: function(phrase) {
-        return "{{ url('api/getNamePeg?api_token=') }}{{ Auth::user()->api_token }}";
-      },
-
-      getValue: function(element) {
-        return element.nama;
-      },
-
-      ajaxSettings: {
-        dataType: "json",
-        method: "POST",
-        data: {
-          dataType: "json"
+$('#opd').select2({ placeholder: 'Pilih OPD' });
+$('#pegawai').select2({
+  placeholder: 'Pilih Pegawai',
+  allowClear: true,
+  ajax: {
+    url: "{{ url('api/search_peg?api_token=') }}{{ Auth::user()->api_token }}",
+    dataType: 'json',
+    delay: 250,
+    data: function(params){
+      return {
+        q: params.term,
+        page: params.page,
+        per_page: 10,
+        opd: $('#opd').val()
+      };
+    },
+    processResults: function(data, params) {
+      params.page = params.page || 1;
+      return {
+        results: data.data,
+        pagination: {
+          more: (params.page * data.per_page) < data.total
         }
-      },
+      };
+    },
+    cache: true
+  },
+  escapeMarkup: function( markup ){ return markup; },
+  minimumInputLength: 1,
+  templateResult: formatRepo,
+  templateSelection: formatRepoSelection
+})
 
-      template: {
-        type: "description",
-        fields: {
-          description: "nip"
-        }
-      },
+function formatRepo (repo) {
+    if (repo.loading) return repo.text;
 
-      list: {
-        onSelectItemEvent: function() {
-          var value = $("#nama").getSelectedItemData();
-          $("#id_peg").val(value.id).trigger("change");
-        }
-      },
+    var markup = "<div class='select2-result-repository clearfix'>" +
+      "<div class='select2-result-repository__meta'>" +
+        "<div class='select2-result-repository__title'>" + repo.nama + "</div>";
 
-      preparePostData: function(data) {
-        data.phrase = $("#nama").val();
-        return data;
-      }
-    };
+    if (repo.description) {
+      markup += "<div class='select2-result-repository__description'>" + repo.id + "</div>";
+    }
 
-    $("#nama").easyAutocomplete(optPeg);
+    markup += "<div class='select2-result-repository__statistics'>" +
+      "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i>NIP: " + repo.nip + "</div>" +
+    "</div>" +
+    "</div></div>";
+
+    return markup;
+}
+
+function formatRepoSelection (repo) {
+  return repo.nama || repo.text;
+}
 
 });
 </script>
