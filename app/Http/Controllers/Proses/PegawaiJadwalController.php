@@ -64,6 +64,7 @@ class PegawaiJadwalController extends Controller
 
       return view('proses.peg_jadwal_form')
             ->withJadwal($jadwal)
+            ->withPegawai($pegawai)
             ->withData(array(
               'peg_jadwal'  => $peg_jadwal,
               'pegawai'     => $pegawai

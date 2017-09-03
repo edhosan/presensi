@@ -24,8 +24,8 @@
                     <div class="control-group {{ $errors->has('pegawai') ? 'error' : '' }}">
                         <label for="nama" class="control-label">Nama / NIP Pegawai</label>
 
-                        <div class="controls">
-                            <?php $selected_pegawai = isset($data)?$data->peg_id:old('pegawai') ?>
+                        <div class="controls">                        
+                            <?php $selected_pegawai = isset($data)?$data['pegawai']->id:old('pegawai') ?>
                             {{ Form::select('pegawai[]', $pegawai, $selected_pegawai, ['id' => 'pegawai','class'=>'span4', 'multiple' => 'multiple']) }}
 
                             @if ($errors->has('pegawai'))
@@ -76,7 +76,7 @@
 <script>
 
 $(function() {
-
+  $('#jadwal').select2({ placeholder: 'Pilih Jadwal' });
   $('#pegawai').select2({
     placeholder: 'Pilih Pegawai',
     allowClear: true,
