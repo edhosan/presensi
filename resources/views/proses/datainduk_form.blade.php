@@ -1,8 +1,22 @@
 @extends('layouts.app')
 @push('css')
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.min.css') }}" rel="stylesheet">
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.themes.min.css') }}" rel="stylesheet">
+<link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
+<style media="screen">
+.loader {
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
 @endpush
 @section('content')
   <div class="main">
@@ -15,6 +29,9 @@
               <div class="widget-header">
                 <i class="icon-file"></i>
                 <h3>Form Data Induk Pegawai</h3>
+                <div class="pull-right">
+                  <select name="peg" id="peg" class="search-query"></select>
+                </div>
               </div>
 
               <div class="widget-content">
@@ -27,26 +44,54 @@
                           <label for="type" class="control-label">Status</label>
 
                           <div class="controls">
-                              <?php $selected_data = isset($data)?$data->type:old('type') ?>
-                              {{ Form::select('type', $type, $selected_data, ['id' => 'type', 'placeholder' => "Please Select"]) }}
+                            @php $type = isset($data)?$data->type:old('type') @endphp
+                            <label class="radio inline"><input type="radio" name="type" value="pns" @if($type == 'pns') checked="checked" @endif > PNS</label>
+                            <label class="radio inline"><input type="radio" name="type" value="nonpns" @if($type == 'nonpns') checked="checked" @endif> NON-PNS</label>
 
-                              @if ($errors->has('type'))
+                            @if ($errors->has('type'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('type') }}</strong>
+                                </span>
+                            @endif
+                          </div>
+                      </div>
+
+                      <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
+                          <label for="opd" class="control-label">OPD</label>
+
+                          <div class="controls">
+                              <?php $selected_opd = isset($data)?$data->id_unker:old('opd') ?>
+                              {{ Form::select('opd', $opd, $selected_opd, ['id' => 'opd', 'placeholder' => "Please Select", 'class' => 'span4']) }}
+
+                              @if ($errors->has('opd'))
                                   <span class="help-block">
-                                      <strong>{{ $errors->first('type') }}</strong>
+                                      <strong>{{ $errors->first('opd') }}</strong>
                                   </span>
                               @endif
                           </div>
                       </div>
 
-                      <div class="control-group {{ $errors->has('id_finger') ? 'error' : '' }}">
-                          <label for="id_finger" class="control-label">Id Fingerprint</label>
+                      <div class="control-group {{ $errors->has('sub_unit') ? 'error' : '' }}">
+                          <label for="sub_unit" class="control-label">Sub Unit</label>
 
                           <div class="controls">
-                              <input id="id_finger" type="text" class="span2" name="id_finger" value="{{ $data->id_finger or old('id_finger') }}">
-                              <button type="button" id="btnGenerateId" class="btn btn-warning" text="Loading..."> Buat ID</button>
-                              @if ($errors->has('id_finger'))
+                              @php $selected_subunit = isset($data)?$data->id_subunit:old('sub_unit') @endphp
+                              <select class="span4" name="sub_unit" id="subunit">
+                                <option value="">Pilih Sub Unit</option>
+                                @foreach($subunit as $unit)
+                                  <optgroup label="{{ $unit->nama_unker}}">
+                                    @foreach($unit->subUnit as $item)
+                                    <option value="{{ $item->id_subunit }}" @if($selected_subunit == $item->id_subunit) selected="selected" @endif>
+                                      {{ $item->nama_subunit }}
+                                    </option>
+                                    @endforeach
+                                  </optgroup>
+                                @endforeach
+                              </select>
+                              <div class="loader" id="loaderSubUnit"></div>
+                              @if ($errors->has('sub_unit'))
                                   <span class="help-block">
-                                      <strong>{{ $errors->first('id_finger') }}</strong>
+                                      <strong>{{ $errors->first('sub_unit') }}</strong>
                                   </span>
                               @endif
                           </div>
@@ -56,7 +101,7 @@
                           <label for="nip" class="control-label">NIP</label>
 
                           <div class="controls">
-                              <input id="nip" type="text" class="span4 autocomplete" name="nip" value="{{ $data->nip or old('nip') }}" autofocus>
+                              <input id="nip" type="text" class="span4" name="nip" value="{{ $data->nip or old('nip') }}" autofocus>
 
                               @if ($errors->has('nip'))
                                   <span class="help-block">
@@ -70,7 +115,7 @@
                           <label for="nama" class="control-label">Nama</label>
 
                           <div class="controls">
-                              <input id="nama" type="text" class="span4 autocomplete" name="nama" value="{{ $data->nama or old('nama') }}" autofocus>
+                              <input id="nama" type="text" class="span4" name="nama" value="{{ $data->nama or old('nama') }}" autofocus>
 
                               @if ($errors->has('nama'))
                                   <span class="help-block">
@@ -108,51 +153,50 @@
                           </div>
                       </div>
 
-                      <div class="control-group {{ $errors->has('id_unker') ? 'error' : '' }}">
-                          <label for="opd" class="control-label">Organisasi Perangkat Daerah</label>
+                      <div class="control-group {{ $errors->has('id_finger') ? 'error' : '' }}">
+                          <label for="id_finger" class="control-label">Id Fingerprint</label>
 
                           <div class="controls">
-                              <input id="nama_unker" type="text" class="span4 autocomplete" name="nama_unker" value="{{$data->nama_unker or old('nama_unker') }}">
-                              <input type="hidden" name="id_unker" value="{{$data->id_unker or old('id_unker') }}" id="id_unker">
-                              @if ($errors->has('id_unker'))
+                              <input id="id_finger" type="text" class="span2" name="id_finger" value="{{ $data->id_finger or old('id_finger') }}">
+                              <button type="button" id="btnGenerateId" class="btn btn-warning" text="Loading..."> Buat ID</button>
+                              @if ($errors->has('id_finger'))
                                   <span class="help-block">
-                                      <strong>{{ $errors->first('id_unker') }}</strong>
+                                      <strong>{{ $errors->first('id_finger') }}</strong>
                                   </span>
                               @endif
                           </div>
                       </div>
-
-                      <div class="control-group {{ $errors->has('subunit') ? 'error' : '' }}">
-                          <label for="subunit" class="control-label">Sub Unit</label>
-
-                          <div class="controls">
-                              <input id="nama_subunit" type="text" class="span4 autocomplete" name="nama_subunit" value="{{$data->nama_subunit or old('nama_subunit') }}">
-                              <input type="hidden" name="subunit" value="{{$data->id_subunit or old('subunit') }}" id="subunit">
-                              @if ($errors->has('subunit'))
-                                  <span class="help-block">
-                                      <strong>{{ $errors->first('subunit') }}</strong>
-                                  </span>
-                              @endif
-                          </div>
-                      </div>
-
 
                     </fieldset>
                   </div>
 
                   <div class="span6">
                     <fieldset>
-                      <div id="d_pangkat" class="control-group {{ $errors->has('id_pangkat') ? 'error' : '' }}">
-                          <label for="id_pangkat" class="control-label">Pangkat / Golongan</label>
+                      <div class="control-group {{ $errors->has('pangkat') ? 'error' : '' }}">
+                          <label for="pangkat" class="control-label">Pangkat / Golongan</label>
 
                           <div class="controls">
-                            <input id="nama_pangkat" type="text" class="span4 autocomplete" name="nama_pangkat" value="{{$data->pangkat or old('nama_pangkat') }}">
-                            <input type="hidden" name="id_pangkat" value="{{$data->id_pangkat or old('id_pangkat') }}" id="id_pangkat">
-                            <input type="hidden" name="golru" value="{{$data->golru or old('golru') }}" id="golru">
+                              <?php $selected_pangkat = isset($data)?$data->id_pangkat:old('pangkat') ?>
+                              {{ Form::select('pangkat', $pangkat, $selected_pangkat, ['id' => 'pangkat', 'placeholder' => "Please Select", 'class' => 'span4']) }}
 
-                              @if ($errors->has('id_pangkat'))
+                              @if ($errors->has('pangkat'))
                                   <span class="help-block">
-                                      <strong>{{ $errors->first('id_pangkat') }}</strong>
+                                      <strong>{{ $errors->first('pangkat') }}</strong>
+                                  </span>
+                              @endif
+                          </div>
+                      </div>
+
+                      <div class="control-group {{ $errors->has('eselon') ? 'error' : '' }}">
+                          <label for="eselon" class="control-label">Eselon</label>
+
+                          <div class="controls">
+                              <?php $selected_eselon = isset($data)?$data->id_eselon:old('eselon') ?>
+                              {{ Form::select('eselon',$eselon,$selected_eselon, ['id' => 'eselon', 'placeholder' => "Please Select", 'class' => 'span4']) }}
+
+                              @if ($errors->has('eselon'))
+                                  <span class="help-block">
+                                      <strong>{{ $errors->first('eselon') }}</strong>
                                   </span>
                               @endif
                           </div>
@@ -162,11 +206,21 @@
                           <label for="jabatan" class="control-label">Jabatan</label>
 
                           <div class="controls">
-                              <input id="nama_jabatan" type="text" class="span4 autocomplete" name="nama_jabatan" value="{{$data->nama_jabatan or old('nama_jabatan') }}">
-                              <input type="hidden" name="jabatan" value="{{$data->id_jabatan or old('jabatan') }}" id="jabatan">
-                              <input type="hidden" name="id_eselon" value="{{$data->id_eselon or old('id_eselon') }}" id="id_eselon">
-
-                              @if ($errors->has('jabatan'))
+                              @php $selected_jabatan = isset($data)?$data->id_jabatan:old('jabatan') @endphp
+                              <select class="span4" name="jabatan" id="jabatan">
+                                <option value="">Pilih Jabatan</option>
+                                @foreach($jabatan as $eselon)
+                                  <optgroup label="{{ $eselon->nama}}">
+                                    @foreach($eselon->jabatan as $item)
+                                    <option value="{{ $item->id_jabatan }}" @if($selected_jabatan == $item->id_jabatan) selected="selected" @endif>
+                                      {{ $item->nama_jabatan }}
+                                    </option>
+                                    @endforeach
+                                  </optgroup>
+                                @endforeach
+                              </select>
+                              <div class="loader" id="loaderJabatan"></div>
+                              @if($errors->has('jabatan'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('jabatan') }}</strong>
                                   </span>
@@ -215,61 +269,153 @@
 @endsection
 
 @push('script')
-<script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
-<script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
+<script src="{{ asset('js/select2.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-button.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
 <script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
 <script>
-  function fillData(param) {
-    if(param != undefined){
-      $("#nip").val(param.nip).trigger("change");
-      $("#nama").val(param.nama).trigger("change");
-      $("#nama_unker").val(param.nama_unker).trigger("change");
-      $("#id_unker").val(param.id_unker).trigger("change");
-      $("#gelar_depan").val(param.gelar_depan).trigger("change");
-      $("#gelar_belakang").val(param.gelar_belakang).trigger("change");
-      $("#nama_subunit").val(param.nama_subunit).trigger("change");
-      $("#subunit").val(param.id_subunit).trigger("change");
-      $("#id_pangkat").val(param.id_pangkat).trigger("change");
-      $("#nama_pangkat").val(param.pangkat).trigger("change");
-      $("#golru").val(param.golru).trigger("change");
-      $("#nama_jabatan").val(param.nama_jabatan).trigger("change");
-      $("#id_eselon").val(param.id_eselon).trigger("change");
-      $("#jabatan").val(param.id_jabatan).trigger("change");
-      $("#id_jabatan").val(param.id_jabatan).trigger("change");
-      $("#tmt_pangkat").datepicker('update',param.tmt_pangkat);
-    }
-  }
 
 $(function() {
-  @if(isset($data)?$data->type === 'pns': old('type') === 'pns')
-    $("#d_nip").show();
-    $("#d_pangkat").show();
-    $("#d_tmt_pangkat").show();
-  @else
-    $("#d_nip").hide();
-    $("#d_pangkat").hide();
-    $("#d_tmt_pangkat").hide();
-  @endif
-
-  $('#type').change(function () {
-    var type = $('#type :selected').attr('value');
-
-    if(type === 'pns'){
-      $("#d_nip").show();
-      $("#d_pangkat").show();
-      $("#d_tmt_pangkat").show();
-    }else{
-      $("#d_nip").hide();
-      $("#d_pangkat").hide();
-      $("#d_tmt_pangkat").hide();
-    }
+  $('input[type=radio][name=type]').change(function() {
+      if (this.value == 'pns') {
+        $('#nip').prop('disabled', false);
+        $('#pangkat').prop('disabled', false);
+        $('#tmt_pangkat').prop('disabled', false);
+      }
+      else if (this.value == 'nonpns') {
+        $('#nip').prop('disabled', true);
+        $('#pangkat').prop('disabled', true);
+        $('#tmt_pangkat').prop('disabled', true);
+      }
   });
 
-  $('#tmt_pangkat').datepicker({
-      format: 'dd-mm-yyyy',
-      language: 'id',
+  $('#peg').select2({
+    placeholder: 'Cari Nama / NIP Pegawai',
+    allowClear: true,
+    ajax: {
+      url: "{{ url('api/pegawai?api_token=') }}{{ Auth::user()->api_token }}",
+      dataType: 'json',
+      delay: 250,
+      data: function(params){
+        return {
+          q: params.term,
+          page: params.page,
+          per_page: 10,
+          opd: $('#opd').val()
+        };
+      },
+      processResults: function(data, params) {
+        params.page = params.page || 1;
+        return {
+          results: data.data,
+          pagination: {
+            more: (params.page * data.per_page) < data.total
+          }
+        };
+      },
+      cache: true
+    },
+    escapeMarkup: function( markup ){ return markup; },
+    minimumInputLength: 1,
+    templateResult: formatRepo,
+    templateSelection: formatRepoSelection
+  })
+
+  function formatRepo (repo) {
+      if (repo.loading) return repo.text;
+
+      var markup = "<div class='select2-result-repository clearfix'>" +
+        "<div class='select2-result-repository__meta'>" +
+          "<div class='select2-result-repository__title'>" + repo.nama + "</div>";
+
+      if (repo.description) {
+        markup += "<div class='select2-result-repository__description'>" + repo.nip + "</div>";
+      }
+
+      markup += "<div class='select2-result-repository__statistics'>" +
+        "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i>NIP: " + repo.nip + "</div>" +
+      "</div>" +
+      "</div></div>";
+
+      return markup;
+  }
+
+  function formatRepoSelection (repo) {
+    return repo.nama || repo.text;
+  }
+
+  $('#opd').select2({placeholder: 'Pilih OPD',allowClear: true});
+  $('#subunit').select2({placeholder: 'Pilih Sub Unit',allowClear: true});
+  $('#pangkat').select2({placeholder: 'Pilih Pangkat / Golongan',allowClear: true});
+  $('#eselon').select2({placeholder: 'Pilih Eselon',allowClear: true, minimumResultsForSearch: Infinity});
+  $('#jabatan').select2({placeholder: 'Pilih Jabatan',allowClear: true});
+
+  $('#peg').on('select2:select', function(e) {
+    $('#nip').val(e.params.data.nip).trigger("change");;
+    $('#nama').val(e.params.data.nama).trigger("change");;
+    $('#opd').val(e.params.data.id_unker).trigger("change");
+    $('#subunit').val(e.params.data.id_subunit).trigger("change");
+    $("#gelar_depan").val(e.params.data.gelar_depan).trigger("change");
+    $("#gelar_belakang").val(e.params.data.gelar_belakang).trigger("change");
+    $("#pangkat").val(e.params.data.id_pangkat).trigger("change");
+    $("#eselon").val(e.params.data.id_eselon).trigger("change");
+    $("#jabatan").val(e.params.data.id_jabatan).trigger("change");
+    $("#tmt_pangkat").datepicker('update',e.params.data.tmt_pangkat);
+  });
+
+  $('#loaderSubUnit').hide();
+  $('#loaderJabatan').hide();
+
+  $('#opd').on('select2:select', function(e) {
+    $('#loaderSubUnit').show();
+    $.ajax({
+      url: "{{ url('api/subunit?api_token=') }}{{ Auth::user()->api_token }}",
+      type: "POST",
+      dataType: "json",
+      data: { opd: e.params.data.id },
+      success: function(response){
+        $('#loaderSubUnit').hide();
+        var subunit = $('#subunit');
+        subunit.empty();
+        subunit.append('<option value="">Please Select</option>');
+        $.each(response, function(index, value){
+          subunit.append('<optgroup label="'+value.nama_unker+'">');
+          $.each(value.sub_unit, function(i, el) {
+            subunit.append('<option value="'+el.id_subunit+'">'+el.nama_subunit+'</option>');
+          });
+          subunit.append('</optgroup>');
+        });
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
+  });
+
+  $('#eselon').on('select2:select', function(e) {
+    $('#loaderJabatan').show();
+    $.ajax({
+      url: "{{ url('api/jabatan?api_token=') }}{{ Auth::user()->api_token }}",
+      type: "POST",
+      dataType: "json",
+      data: { eselon: e.params.data.id },
+      success: function(response){
+        $('#loaderJabatan').hide();
+        var jabatan = $('#jabatan');
+        jabatan.empty();
+        jabatan.append('<option value="">Pilih Jabatan</option>');
+        $.each(response, function(index, value){
+          jabatan.append('<optgroup label="'+value.nama+'">');
+          $.each(value.jabatan, function(i, el) {
+            jabatan.append('<option value="'+el.id_jabatan+'">'+el.nama_jabatan+'</option>');
+          });
+          jabatan.append('</optgroup>');
+        });
+      },
+      error: function(error){
+        console.log(error);
+      }
+    });
   });
 
   $('#btnGenerateId').click(function() {
@@ -288,260 +434,6 @@ $(function() {
       }
     });
   });
-
-  var optPeg = {
-      url: function(phrase) {
-        return "{{ url('api/pegawai?api_token=') }}{{ Auth::user()->api_token }}";
-      },
-
-      getValue: function(element) {
-        return element.nip;
-      },
-
-      ajaxSettings: {
-        dataType: "json",
-        method: "POST",
-        data: {
-          dataType: "json"
-        }
-      },
-
-      template: {
-        type: "description",
-        fields: {
-          description: "nama"
-        }
-      },
-
-      list: {
-        match: { enabled: true },
-        onSelectItemEvent: function() {
-          var value = $("#nip").getSelectedItemData();
-          fillData(value);
-        }
-      },
-
-      preparePostData: function(data) {
-        data.phrase = $("#nip").val();
-        data.unker = "{{ Auth::user()->unker }}";
-        return data;
-      }
-    };
-
-    var optPegNama = {
-        url: function(phrase) {
-          return "{{ url('api/pegawai?api_token=') }}{{ Auth::user()->api_token }}";
-        },
-
-        getValue: function(element) {
-          return element.nama;
-        },
-
-        ajaxSettings: {
-          dataType: "json",
-          method: "POST",
-          data: {
-            dataType: "json"
-          }
-        },
-
-        template: {
-          type: "description",
-          fields: {
-            description: "nip"
-          }
-        },
-
-        list: {
-          match: {
-            enabled: true
-          },
-          onSelectItemEvent: function() {
-            var value = $("#nama").getSelectedItemData();
-            fillData(value);
-          }
-        },
-
-        preparePostData: function(data) {
-          data.phrase = $("#nama").val();
-          data.unker = "{{ Auth::user()->unker }}";
-          return data;
-        }
-      };
-
-      var optUnker = {
-          url: function(phrase) {
-            return "{{ url('api/unker?api_token=') }}{{ Auth::user()->api_token }}";
-          },
-
-          getValue: function(element) {
-            return element.nama_unker;
-          },
-
-          ajaxSettings: {
-            dataType: "json",
-            method: "POST",
-            data: {
-              dataType: "json"
-            }
-          },
-
-          template: {
-            type: "description",
-            fields: {
-              description: "id_unker"
-            }
-          },
-
-          list: {
-            match: {
-              enabled: true
-            },
-            onSelectItemEvent: function() {
-              var value = $("#nama_unker").getSelectedItemData().id_unker;
-              $("#id_unker").val(value).trigger("change");
-            }
-          },
-
-          preparePostData: function(data) {
-            data.phrase = $("#nama_unker").val();
-            data.unker = "{{ Auth::user()->unker }}";
-            return data;
-          }
-        };
-
-        var optSubUnit = {
-            url: function(phrase) {
-              return "{{ url('api/subunit?api_token=') }}{{ Auth::user()->api_token }}";
-            },
-
-            getValue: function(element) {
-              return element.nama_subunit;
-            },
-
-            ajaxSettings: {
-              dataType: "json",
-              method: "POST",
-              data: {
-                dataType: "json"
-              }
-            },
-
-            template: {
-              type: "description",
-              fields: {
-                description: "id_subunit"
-              }
-            },
-
-            list: {
-              match: {
-                enabled: true
-              },
-              onSelectItemEvent: function() {
-                var value = $("#nama_subunit").getSelectedItemData();
-                $("#subunit").val(value.id_subunit).trigger("change");
-              }
-            },
-
-            preparePostData: function(data) {
-              data.phrase = $("#nama_subunit").val();
-              data.unker = $("#id_unker").val();
-
-              return data;
-            }
-          };
-
-          var optJabatan = {
-              url: function(phrase) {
-                return "{{ url('api/jabatan?api_token=') }}{{ Auth::user()->api_token }}";
-              },
-
-              getValue: function(element) {
-                return element.nama_jabatan;
-              },
-
-              ajaxSettings: {
-                dataType: "json",
-                method: "POST",
-                data: {
-                  dataType: "json"
-                }
-              },
-
-              template: {
-                type: "description",
-                fields: {
-                  description: "nama"
-                }
-              },
-
-              list: {
-                maxNumberOfElements: 10,
-                match: { enabled: true },
-                onSelectItemEvent: function() {
-                  var value = $("#nama_jabatan").getSelectedItemData();
-                  $("#jabatan").val(value.id_jabatan).trigger("change");
-                }
-              },
-
-              preparePostData: function(data) {
-                data.phrase = $("#nama_jabatan").val();
-                data.unker = "{{ Auth::user()->unker }}";
-
-                return data;
-              }
-            };
-
-            var optPangkat = {
-                url: function(phrase) {
-                  return "{{ url('api/pangkat?api_token=') }}{{ Auth::user()->api_token }}";
-                },
-
-                getValue: function(element) {
-                  return element.pangkat;
-                },
-
-                ajaxSettings: {
-                  dataType: "json",
-                  method: "POST",
-                  data: {
-                    dataType: "json"
-                  }
-                },
-
-                template: {
-                  type: "description",
-                  fields: {
-                    description: "golru"
-                  }
-                },
-
-                list: {
-                  maxNumberOfElements: 10,
-                  match: { enabled: true },
-                  onSelectItemEvent: function() {
-                    var value = $("#nama_pangkat").getSelectedItemData();
-                    $("#id_pangkat").val(value.id_pangkat).trigger("change");
-                    $("#golru").val(value.golru).trigger("change");
-                    $("#pangkat").val(value.pangkat).trigger("change");
-                  }
-                },
-
-                preparePostData: function(data) {
-                  data.phrase = $("#nama_pangkat").val();
-                  data.unker = "{{ Auth::user()->unker }}";
-
-                  return data;
-                }
-              };
-
-    $("#nip").easyAutocomplete(optPeg);
-    $("#nama").easyAutocomplete(optPegNama);
-    $("#nama_unker").easyAutocomplete(optUnker);
-    $("#nama_subunit").easyAutocomplete(optSubUnit);
-    $("#nama_jabatan").easyAutocomplete(optJabatan);
-    $("#nama_pangkat").easyAutocomplete(optPangkat);
 
 });
 </script>

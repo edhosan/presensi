@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 
 Route::group(['middleware' => 'auth:api'], function() {
-  Route::post('pegawai', 'Auth\RegisterController@apiGetPegawai');
+  Route::get('pegawai', 'Auth\RegisterController@apiGetPegawai');
   Route::post('unker', 'Auth\RegisterController@apiGetUnker');
   Route::get('dt_user', 'Auth\RegisterController@apiUser');
   Route::post('delete_user', 'Auth\RegisterController@apiDeleteUser');

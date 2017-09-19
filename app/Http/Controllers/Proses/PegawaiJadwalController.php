@@ -200,11 +200,17 @@ class PegawaiJadwalController extends Controller
       return response()->json($dataInduk);
     }
 
-    public function apiGetJadwalPegawai()
+    public function apiGetJadwalPegawai(Request $request)
     {
       $unker = Auth::user()->unker;
 
       $datainduk = DataInduk::orderBy('type','asc')
+                  ->where(function($query) use($request) {
+                    if($request->has('search')) {
+                      $query->where('nama', 'like', $request->search['value'].'%');
+                      $query->OrWhere('nip', 'like', $request->search['value'].'%');
+                    }
+                  })
                   ->orderBy('id_eselon','asc')
                   ->orderBy('id_pangkat','desc')
                   ->orderBy('tmt_pangkat','desc');

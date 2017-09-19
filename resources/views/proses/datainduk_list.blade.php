@@ -26,7 +26,7 @@
                       <thead>
                           <tr>
                               <th></th>
-                              <th></th>
+                              <th>ID</th>
                               <th>Nip</th>
                               <th>Id Finger</th>
                               <th>OPD</th>
@@ -51,6 +51,8 @@
 <script src="{{ asset('datatables.net/js/jquery.dataTables.js') }}"></script>
 <script src="{{ asset('js/twitter.datatables.js') }}"></script>
 <script src="{{ asset('datatables.net-buttons/dataTables.buttons.js') }}"></script>
+<script src="{{ asset('datatables.net-buttons/buttons.print.js') }}"></script>
+<script src="{{ asset('datatables.net-buttons/buttons.colVis.js') }}"></script>
 <script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
 <script src="{{ asset('js/dataTables.rowGroup.min.js') }}"></script>
 <script>
@@ -63,6 +65,8 @@ $(function() {
             selector: 'td:first-child'
         },
         buttons: [
+          'selectAll',
+          'selectNone',
             {
                 text: '<i class="icon-plus"> Tambah Data</i>',
                 titleAttr: 'Tambah Data',
@@ -121,6 +125,22 @@ $(function() {
                 },
                 enabled: false
             },
+            {
+                extend: 'print',
+                customize: function ( win ) {
+                  var body = $(win.document.body);
+                  body.find('h1').remove();
+                  var h3 = '<h3 style="text-align: center">PEMERINTAH KABUPATEN BERAU</h3>';
+                  var h4 = '<h4 style="text-align: center">DATA INDUK PEGAWAI</h4>';
+                  var br = '<br>';
+                  body.prepend(h3, h4, br);
+                },
+                exportOptions: {
+                    columns: ':visible'
+                },
+                autoPrint: true
+            },
+            'colvis'
         ],
         processing: true,
         serverSide: true,
@@ -157,14 +177,16 @@ $(function() {
         var selectedRows = table.rows( { selected: true } ).count();
 
         table.button( 1 ).enable( selectedRows >= 1 );
-        table.button( 2 ).enable( selectedRows >= 1 );
+        table.button( 3 ).enable( selectedRows >= 1 );
+        table.button( 4 ).enable( selectedRows >= 1 );
     } );
 
     table.on( 'deselect', function ( e, dt, type, indexes ) {
         var selectedRows = table.rows( { selected: true } ).count();
 
         table.button( 1 ).enable( selectedRows >= 1 );
-        table.button( 2 ).enable( selectedRows >= 1 );
+        table.button( 3 ).enable( selectedRows >= 1 );
+        table.button( 4 ).enable( selectedRows >= 1 );
     } );
 });
 </script>

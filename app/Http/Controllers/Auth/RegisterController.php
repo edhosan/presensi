@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Model\OPD;
 use Yajra\Datatables\Datatables;
 use App\Model\Role;
+use Auth;
 
 class RegisterController extends Controller
 {
@@ -94,6 +95,12 @@ class RegisterController extends Controller
 
     public function apiGetPegawai(Request $request)
     {
+      $unker = Auth::user()->unker;
+
+      if($request->exists('opd')){
+        $unker = $request->opd;
+      }
+
       $query = DB::connection('mysql2')->table('peg_datadasar')
                   ->join('peg_stat_duk','peg_datadasar.nip','=','peg_stat_duk.nip')
                   ->join(DB::raw('(select max(id)id from peg_stat_duk group by nip) as x'), function($peg_stat_duk) {
@@ -113,30 +120,34 @@ class RegisterController extends Controller
                   ->join('ref_jabatan','ref_jabatan.id_jabatan','=','peg_jabatan.id_jabatan')
                   ->join('ref_eselon','ref_jabatan.id_eselon','=','ref_eselon.id_eselon')
                   ->whereNotIn('peg_stat_duk.id_status_pegawai',[3, 4, 5, 5, 6, 7, 8])
-                  ->select('peg_datadasar.nip','peg_datadasar.nama','ref_unker.id_unker','ref_unker.nama_unker','peg_datadasar.gelar_depan',
+                  ->select(DB::raw('peg_datadasar.nip as id'), 'peg_datadasar.nip','peg_datadasar.nama','ref_unker.id_unker','ref_unker.nama_unker','peg_datadasar.gelar_depan',
                            'peg_datadasar.gelar_belakang','ref_subunit.id_subunit','ref_subunit.nama_subunit','y.id_pangkat','peg_jabatan.id_jabatan',
                            'ref_jabatan.nama_jabatan',DB::raw('CONCAT(ref_jabatan.nama_jabatan, " - ", ref_eselon.nama) nm_jabatan'),
                            DB::raw('DATE_FORMAT(peg_pangkat.tmt_pangkat, "%d-%m-%Y") as tmt_pangkat'),'ref_pangkat.*', 'ref_eselon.id_eselon'
                          );
 
-      $query = $query->orderBy('peg_datadasar.nip', 'asc');
+      $query = $query->orderBy('ref_eselon.id_eselon', 'asc')
+                     ->orderBy('ref_pangkat.id_pangkat', 'desc')
+                     ->orderBy('peg_pangkat.tmt_pangkat', 'desc');
 
-      if($request->exists('unker') && !empty($request->unker)){
-        $query->where(function($q) use($request){
-          $value = "{$request->unker}";
+      if(!empty($unker)){
+        $query->where(function($q) use($unker){
+          $value = "{$unker}";
           $q->where('ref_unker.id_unker', '=', $value);
         });
       }
 
-      if($request->exists('phrase')){
-        $query->where(function($q) use($request){
-          $value = "{$request->phrase}%";
+      $term = trim($request->q);
+
+      if(!empty($term)){
+        $query->where(function($q) use($term){
+          $value = "{$term}%";
           $q->where('peg_datadasar.nip', 'like', $value)
             ->orWhere('peg_datadasar.nama', 'like', $value);
         });
       }
 
-      return response()->json($query->get());
+      return response()->json($query->paginate($request->per_page));
     }
 
     public function apiGetUnker(Request $request)

@@ -6,11 +6,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
 use App\Model\DataInduk;
+use App\Model\OPD;
+use App\Model\SubUnit;
 use Illuminate\Support\Collection;
 use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
 use App\Model\TerminalUser;
 use App\Model\Terminal;
+use App\Model\Eselon;
+use App\Model\Jabatan;
 use Auth;
 
 class DataIndukController extends Controller
@@ -22,21 +26,52 @@ class DataIndukController extends Controller
 
     public function showForm()
     {
+      $unker = Auth::user()->unker;
+
       $type = array('pns' => 'PNS', 'nonpns' => 'Non PNS');
 
+      $opd = OPD::orderBy('nama_unker','asc')
+             ->where('status', 1)
+             ->where(function($query) use($unker) {
+               if(!empty($unker)) {
+                 $query->where('id_unker',$unker);
+               }
+             })
+             ->pluck('nama_unker','id_unker');
+
+      $subunit = OPD::with('subUnit')->where('status', 1)->get();
+
+      $pangkat = DB::connection('mysql2')->table('ref_pangkat')
+                  ->select(DB::raw("CONCAT(pangkat,' - ',golru)as pangkat, id_pangkat") )
+                  ->pluck('pangkat', 'id_pangkat');
+
+      $eselon = Eselon::orderBy('id_eselon','asc')->pluck('nama', 'id_eselon');
+
+      $jabatan = Eselon::with('jabatan')->orderBy('id_eselon','asc')->get();
+
       return view('proses.datainduk_form')
-            ->withType($type);
+            ->withType($type)
+            ->withOpd($opd)
+            ->withSubunit($subunit)
+            ->withPangkat($pangkat)
+            ->withEselon($eselon)
+            ->withJabatan($jabatan);
     }
 
     public function create(Request $request)
     {
-      $this->validate($request, ['type' => 'required']);
-
       if($request->type === 'pns') {
         $this->validate($request, $this->rulePNS());
       }else{
         $this->validate($request, $this->ruleNonPns());
       }
+
+      $opd = OPD::find($request->opd);
+      $subunit = SubUnit::find($request->sub_unit);
+      $pangkat = DB::connection('mysql2')->table('ref_pangkat')
+                ->where('id_pangkat', $request->pangkat)
+                ->first();
+      $jabatan = Jabatan::with('eselon')->find($request->jabatan);
 
       try{
         DataInduk::create([
@@ -46,16 +81,16 @@ class DataIndukController extends Controller
             'nama'      => $request->nama,
             'gelar_depan' => $request->gelar_depan,
             'gelar_belakang'  => $request->gelar_belakang,
-            'id_unker'    => $request->id_unker,
-            'nama_unker'  => $request->nama_unker,
-            'id_subunit'  => $request->subunit,
-            'nama_subunit'  => $request->nama_subunit,
-            'id_pangkat'  => $request->id_pangkat,
-            'golru'       => $request->golru,
-            'pangkat'     => $request->nama_pangkat,
-            'id_jabatan'  => $request->jabatan,
-            'nama_jabatan'  => $request->nama_jabatan,
-            'id_eselon'   => $request->id_eselon,
+            'id_unker'    => $opd->id_unker,
+            'nama_unker'  => $opd->nama_unker,
+            'id_subunit'  => $subunit->id_subunit,
+            'nama_subunit'  => $subunit->nama_subunit,
+            'id_pangkat'  => $pangkat->id_pangkat,
+            'golru'       => $pangkat->golru,
+            'pangkat'     => $pangkat->pangkat,
+            'id_jabatan'  => $jabatan->id_jabatan,
+            'nama_jabatan'  => $jabatan->nama_jabatan,
+            'id_eselon'   => $jabatan->eselon->id_eselon,
             'tmt_pangkat'   => date('Y-m-d', strtotime($request->tmt_pangkat)),
         ]);
       }catch(Exception $exception) {
@@ -68,12 +103,13 @@ class DataIndukController extends Controller
     private function rulePNS()
     {
       return array(
+        'type' => 'required|in:pns,nonpns',
         'id_finger' => 'required|unique:peg_data_induk|max:8|min:8',
         'nip' => 'required',
         'nama' => 'required',
-        'id_unker' => 'required|is_exists_opd',
-        'subunit' => 'required',
-        'id_pangkat' => 'required',
+        'opd' => 'required',
+        'pangkat' => 'required',
+        'eselon' => 'required',
         'jabatan' => 'required',
         'tmt_pangkat' => 'required'
       );
@@ -82,22 +118,31 @@ class DataIndukController extends Controller
     private function ruleNonPns()
     {
       return array(
+        'type' => 'required',
         'id_finger' => 'required|unique:peg_data_induk|max:8|min:8',
         'nama' => 'required',
         'id_unker' => 'required|is_exists_opd',
-        'subunit' => 'required',
         'jabatan' => 'required',
       );
     }
 
-    public function apiGetDataInduk()
+    public function apiGetDataInduk(Request $request)
     {
       $unker = Auth::user()->unker;
 
       $datainduk = DataInduk::orderBy('type','asc')
+                  ->where(function($query) use($request) {
+                    if($request->has('search')) {
+                      $query->where('nama', 'like', $request->search['value'].'%');
+                      $query->OrWhere('nip', 'like', $request->search['value'].'%');
+                      $query->OrWhere('id_finger', 'like', $request->search['value'].'%');
+                      $query->OrWhere('nama_unker', 'like', $request->search['value'].'%');
+                    }
+                  })
                   ->orderBy('id_eselon','asc')
                   ->orderBy('id_pangkat','desc')
                   ->orderBy('tmt_pangkat','desc');
+
 
       return Datatables::of($datainduk)
         ->filter(function($query) use($unker) {
@@ -145,37 +190,53 @@ class DataIndukController extends Controller
 
     public function apiGetSubUnit(Request $request)
     {
-      $query = DB::connection('mysql2')->table('ref_subunit')
-              ->where('status', 1)
-              ->select('id_subunit','id_unker','nama_subunit')
-              ->orderBy('nama_subunit','asc');
+      $subunit = OPD::with('subUnit')
+                ->where(function($query) use($request) {
+                  if($request->has('opd')){
+                    $query->where('id_unker', $request->opd);
+                  }
+                })
+                ->where('status', 1)
+                ->get();
 
-      if($request->exists('unker') && !empty($request->unker)){
-        $query->where(function($q) use($request){
-          $value = "{$request->unker}";
-          $q->where('id_unker', '=', $value);
-        });
-      }
-
-      if($request->exists('phrase')){
-        $query->where(function($q) use($request){
-          $value = "{$request->phrase}%";
-          $q->where('id_subunit', 'like', $value)
-            ->orWhere('nama_subunit', 'like', $value);
-        });
-      }
-
-      return response()->json($query->get());
+      return response()->json($subunit);
 
     }
 
     public function showEdit($id)
     {
+      $unker = Auth::user()->unker;
+
+      $opd = OPD::orderBy('nama_unker','asc')
+             ->where('status', 1)
+             ->where(function($query) use($unker) {
+               if(!empty($unker)) {
+                 $query->where('id_unker',$unker);
+               }
+             })
+             ->pluck('nama_unker','id_unker');
+
       $datainduk = DataInduk::findOrFail($id);
+
       $type = array('pns' => 'PNS', 'nonpns' => 'Non PNS');
+
+      $subunit = OPD::with('subUnit')->where('status', 1)->get();
+
+      $pangkat = DB::connection('mysql2')->table('ref_pangkat')
+                  ->select(DB::raw("CONCAT(pangkat,' - ',golru)as pangkat, id_pangkat") )
+                  ->pluck('pangkat', 'id_pangkat');
+
+      $eselon = Eselon::orderBy('id_eselon','asc')->pluck('nama', 'id_eselon');
+
+      $jabatan = Eselon::with('jabatan')->orderBy('id_eselon','asc')->get();
 
       return view('proses.datainduk_form')
             ->withType($type)
+            ->withOpd($opd)
+            ->withSubunit($subunit)
+            ->withPangkat($pangkat)
+            ->withEselon($eselon)
+            ->withJabatan($jabatan)
             ->withData($datainduk);
     }
 
@@ -191,24 +252,31 @@ class DataIndukController extends Controller
 
       $datainduk = DataInduk::findOrFail($request->id);
 
+      $opd = OPD::find($request->opd);
+      $subunit = SubUnit::find($request->sub_unit);
+      $pangkat = DB::connection('mysql2')->table('ref_pangkat')
+                ->where('id_pangkat', $request->pangkat)
+                ->first();
+      $jabatan = Jabatan::with('eselon')->find($request->jabatan);
+
       $datainduk->update([
-          'id_finger' => $request->id_finger,
-          'type'      => $request->type,
-          'nip'       => $request->nip,
-          'nama'      => $request->nama,
-          'gelar_depan' => $request->gelar_depan,
-          'gelar_belakang'  => $request->gelar_belakang,
-          'id_unker'    => $request->id_unker,
-          'nama_unker'  => isset($request->nama_unker)?$request->nama_unker:"",
-          'id_subunit'  => $request->subunit,
-          'nama_subunit'  => $request->nama_subunit,
-          'id_pangkat'  => $request->id_pangkat,
-          'golru'       => $request->golru,
-          'pangkat'     => $request->nama_pangkat,
-          'id_jabatan'  => $request->jabatan,
-          'nama_jabatan'  => $request->nama_jabatan,
-          'id_eselon'   => $request->id_eselon,
-          'tmt_pangkat'   => date('Y-m-d', strtotime($request->tmt_pangkat)),
+        'id_finger' => $request->id_finger,
+        'type'      => $request->type,
+        'nip'       => $request->nip,
+        'nama'      => $request->nama,
+        'gelar_depan' => $request->gelar_depan,
+        'gelar_belakang'  => $request->gelar_belakang,
+        'id_unker'    => $opd->id_unker,
+        'nama_unker'  => $opd->nama_unker,
+        'id_subunit'  => $subunit->id_subunit,
+        'nama_subunit'  => $subunit->nama_subunit,
+        'id_pangkat'  => $pangkat->id_pangkat,
+        'golru'       => $pangkat->golru,
+        'pangkat'     => $pangkat->pangkat,
+        'id_jabatan'  => $jabatan->id_jabatan,
+        'nama_jabatan'  => $jabatan->nama_jabatan,
+        'id_eselon'   => $jabatan->eselon->id_eselon,
+        'tmt_pangkat'   => date('Y-m-d', strtotime($request->tmt_pangkat)),
       ]);
 
       return redirect('datainduk_list')->with('success','Data berhasil disimpan!');
@@ -232,20 +300,16 @@ class DataIndukController extends Controller
 
     public function apiGetJabatan(Request $request)
     {
-      $jabatan = DB::connection('mysql2')->table('ref_jabatan')
-              ->join('ref_eselon','ref_eselon.id_eselon','=','ref_jabatan.id_eselon')
-              ->select('ref_jabatan.id_jabatan','ref_jabatan.id_eselon','ref_jabatan.nama_jabatan','ref_eselon.nama')
-              ->orderBy('ref_jabatan.nama_jabatan','asc');
+      $jabatan = Eselon::with('jabatan')
+                ->where(function($query) use($request) {
+                  if($request->has('eselon')){
+                    $query->where('id_eselon', $request->eselon);
+                  }
+                })
+                ->get();
 
-      if($request->exists('phrase')){
-        $jabatan->where(function($q) use($request){
-          $value = "{$request->phrase}%";
-          $q->where('id_jabatan', 'like', $value)
-            ->orWhere('nama_jabatan', 'like', $value);
-        });
-      }
+      return response()->json($jabatan);
 
-      return response()->json($jabatan->get());
     }
 
     public function apiSearchPegawai(Request $request)

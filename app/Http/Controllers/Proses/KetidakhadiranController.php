@@ -129,12 +129,18 @@ class KetidakhadiranController extends Controller
       return redirect()->route('ketidakhadiran.list')->with('success','Data berhasil disimpan!');
     }
 
-    public function apiListKetidakhadiran()
+    public function apiListKetidakhadiran(Request $request)
     {
       $unker = Auth::user()->unker;
 
       $peg_ijin_list = DataInduk::join('ketidakhadiran','ketidakhadiran.peg_id','=','peg_data_induk.id')
                        ->join('ref_ijin','ketidakhadiran.keterangan_id','=','ref_ijin.id')
+                       ->where(function($query) use($request) {
+                         if($request->has('search')) {
+                           $query->where('peg_data_induk.nama', 'like', $request->search['value'].'%');
+                           $query->OrWhere('peg_data_induk.nip', 'like', $request->search['value'].'%');
+                         }
+                       })
                        ->select(DB::raw('peg_data_induk.id as peg_id'),'peg_data_induk.id_finger','peg_data_induk.nip','peg_data_induk.nama',
                          'peg_data_induk.gelar_depan','peg_data_induk.gelar_belakang','peg_data_induk.id_unker','peg_data_induk.nama_unker',
                          'peg_data_induk.nama_subunit','peg_data_induk.nama_jabatan','peg_data_induk.golru','peg_data_induk.pangkat',
