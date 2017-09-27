@@ -24,6 +24,8 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('home', 'HomeController@index')->name('home');
   Route::get('logout', 'Auth\LoginController@logout');
   Route::get('register', 'Auth\RegisterController@showRegister')->name('register');
+  Route::get('ganti_password', 'Auth\RegisterController@changePassword')->name('change.password');
+  Route::post('update_password', 'Auth\RegisterController@updatePassword')->name('password.change');
   Route::get('user_edit/{id}', 'Auth\RegisterController@showEdit')->name('user_edit');
   Route::get('user', 'Auth\RegisterController@getListUser')->name('user');
   Route::post('user_update', 'Auth\RegisterController@updateUser')->name('user_update');
@@ -99,4 +101,8 @@ Route::group(['middleware' => 'auth'], function() {
 
   Route::get('laporan_ketidakhadiran', 'Laporan\LapKetidakhadiranController@index')->name('laporan.ketidakhadiran');
   Route::post('cetak_laporan_ketidakhadiran', 'Laporan\LapKetidakhadiranController@cetak')->name('cetak.laporan.ketidakhadiran');
+
+  Route::get('dispensasi_list', 'Proses\DispensasiController@index')->name('dispensasi.list');
+  Route::get('dispensasi_create', 'Proses\DispensasiController@create')->name('dispensasi.create');
+  Route::post('dispensasi_save', 'Proses\DispensasiController@saveCreate')->name('dispensasi.save');
 });

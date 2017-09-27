@@ -79,7 +79,7 @@ class KetidakhadiranController extends Controller
       if($request->hasFile('file')){
         $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->start)).'.'.$request->file->extension();
 
-        $request->file('file')->move('catalog/surat/', $file_name);
+        $request->file('file')->move('catalog/surat/tidak_hadir/', $file_name);
       }
 
       $ketidakhadiran = Ketidakhadiran::create([
@@ -110,7 +110,7 @@ class KetidakhadiranController extends Controller
 
         File::delete('catalog/surat/'.$ketidakhadiran->filename);
 
-        $request->file('file')->move('catalog/surat/', $file_name);
+        $request->file('file')->move('catalog/surat/tidak_hadir/', $file_name);
       }
 
       $ketidakhadiran->update([

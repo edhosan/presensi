@@ -5,6 +5,13 @@ Breadcrumbs::register('home', function($breadcrumbs)
     $breadcrumbs->push('Home', route('home'));
 });
 
+// Home
+Breadcrumbs::register('change.password', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home', route('home'));
+    $breadcrumbs->push('Ganti Password', route('change.password'));
+});
+
 // Home > Daftar User
 Breadcrumbs::register('user', function($breadcrumbs)
 {
@@ -185,6 +192,20 @@ Breadcrumbs::register('laporan.ketidakhadiran', function($breadcrumbs)
 {
     $breadcrumbs->parent('home');
     $breadcrumbs->push('Cetak Laporan Ketidakhadiran Pegawai', route('laporan.ketidakhadiran'));
+});
+
+// Home > Dispensasi
+Breadcrumbs::register('dispensasi.list', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Daftar Dispensasi', route('dispensasi.list'));
+});
+
+// Home > Dispensasi > Form
+Breadcrumbs::register('dispensasi.form', function($breadcrumbs)
+{
+    $breadcrumbs->parent('dispensasi.list');
+    $breadcrumbs->push('Form Dispensasi', route('dispensasi.list'));
 });
 
 

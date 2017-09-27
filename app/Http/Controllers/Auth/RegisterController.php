@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Model\DataInduk;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -57,7 +58,6 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,id,'.$data['id'],
             'password' => 'required|string|min:6|confirmed',
-            'id_unker' => 'is_exists_opd',
             'tipe'  => 'required|array|min:1'
         ]);
     }
@@ -70,13 +70,17 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+      if(array_key_exists('opd', $data)){
+        $opd = OPD::findOrFail($data['opd']);
+      }
+
       $user = User::create([
           'name' => $data['name'],
           'username' => $data['username'],
           'password' => bcrypt($data['password']),
           'api_token' => str_random(60),
-          'unker' => $data['id_unker'],
-          'nm_unker' => $data['opd']
+          'unker' =>array_key_exists('opd', $data)?$data['opd']:'',
+          'nm_unker' =>array_key_exists('opd', $data)?$opd->nama_unker:''
       ]);
 
       foreach ($data['tipe'] as $key => $value) {
@@ -88,9 +92,42 @@ class RegisterController extends Controller
 
     public function showRegister()
     {
+        $unker = Auth::user()->unker;
+
         $tipe = Role::pluck('display_name','id');
 
-        return view('auth.register')->with('tipe', $tipe);
+        $opd = DataInduk::orderBy('nama_unker','asc')
+               ->groupBy('id_unker','nama_unker')
+               ->where(function($query) use($unker) {
+                 if(!empty($unker)) {
+                   $query->where('id_unker',$unker);
+                 }
+               })
+               ->pluck('nama_unker','id_unker');
+
+        return view('auth.register')->with('tipe', $tipe)->withOpd($opd);;
+    }
+
+    public function changePassword()
+    {
+      $auth = Auth::user();
+
+      return view('auth.passwords.change')->withData($auth);
+    }
+
+    public function updatePassword(Request $request)
+    {
+      $this->validate($request, array(
+        'password' => 'required|string|min:6|confirmed',
+        'password_confirmation' => 'required|min:3'
+      ));
+
+      $user = User::find($request->id);
+      $user->update([
+        'password' => bcrypt($request->password)
+      ]);
+
+      return redirect('home')->with('success','Data berhasil disimpan!');
     }
 
     public function apiGetPegawai(Request $request)
@@ -180,10 +217,20 @@ class RegisterController extends Controller
 
     public function showEdit($id)
     {
+      $unker = Auth::user()->unker;
+
       $tipe = Role::pluck('display_name','id');
       $user = User::find($id);
+      $opd = DataInduk::orderBy('nama_unker','asc')
+             ->groupBy('id_unker','nama_unker')
+             ->where(function($query) use($unker) {
+               if(!empty($unker)) {
+                 $query->where('id_unker',$unker);
+               }
+             })
+             ->pluck('nama_unker','id_unker');
 
-      return view('auth.register')->withData($user)->withTipe($tipe);
+      return view('auth.register')->withData($user)->withTipe($tipe)->withOpd($opd);
     }
 
     public function apiUser()
@@ -194,12 +241,17 @@ class RegisterController extends Controller
     public function updateUser(Request $request)
     {
        $data = $request->all();
+
+       if(array_key_exists('opd', $data)){
+         $opd = OPD::findOrFail($data['opd']);
+       }
+
        $arr = array(
          'name' => $data['name'],
          'username' => $data['username'],
          'password' => bcrypt($data['password']),
-         'unker' => isset($data['opd'])?$data['id_unker']:'',
-         'nm_unker' => $data['opd']
+         'unker' =>array_key_exists('opd', $data)?$data['opd']:'',
+         'nm_unker' =>array_key_exists('opd', $data)?$opd->nama_unker:''
        );
 
        $user = User::find($data['id']);

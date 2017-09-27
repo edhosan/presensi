@@ -10,33 +10,18 @@
       <div class="container">
         <div class="row">
           <div class="span12">
-            {!! Breadcrumbs::render('ketidakhadiran.form') !!}
+            {!! Breadcrumbs::render('dispensasi.form') !!}
             <div class="widget">
               <div class="widget-header">
                 <i class="icon-file"></i>
-                <h3>Form Ketidakhadiran Pegawai</h3>
+                <h3>Form Dispensasi Pegawai</h3>
               </div>
 
               <div class="widget-content">
-                <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('ketidakhadiran.update'):route('ketidakhadiran.save') }}" novalidate="novalidate" enctype="multipart/form-data">
+                <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('ketidakhadiran.update'):route('dispensasi.save') }}" novalidate="novalidate" enctype="multipart/form-data">
                   {{ csrf_field() }}
                   <input type="hidden" name="id" value="{{ $data->id or 0 }}">
                   <fieldset>
-                  <!--  <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
-                        <label for="type" class="control-label">OPD</label>
-
-                        <div class="controls">
-                            <?php $selected_data = isset($data)?$data->pegawai->id_unker:old('opd') ?>
-                            {{ Form::select('opd', $opd, $selected_data, ['id' => 'opd', 'placeholder' => "Please Select", 'class' => 'span5']) }}
-
-                            @if ($errors->has('opd'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('opd') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div> -->
-
                     <div class="control-group {{ $errors->has('pegawai') ? 'error' : '' }}">
                         <label for="nama" class="control-label">Nama / NIP Pegawai</label>
 
@@ -52,90 +37,74 @@
                         </div>
                     </div>
 
-                    <div class="control-group {{ $errors->has('ijin') ? 'error' : '' }}">
-                        <label for="type" class="control-label">Keterangan Tidak Hadir</label>
-
-                        <div class="controls">
-                            <?php $selected_data = isset($data)?$data->keterangan_id:old('ijin') ?>
-                            {{ Form::select('ijin', $ijin, $selected_data, ['id' => 'ijin', 'placeholder' => "Please Select"]) }}
-
-                            @if ($errors->has('ijin'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('ijin') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="control-group {{ $errors->has('start') ? 'error' : '' }} {{ $errors->has('end') ? 'error' : '' }}">
+                    <div class="control-group {{ $errors->has('tanggal') ? 'error' : '' }} {{ $errors->has('end') ? 'error' : '' }}">
                         <label for="start" class="control-label">Tanggal</label>
                         <div class="controls controls-row">
                           @php
-                            $start = old('start');
+                            $tanggal = old('tanggal');
                             if(!empty($data))
-                              $start = Carbon\Carbon::parse($data['start'])->format('d-m-Y');
+                              $tanggal = Carbon\Carbon::parse($data['tanggal'])->format('d-m-Y');
                           @endphp
-                          <input id="start" type="text" class="span2" name="start" value="{{ $start }}">
-                          &nbsp;s/d&nbsp;
-                          @php
-                            $end = old('end');
-                            if(!empty($data))
-                              $end = Carbon\Carbon::parse($data['end'])->format('d-m-Y');
-                          @endphp
-                          <input id="end" type="text" class="span2" name="end" value="{{ $end }}">
+                          <input id="tanggal" type="text" class="span2" name="tanggal" value="{{ $tanggal }}">
 
-                          @if ($errors->has('start'))
+                          @if ($errors->has('tanggal'))
                               <span class="help-block">
-                                  <strong>{{ $errors->first('start') }}</strong>
-                              </span>
-                          @endif
-
-                          @if ($errors->has('end'))
-                              <span class="help-block">
-                                  <strong>{{ $errors->first('end') }}</strong>
+                                  <strong>{{ $errors->first('tanggal') }}</strong>
                               </span>
                           @endif
                         </div>
                     </div>
 
-                    <div class="control-group {{ $errors->has('jam_start') ? 'error' : '' }}" id="div_jam">
-                        <label for="jam_start" class="control-label">Jam</label>
+                    <div class="control-group {{ $errors->has('koreksi_jam_masuk') ? 'error' : '' }}" id="div_jam">
+                        <label for="jam_start" class="control-label">Koreksi Jam Masuk</label>
 
                         <div class="controls controls-row">
                             <div class="input-append bootstrap-timepicker timepicker">
-                                <input id="jam_start" name="jam_start" type="text" class="span1 m-wrap" value="{{ $data->jam_start or old('jam_start') }}">
-                                <button type="button" class="btn"><i class="icon-time "></i></button>
-                            </div>
-                            &nbsp;s/d&nbsp;
-                            <div class="input-append bootstrap-timepicker timepicker">
-                                <input id="jam_end" name="jam_end" type="text" class="span1 m-wrap" value="{{ $data->jam_end or old('jam_end') }}">
+                                <input id="koreksi_jam_masuk" name="koreksi_jam_masuk" type="text" class="span1 m-wrap" value="{{ $data->koreksi_jam_masuk or old('koreksi_jam_masuk') }}">
                                 <button type="button" class="btn"><i class="icon-time "></i></button>
                             </div>
 
-                            @if ($errors->has('jam_start'))
+                            @if ($errors->has('koreksi_jam_masuk'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('jam_start') }}</strong>
+                                    <strong>{{ $errors->first('koreksi_jam_masuk') }}</strong>
                                 </span>
                             @endif
                         </div>
                     </div>
 
-                    <div class="control-group {{ $errors->has('keperluan') ? 'error' : '' }}">
+                    <div class="control-group {{ $errors->has('koreksi_jam_pulang') ? 'error' : '' }}" id="div_jam">
+                        <label for="jam_start" class="control-label">Koreksi Jam Pulang</label>
+
+                        <div class="controls controls-row">
+                            <div class="input-append bootstrap-timepicker timepicker">
+                                <input id="koreksi_jam_pulang" name="koreksi_jam_pulang" type="text" class="span1 m-wrap" value="{{ $data->koreksi_jam_pulang or old('koreksi_jam_pulang') }}">
+                                <button type="button" class="btn"><i class="icon-time "></i></button>
+                            </div>
+
+                            @if ($errors->has('koreksi_jam_pulang'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('koreksi_jam_pulang') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="control-group {{ $errors->has('alasan') ? 'error' : '' }}">
                         <label for="keperluan" class="control-label">Alasan / Keperluan</label>
 
                         <div class="controls">
-                            <textarea rows="3" class="span4" name="keperluan">{{ $data->keperluan or old('keperluan') }}</textarea>
+                            <textarea rows="3" class="span4" name="alasan">{{ $data->alasan or old('alasan') }}</textarea>
 
-                            @if ($errors->has('keperluan'))
+                            @if ($errors->has('alasan'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('keperluan') }}</strong>
+                                    <strong>{{ $errors->first('alasan') }}</strong>
                                 </span>
                             @endif
                         </div>
                     </div>
 
                     <div class="control-group {{ $errors->has('file') ? 'error' : '' }}">
-                      <label for="file" class="control-label">Upload File</label>
+                      <label for="file" class="control-label">Upload Surat Ijin</label>
 
                       <div class="controls">
                           {!! Form::file('file', null) !!}
@@ -152,8 +121,8 @@
                     <div class="control-group">
                       <label for="" class="control-label"></label>
                       <div class="controls">
-                        <iframe src="{{ URL::to('/') }}/catalog/surat/tidak_hadir/{{ $data->filename }}" width="30%" height="5%"></iframe>
-                        <a href="{{ URL::to('/') }}/catalog/surat/tidak_hadir/{{ $data->filename }}">&nbsp;Download File</a>
+                        <iframe src="{{ URL::to('/') }}/catalog/surat/{{ $data->filename }}" width="30%" height="5%"></iframe>
+                        <a href="{{ URL::to('/') }}/catalog/surat/{{ $data->filename }}">&nbsp;Download File</a>
                       </div>
                     </div>
                     @endif
@@ -185,18 +154,6 @@
 
 $(function() {
 
-$.changeDate = function () {
-  var dateStart = $('#start').datepicker('getDate');
-  var dateEnd = $('#end').datepicker('getDate');
-  var d = (dateEnd - dateStart) / (1000 * 60 * 60 * 24);
-
-/*  if(Math.round(d) === 0){
-    $('#div_jam').show();
-  }else{
-    $('#div_jam').hide();
-  }*/
-};
-
 var formatCalendar = {
   format: 'dd-mm-yyyy',
   language: 'id',
@@ -204,16 +161,26 @@ var formatCalendar = {
   todayHighlight : true
 };
 
-$('#start').datepicker( formatCalendar );
-$('#end').datepicker( formatCalendar );
+$('#tanggal').datepicker( formatCalendar );
 
-$('#start').change( $.changeDate );
-$('#end').change( $.changeDate );
+$('#koreksi_jam_masuk').timepicker({
+  showMeridian: false,
+  defaultTime: false,
+  icons: {
+    up: 'icon icon-caret-up',
+    down: 'icon icon-caret-down'
+  }
+});
 
-$('#jam_start').timepicker({ showMeridian: false });
-$('#jam_end').timepicker({ showMeridian: false });
+$('#koreksi_jam_pulang').timepicker({
+  showMeridian: false,
+  defaultTime: false,
+  icons: {
+    up: 'icon icon-caret-up',
+    down: 'icon icon-caret-down'
+  }
+});
 
-$('#div_jam').hide();
 $('#opd').select2({ placeholder: 'Pilih OPD' });
 $('#pegawai').select2({
   placeholder: 'Pilih Pegawai',

@@ -85,9 +85,9 @@ class DataIndukController extends Controller
             'nama_unker'  => $opd->nama_unker,
             'id_subunit'  => $subunit->id_subunit,
             'nama_subunit'  => $subunit->nama_subunit,
-            'id_pangkat'  => $pangkat->id_pangkat,
-            'golru'       => $pangkat->golru,
-            'pangkat'     => $pangkat->pangkat,
+            'id_pangkat'  => isset($pangkat)?$pangkat->id_pangkat:'',
+            'golru'       => isset($pangkat)?$pangkat->golru:'',
+            'pangkat'     => isset($pangkat)?$pangkat->pangkat:'',
             'id_jabatan'  => $jabatan->id_jabatan,
             'nama_jabatan'  => $jabatan->nama_jabatan,
             'id_eselon'   => $jabatan->eselon->id_eselon,
@@ -121,7 +121,7 @@ class DataIndukController extends Controller
         'type' => 'required',
         'id_finger' => 'required|unique:peg_data_induk|max:8|min:8',
         'nama' => 'required',
-        'id_unker' => 'required|is_exists_opd',
+        'opd' => 'required',
         'jabatan' => 'required',
       );
     }
@@ -327,7 +327,7 @@ class DataIndukController extends Controller
       }
 
       $dataInduk = DataInduk::orderBy('nama', 'asc')
-                  ->select('id','nama','nip')
+                  ->select('id','nama','nip','id_unker')
                   ->where(function($query) use($unker) {
                     if(!empty($unker)) {
                       $query->where('id_unker', $unker);

@@ -4,4 +4,5 @@ return [
 
 	'view' => 'partial/breadcrumbs',
 
+
 ];

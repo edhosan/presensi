@@ -38,7 +38,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                       class="icon-user"></i> User: {{ Auth::user()->name }} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                      <li><a href="javascript:;">Ganti Password</a></li>
+                      <li><a href="{{ route('change.password') }}">Ganti Password</a></li>
                       <li><a href="{{ route('logout') }}">Logout</a></li>
                     </ul>
                   </li>

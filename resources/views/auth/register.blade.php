@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @push('css')
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.min.css') }}" rel="stylesheet">
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.themes.min.css') }}" rel="stylesheet">
+<link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -10,13 +9,21 @@
 <div class="main">
   <div class="main-inner">
     <div class="container">
+      {!! Breadcrumbs::render('register') !!}
       <div class="row">
         <div class="span12">
-          {!! Breadcrumbs::render('register') !!}
           <div class="widget">
             <div class="widget-header">
               <i class="icon-user"></i>
               <h3>Manajemen User</h3>
+              <div class="pull-right">
+                <?php $selected_pegawai = isset($data)?$data->username:old('username') ?>
+                <select id="pegawai">
+                  @if(isset($selected_pegawai))
+                    <option value="{{ $selected_pegawai }}" selected="selected">{{ $data->name }}</option>
+                  @endif
+                </select>
+              </div>
             </div>
 
             <div class="widget-content">
@@ -28,7 +35,7 @@
                         <label for="username" class="control-label">Username / NIP</label>
 
                         <div class="controls">
-                            <input id="username" type="text" class="span4 autocomplete" name="username" value="{{ $data->username or old('username') }}" autofocus>
+                            <input id="username" type="text" name="username" value="{{$data->username or old('username') }}" required>
 
                             @if ($errors->has('username'))
                                 <span class="help-block">
@@ -73,11 +80,12 @@
                     </div>
 
                     <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
-                        <label for="opd" class="control-label">Organisasi Perangkat Daerah</label>
+                        <label for="type" class="control-label">OPD</label>
 
                         <div class="controls">
-                            <input id="opd" type="text" class="span4 autocomplete" name="opd" value="{{$data->nm_unker or old('opd') }}">
-                            <input type="hidden" name="id_unker" value="{{$data->unker or old('id_unker') }}" id="id_unker">
+                            <?php $selected_data = isset($data)?$data->unker:old('opd') ?>
+                            {{ Form::select('opd', $opd, $selected_data, ['id' => 'opd', 'placeholder' => "Please Select", 'class' => 'span5']) }}
+
                             @if ($errors->has('opd'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('opd') }}</strong>
@@ -91,7 +99,7 @@
 
                         <div class="controls">
                             <?php $selected_tipe = isset($data)?$data->roles->pluck('id'):old('tipe[]') ?>
-                            {{ Form::select('tipe[]', $tipe, $selected_tipe , array('multiple'=>'multiple')) }}
+                            {{ Form::select('tipe[]', $tipe, $selected_tipe , array('id'=>'tipe', 'multiple'=>'multiple')) }}
                             @if ($errors->has('tipe'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('tipe') }}</strong>
@@ -121,96 +129,74 @@
 @endsection
 
 @push('script')
-  <script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
-  <script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
+  <script src="{{ asset('js/select2.min.js') }}"></script>
   <script type="text/javascript">
   $(function() {
-    var optPeg = {
-        url: function(phrase) {
-          return "{{ url('api/pegawai?api_token=') }}{{ Auth::user()->api_token }}";
+    $('#pegawai').select2({
+      placeholder: 'Cari Pegawai',
+      allowClear: true,
+      ajax: {
+        url: "{{ url('api/search_peg?api_token=') }}{{ Auth::user()->api_token }}",
+        dataType: 'json',
+        delay: 250,
+        data: function(params){
+          return {
+            q: params.term,
+            page: params.page,
+            per_page: 10
+          };
         },
-
-        getValue: function(element) {
-          return element.nip;
+        processResults: function(data, params) {
+          params.page = params.page || 1;
+          return {
+            results: data.data,
+            pagination: {
+              more: (params.page * data.per_page) < data.total
+            }
+          };
         },
+        cache: true
+      },
+      escapeMarkup: function( markup ){ return markup; },
+      minimumInputLength: 1,
+      templateResult: formatRepo,
+      templateSelection: formatRepoSelection
+    })
 
-        ajaxSettings: {
-          dataType: "json",
-          method: "POST",
-          data: {
-            dataType: "json"
-          }
-        },
+    function formatRepo (repo) {
+        if (repo.loading) return repo.text;
 
-        template: {
-      		type: "description",
-      		fields: {
-      			description: "nama"
-      		}
-      	},
+        var markup = "<div class='select2-result-repository clearfix'>" +
+          "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title'>" + repo.nama + "</div>";
 
-        list: {
-      		match: {
-      			enabled: true
-      		},
-          onSelectItemEvent: function() {
-            var value = $("#username").getSelectedItemData();
-            $("#name").val(value.nama).trigger("change");
-            $("#opd").val(value.nama_unker).trigger("change");
-            $("#id_unker").val(value.id_unker).trigger("change");
-          }
-      	},
-
-        preparePostData: function(data) {
-          data.phrase = $("#username").val();
-          data.unker = "{{ Auth::user()->unker }}";
-          return data;
+        if (repo.description) {
+          markup += "<div class='select2-result-repository__description'>" + repo.nip + "</div>";
         }
-      };
 
-      var optUnker = {
-          url: function(phrase) {
-            return "{{ url('api/unker?api_token=') }}{{ Auth::user()->api_token }}";
-          },
+        markup += "<div class='select2-result-repository__statistics'>" +
+          "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i>NIP: " + repo.nip + "</div>" +
+        "</div>" +
+        "</div></div>";
 
-          getValue: function(element) {
-            return element.nama_unker;
-          },
+        return markup;
+    }
 
-          ajaxSettings: {
-            dataType: "json",
-            method: "POST",
-            data: {
-              dataType: "json"
-            }
-          },
+    function formatRepoSelection (repo) {
+      return repo.nama || repo.text;
+    }
 
-          template: {
-        		type: "description",
-        		fields: {
-        			description: "id_unker"
-        		}
-        	},
+    $('#opd').select2({ placeholder: 'Pilih OPD',allowClear: true });
 
-          list: {
-        		match: {
-        			enabled: true
-        		},
-            onSelectItemEvent: function() {
-              var value = $("#opd").getSelectedItemData().id_unker;
-              $("#id_unker").val(value).trigger("change");
-            }
-        	},
+    $('#tipe').select2({ placeholder: 'Pilih Tipe User' });
 
-          preparePostData: function(data) {
-            data.phrase = $("#opd").val();
-            data.unker = "{{ Auth::user()->unker }}";
-            return data;
-          }
-        };
+    $('#pegawai').on('select2:select', function(e) {
+      $('#username').val(e.params.data.nip).trigger("change");
+      $('#name').val(e.params.data.nama).trigger("change");;
+      $('#opd').val(e.params.data.id_unker).trigger("change");
+    });
 
-    $("#username").easyAutocomplete(optPeg);
-    $("#opd").easyAutocomplete(optUnker);
+
   });
   </script>
 @endpush
