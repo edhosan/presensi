@@ -11,7 +11,7 @@ class Dispensasi extends Model
 
       protected $table = 'Dispensasi';
 
-      protected $fillable = ['id','peg_id','tanggal','koreksi_jam_masuk','koreksi_jam_pulang','alasan','filename'];
+      protected $fillable = ['id','peg_id','tanggal','koreksi_jam','alasan','filename'];
 
       protected $dates = ['deleted_at'];
 

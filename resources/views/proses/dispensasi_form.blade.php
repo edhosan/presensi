@@ -18,7 +18,7 @@
               </div>
 
               <div class="widget-content">
-                <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('ketidakhadiran.update'):route('dispensasi.save') }}" novalidate="novalidate" enctype="multipart/form-data">
+                <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('dispensasi.update'):route('dispensasi.save') }}" novalidate="novalidate" enctype="multipart/form-data">
                   {{ csrf_field() }}
                   <input type="hidden" name="id" value="{{ $data->id or 0 }}">
                   <fieldset>
@@ -55,35 +55,18 @@
                         </div>
                     </div>
 
-                    <div class="control-group {{ $errors->has('koreksi_jam_masuk') ? 'error' : '' }}" id="div_jam">
-                        <label for="jam_start" class="control-label">Koreksi Jam Masuk</label>
+                    <div class="control-group {{ $errors->has('koreksi_jam') ? 'error' : '' }}">
+                        <label for="koreksi_jam" class="control-label">Koreksi Jam Masuk / Pulang</label>
 
                         <div class="controls controls-row">
                             <div class="input-append bootstrap-timepicker timepicker">
-                                <input id="koreksi_jam_masuk" name="koreksi_jam_masuk" type="text" class="span1 m-wrap" value="{{ $data->koreksi_jam_masuk or old('koreksi_jam_masuk') }}">
+                                <input id="koreksi_jam" name="koreksi_jam" type="text" class="span1 m-wrap" value="{{ $data->koreksi_jam or old('koreksi_jam') }}">
                                 <button type="button" class="btn"><i class="icon-time "></i></button>
                             </div>
 
-                            @if ($errors->has('koreksi_jam_masuk'))
+                            @if ($errors->has('koreksi_jam'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('koreksi_jam_masuk') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="control-group {{ $errors->has('koreksi_jam_pulang') ? 'error' : '' }}" id="div_jam">
-                        <label for="jam_start" class="control-label">Koreksi Jam Pulang</label>
-
-                        <div class="controls controls-row">
-                            <div class="input-append bootstrap-timepicker timepicker">
-                                <input id="koreksi_jam_pulang" name="koreksi_jam_pulang" type="text" class="span1 m-wrap" value="{{ $data->koreksi_jam_pulang or old('koreksi_jam_pulang') }}">
-                                <button type="button" class="btn"><i class="icon-time "></i></button>
-                            </div>
-
-                            @if ($errors->has('koreksi_jam_pulang'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('koreksi_jam_pulang') }}</strong>
+                                    <strong>{{ $errors->first('koreksi_jam') }}</strong>
                                 </span>
                             @endif
                         </div>
@@ -121,8 +104,8 @@
                     <div class="control-group">
                       <label for="" class="control-label"></label>
                       <div class="controls">
-                        <iframe src="{{ URL::to('/') }}/catalog/surat/{{ $data->filename }}" width="30%" height="5%"></iframe>
-                        <a href="{{ URL::to('/') }}/catalog/surat/{{ $data->filename }}">&nbsp;Download File</a>
+                        <iframe src="{{ URL::to('/') }}/catalog/surat/dispensasi/{{ $data->filename }}" width="30%" height="5%"></iframe>
+                        <a href="{{ URL::to('/') }}/catalog/surat/dispensasi/{{ $data->filename }}">&nbsp;Download File</a>
                       </div>
                     </div>
                     @endif
@@ -130,7 +113,7 @@
 
                     <div class="form-actions">
                       <button type="submit" class="btn btn-primary">Simpan</button>
-                      <a href="{{ route('ketidakhadiran.list') }} " class="btn">Batal</a>
+                      <a href="{{ route('dispensasi.list') }} " class="btn">Batal</a>
                     </div>
                   </fieldset>
 
@@ -163,18 +146,8 @@ var formatCalendar = {
 
 $('#tanggal').datepicker( formatCalendar );
 
-$('#koreksi_jam_masuk').timepicker({
+$('#koreksi_jam').timepicker({
   showMeridian: false,
-  defaultTime: false,
-  icons: {
-    up: 'icon icon-caret-up',
-    down: 'icon icon-caret-down'
-  }
-});
-
-$('#koreksi_jam_pulang').timepicker({
-  showMeridian: false,
-  defaultTime: false,
   icons: {
     up: 'icon icon-caret-up',
     down: 'icon icon-caret-down'

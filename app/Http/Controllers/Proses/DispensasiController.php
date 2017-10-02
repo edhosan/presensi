@@ -19,7 +19,8 @@ class DispensasiController extends Controller
     'pegawai'  => 'required',
     'tanggal'  => 'required',
     'alasan' => 'required',
-    'file' => 'required|mimes:pdf'
+    'koreksi_jam' => 'required|date_format:G:i',
+    'file' => 'mimes:pdf'
   ];
 
   public function index()
@@ -41,6 +42,22 @@ class DispensasiController extends Controller
       return view('proses.dispensasi_form')->withPegawai($pegawai);
   }
 
+  public function edit($id)
+  {
+    $unker = Auth::user()->unker;
+
+    $pegawai = DataInduk::where(function($query) use($unker) {
+                 if(!empty($unker)) {
+                   $query->where('id_unker',$unker);
+                 }
+               })
+              ->pluck('nama','id');
+
+    $data = Dispensasi::find($id);
+
+    return view('proses.dispensasi_form')->withPegawai($pegawai)->withData($data);
+  }
+
   public function saveCreate(Request $request)
   {
       $this->validate($request, $this->rules);
@@ -55,8 +72,7 @@ class DispensasiController extends Controller
       $dispensasi = Dispensasi::create([
         'peg_id'        => $request->pegawai,
         'tanggal'         => date('Y-m-d', strtotime($request->tanggal) ),
-        'koreksi_jam_masuk'     => $request->koreksi_jam_masuk,
-        'koreksi_jam_pulang'       => $request->koreksi_jam_pulang,
+        'koreksi_jam'     => $request->koreksi_jam,
         'alasan'     => $request->alasan,
         'filename'      => $file_name
       ]);
@@ -64,6 +80,34 @@ class DispensasiController extends Controller
       $this->updateKalkulasi($request);
 
       return redirect()->route('dispensasi.list')->with('success','Data berhasil disimpan!');
+  }
+
+  public function saveEdit(Request $request)
+  {
+    $this->validate($request, $this->rules);
+
+    $dispensasi = Dispensasi::find($request->id);
+
+    $file_name = $dispensasi->filename;
+    if($request->hasFile('file')){
+      $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->tanggal)).'.'.$request->file->extension();
+
+      File::delete('catalog/surat/dispensasi/'.$dispensasi->filename);
+
+      $request->file('file')->move('catalog/surat/dispensasi/', $file_name);
+    }
+
+    $dispensasi->update([
+      'peg_id'          => $request->pegawai,
+      'tanggal'         => date('Y-m-d', strtotime($request->tanggal) ),
+      'koreksi_jam'     => $request->koreksi_jam,
+      'alasan'          => $request->alasan,
+      'filename'        => $file_name
+    ]);
+
+    $this->updateKalkulasi($request);
+
+    return redirect()->route('dispensasi.list')->with('success','Data berhasil disimpan!');
   }
 
   private function updateKalkulasi($data)
@@ -85,8 +129,8 @@ class DispensasiController extends Controller
     $jp = Carbon::parse($hari->jam_pulang);
     $toleransi_pulang = Carbon::parse($hari->toleransi_pulang);
     $jp = $jp->subMinutes($toleransi_pulang->minute);
-    $in = Carbon::parse($data->koreksi_jam_masuk);
-    $out = Carbon::parse($data->koreksi_jam_pulang);
+    $in = Carbon::createFromTime(0, 0, 0);
+    $out = Carbon::createFromTime(0, 0, 0);
     $jam_kerja = Carbon::createFromTime(0, 0, 0);
     $status_hadir = '';
 
@@ -97,49 +141,88 @@ class DispensasiController extends Controller
     $terlambat = Carbon::createFromTime(0, 0, 0);
     $pulang_awal = Carbon::createFromTime(0, 0, 0);
 
-    if(!empty($data->koreksi_jam_masuk)){
-      $out = Carbon::parse($peg_jadwal->out);
+    if(!empty($data->koreksi_jam)){
+      $time = Carbon::parse($data->koreksi_jam);
 
-      if( $in->gt($jm) ) {
-        $terlambat = $in->diff($jm)->format('%H:%I:%S');
-        $status_hadir = 'HT';
+      if($time->gte($scan_in1) && $time->lte($scan_in2)){
+        $in = $time;
+        if( $time->gt($jm) ) {
+          $terlambat = $time->diff($jm)->format('%H:%I:%S');
+          $status_hadir = 'HT';
+        }
+
+        $peg_jadwal->update([
+          'in'  => $time->toTimeString(),
+          'terlambat' => $terlambat,
+          'status'  => $status_hadir
+        ]);
       }
 
-      if($in->toTimeString() != '00:00:00' && $out->toTimeString() != '00:00:00'){
-        $jam_kerja = $out->diff($in)->format('%H:%I:%S');
+      if($time->gte($scan_out1) && $time->lte($scan_out2) ){
+        $out = $time;
+        if($in->toTimeString() != '00:00:00' && $time->toTimeString() != '00:00:00'){
+          $jam_kerja = $time->diff($in)->format('%H:%I:%S');
+        }
+
+        if($time->lt($jp)) {
+          $pulang_awal = $jp->diff($time)->format('%H:%I:%S');
+          $status_hadir = 'HP';
+        }
+
+        $peg_jadwal->update([
+          'out'  => $time->toTimeString(),
+          'pulang_awal' => $pulang_awal,
+          'jam_kerja' => $jam_kerja,
+          'status'  => $status_hadir
+        ]);
       }
 
-      $peg_jadwal->update([
-        'in'  => $in->toTimeString(),
-        'terlambat' => $terlambat,
-        'status'  => $status_hadir,
-        'jam_kerja' => $jam_kerja,
-      ]);
-    }
-
-    if(!empty($data->koreksi_jam_pulang)){
-      $in = Carbon::parse($peg_jadwal->in);
-
-      if($in->toTimeString() != '00:00:00' && $out->toTimeString() != '00:00:00'){
-        $jam_kerja = $out->diff($in)->format('%H:%I:%S');
+      if($status_hadir != 'HT' && $status_hadir != 'HP'){
+        PegawaiJadwal::find($peg_jadwal->id)->update(['status' => 'H']);
       }
 
-      if($out->lt($jp)) {
-        $pulang_awal = $jp->diff($out)->format('%H:%I:%S');
-        $status_hadir = 'HP';
-      }
-
-      $peg_jadwal->update([
-        'out'  => $out->toTimeString(),
-        'pulang_awal' => $pulang_awal,
-        'jam_kerja' => $jam_kerja,
-        'status'  => $status_hadir
-      ]);
-    }
-
-    if($status_hadir != 'HT' && $status_hadir != 'HP'){
-      $peg_jadwal->update(['status' => 'H']);
     }
 
   }
+
+  public function apiListDispensasi(Request $request)
+  {
+    $unker = Auth::user()->unker;
+
+    $dispensasi = Dispensasi::join('peg_data_induk','peg_data_induk.id','=','Dispensasi.peg_id')
+                  ->where(function($query) use($request) {
+                    if($request->has('search')) {
+                      $query->where('peg_data_induk.nama', 'like', $request->search['value'].'%');
+                      $query->OrWhere('peg_data_induk.nip', 'like', $request->search['value'].'%');
+                      $query->OrWhere('peg_data_induk.nama_unker', 'like', $request->search['value'].'%');
+                    }
+                  })
+                  ->select('Dispensasi.id','peg_data_induk.nip','peg_data_induk.nama','peg_data_induk.nama_unker','Dispensasi.tanggal',
+                    'Dispensasi.koreksi_jam','Dispensasi.alasan');
+
+    return Datatables::of($dispensasi)
+            ->filter(function($query) use($unker) {
+              if(!empty($unker)){
+                $query->where('id_unker', $unker);
+              }
+            })
+            ->editColumn('tanggal','{{ date("d-m-Y", strtotime($tanggal)) }}')
+            ->make(true);
+  }
+
+  public function apiDeleteDispensasi(Request $request)
+  {
+    $data = $request->input('data');
+
+    foreach ($data as $id) {
+      $dispensasi = Dispensasi::find($id);
+
+      File::delete('catalog/surat/dispensasi/'.$dispensasi->filename);
+
+      $status = $dispensasi->forceDelete();
+    }
+
+    return response()->json($status);
+  }
+
 }

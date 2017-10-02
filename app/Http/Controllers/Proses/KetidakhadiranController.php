@@ -17,7 +17,6 @@ use File;
 class KetidakhadiranController extends Controller
 {
     private $rules = [
-    /*  'opd' => 'required',*/
       'pegawai'  => 'required',
       'ijin'  => 'required',
       'start' => 'required|before:end',
@@ -104,11 +103,11 @@ class KetidakhadiranController extends Controller
 
       $ketidakhadiran = Ketidakhadiran::find($request->id);
 
-      $file_name = '';
+      $file_name = $ketidakhadiran->filename;
       if($request->hasFile('file')){
         $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->start)).'.'.$request->file->extension();
 
-        File::delete('catalog/surat/'.$ketidakhadiran->filename);
+        File::delete('catalog/surat/tidak_hadir/'.$ketidakhadiran->filename);
 
         $request->file('file')->move('catalog/surat/tidak_hadir/', $file_name);
       }
@@ -181,7 +180,7 @@ class KetidakhadiranController extends Controller
       foreach ($data as $id) {
         $ketidakhadiran = Ketidakhadiran::find($id);
 
-        File::delete('catalog/surat/'.$ketidakhadiran->filename);
+        File::delete('catalog/surat/tidak_hadir/'.$ketidakhadiran->filename);
 
         $status = $ketidakhadiran->forceDelete();
       }

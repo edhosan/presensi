@@ -9,6 +9,7 @@ use App\Model\DataInduk;
 use App\Model\PegawaiJadwal;
 use App\Model\AuthLog;
 use App\Model\Hari;
+use App\Model\Dispensasi;
 use Auth;
 use Validator;
 use Carbon\Carbon;
@@ -131,10 +132,57 @@ class KalkulasiController extends Controller
           $out = Carbon::createFromTime(0, 0, 0);
           $jam_kerja = Carbon::createFromTime(0, 0, 0);
           $status_hadir = '';
+          $dispensasi = Dispensasi::where('tanggal', date('Y-m-d', strtotime($tanggal)) )
+                        ->where('peg_id', $jadwal->peg_id)
+                        ->get();
 
           foreach ($log as $authlog) {
             $date = Carbon::parse($authlog->TransactionTime);
             $time = Carbon::parse($date->toTimeString());
+            $scan_in1 = Carbon::parse($hari->scan_in1);
+            $scan_in2 = Carbon::parse($hari->scan_in2);
+            $scan_out1 = Carbon::parse($hari->scan_out1);
+            $scan_out2 = Carbon::parse($hari->scan_out2);
+            $terlambat = Carbon::createFromTime(0, 0, 0);
+            $pulang_awal = Carbon::createFromTime(0, 0, 0);
+            $peg_jadwal = PegawaiJadwal::find($jadwal->id);
+
+            if($time->gte($scan_in1) && $time->lte($scan_in2)){
+              $in = $time;
+              if( $time->gt($jm) ) {
+                $terlambat = $time->diff($jm)->format('%H:%I:%S');
+                $status_hadir = 'HT';
+              }
+
+              $peg_jadwal->update([
+                'in'  => $time->toTimeString(),
+                'terlambat' => $terlambat,
+                'status'  => $status_hadir
+              ]);
+            }
+
+            if($time->gte($scan_out1) && $time->lte($scan_out2) ){
+              $out = $time;
+              if($in->toTimeString() != '00:00:00' && $time->toTimeString() != '00:00:00'){
+                $jam_kerja = $time->diff($in)->format('%H:%I:%S');
+              }
+
+              if($time->lt($jp)) {
+                $pulang_awal = $jp->diff($time)->format('%H:%I:%S');
+                $status_hadir = 'HP';
+              }
+
+              $peg_jadwal->update([
+                'out'  => $time->toTimeString(),
+                'pulang_awal' => $pulang_awal,
+                'jam_kerja' => $jam_kerja,
+                'status'  => $status_hadir
+              ]);
+            }
+          }
+
+          foreach ($dispensasi as $dispen) {
+            $time = Carbon::parse($dispen->koreksi_jam);
             $scan_in1 = Carbon::parse($hari->scan_in1);
             $scan_in2 = Carbon::parse($hari->scan_in2);
             $scan_out1 = Carbon::parse($hari->scan_out1);

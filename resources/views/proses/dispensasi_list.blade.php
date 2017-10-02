@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="widget-content">
-                  <table class="table table-striped table-bordered display nowrap" id="ketidakhadiran-table" width="100%" >
+                  <table class="table table-striped table-bordered display nowrap" id="dispensasi-table" width="100%" >
                       <thead>
                           <tr>
                               <th></th>
@@ -30,11 +30,9 @@
                               <th>Nip</th>
                               <th>OPD</th>
                               <th>Nama</th>
-                              <th>Jabatan</th>
-                              <th>Status</th>
                               <th>Tanggal</th>
-                              <th>Jumlah</th>
-                              <th>Keperluan</th>
+                              <th>Koreksi Jam Masuk / Pulang</th>
+                              <th>Alasan</th>
                           </tr>
                       </thead>
                   </table>
@@ -56,7 +54,7 @@
 <script src="{{ asset('js/dataTables.rowGroup.min.js') }}"></script>
 <script>
 $(function() {
-    var table = $('#ketidakhadiran-table').DataTable({
+    var table = $('#dispensasi-table').DataTable({
         dom: 'Bfrtip',
         scrollX: true,
         select: {
@@ -77,7 +75,7 @@ $(function() {
                 text: '<i class="icon-edit"> Edit</i>',
                 action: function ( e, dt, node, config ) {
                     var data = dt.row( { selected: true } ).data();
-                    var newUrl = "{{ url('ketidakhadiran_edit') }}";
+                    var newUrl = "{{ url('dispensasi_edit') }}";
                     window.location.href = newUrl+"/"+data.id;
                 },
                 enabled: false
@@ -102,7 +100,7 @@ $(function() {
                             });
 
                             $.ajax({
-                                url: '{{ url("api/ketidakhadiran_delete?api_token=") }}{{ Auth::user()->api_token }}',
+                                url: '{{ url("api/dispensasi_delete?api_token=") }}{{ Auth::user()->api_token }}',
                                 type: 'post',
                                 dataType: "json",
                                 data: { data: arrData },
@@ -127,18 +125,16 @@ $(function() {
         ],
         processing: true,
         serverSide: true,
-        ajax: '{{ url("api/ketidakhadiran_list?api_token=") }}{{ Auth::user()->api_token }}',
+        ajax: '{{ url("api/dispensasi_list?api_token=") }}{{ Auth::user()->api_token }}',
         columns: [
             { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
             { data: 'id', name: 'id', visible: false },
-            { data: 'nip', name: 'nip' },
+            { data: 'nip', name: 'nip', width:'150px' },
             { data: 'nama_unker', name: 'nama_unker', width:'250px', visible: false },
             { data: 'nama', name: 'nama', width: '150px' },
-            { data: 'nama_jabatan', name: 'nama_jabatan', width: '300px' },
-            { data: 'status', name: 'status', width:'30px' },
-            { data: 'tanggal', name: 'tanggal', width:'230px' },
-            { data: 'jumlah', name: 'jumlah', width:'30px' },
-            { data: 'keperluan', name: 'keperluan' }
+            { data: 'tanggal', name: 'tanggal', width:'50px' },
+            { data: 'koreksi_jam', name: 'koreksi_jam', width:'30px' },
+            { data: 'alasan', name: 'alasan' }
         ],
         drawCallback: function( settings ){
           var api = this.api();

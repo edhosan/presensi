@@ -104,5 +104,7 @@ Route::group(['middleware' => 'auth'], function() {
 
   Route::get('dispensasi_list', 'Proses\DispensasiController@index')->name('dispensasi.list');
   Route::get('dispensasi_create', 'Proses\DispensasiController@create')->name('dispensasi.create');
+  Route::get('dispensasi_edit/{id}', 'Proses\DispensasiController@edit')->name('dispensasi.edit');
   Route::post('dispensasi_save', 'Proses\DispensasiController@saveCreate')->name('dispensasi.save');
+  Route::post('dispensasi_update', 'Proses\DispensasiController@saveEdit')->name('dispensasi.update');
 });
