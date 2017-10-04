@@ -76,7 +76,11 @@ $tot_day = $date->endOfMonth()->day;
                 <td>{{ $item['nama'] }}</td>
                 <td>{{ $item['nip'] }}</td>
                 @for($i=1;$i<=$tot_day;$i++)
-                  <td>{{ $item['jadwal'][$i] }}</td>
+                  @if(!empty($item['jadwal']))
+                    <td>{{ $item['jadwal'][$i] }}</td>
+                  @else
+                    <td></td>
+                  @endif
                 @endfor
                 <td>{{ $item['total']['H'] }}</td>
                 <td>{{ $item['total']['HT'] }}</td>

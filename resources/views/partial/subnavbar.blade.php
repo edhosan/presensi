@@ -3,7 +3,7 @@
   <div class="subnavbar-inner">
     <div class="container">
       <ul class="mainnav">
-        <li class="{{ active('home') }}"><a href="index.html"><i class="icon-dashboard"></i><span>Dashboard</span> </a> </li>
+        <li class="{{ active('home') }}"><a href="{{ route('home') }}"><i class="icon-dashboard"></i><span>Dashboard</span> </a> </li>
         <li class="dropdown {{ active(['user','role_list','permission_list','authlog.list']) }}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-briefcase"></i><span>Administrator</span> </a>
           <ul class="dropdown-menu">
