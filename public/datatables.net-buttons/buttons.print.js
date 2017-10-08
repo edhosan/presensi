@@ -87,11 +87,7 @@ DataTable.ext.buttons.print = {
 	},
 
 	action: function ( e, dt, button, config ) {
-		var data = dt.buttons.exportData(
-			$.extend( {decodeEntities: false}, config.exportOptions ) // XSS protection
-		);
-		var exportInfo = dt.buttons.exportInfo( config );
-
+		var data = dt.buttons.exportData( config.exportOptions );
 		var addRow = function ( d, tag ) {
 			var str = '<tr>';
 
@@ -118,17 +114,26 @@ DataTable.ext.buttons.print = {
 		if ( config.footer && data.footer ) {
 			html += '<tfoot>'+ addRow( data.footer, 'th' ) +'</tfoot>';
 		}
-		html += '</table>';
 
 		// Open a new window for the printable table
 		var win = window.open( '', '' );
+		var title = config.title;
+
+		if ( typeof title === 'function' ) {
+			title = title();
+		}
+
+		if ( title.indexOf( '*' ) !== -1 ) {
+			title= title.replace( '*', $('title').text() );
+		}
+
 		win.document.close();
 
 		// Inject the title and also a copy of the style and link tags from this
 		// document so the table can retain its base styling. Note that we have
 		// to use string manipulation as IE won't allow elements to be created
 		// in the host document and then appended to the new window.
-		var head = '<title>'+exportInfo.title+'</title>';
+		var head = '<title>'+title+'</title>';
 		$('style, link').each( function () {
 			head += _styleToAbs( this );
 		} );
@@ -142,10 +147,14 @@ DataTable.ext.buttons.print = {
 
 		// Inject the table and other surrounding information
 		win.document.body.innerHTML =
-			'<h1>'+exportInfo.title+'</h1>'+
-			'<div>'+(exportInfo.messageTop || '')+'</div>'+
-			html+
-			'<div>'+(exportInfo.messageBottom || '')+'</div>';
+			'<h1>'+title+'</h1>'+
+			'<div>'+
+				(typeof config.message === 'function' ?
+					config.message( dt, button, config ) :
+					config.message
+				)+
+			'</div>'+
+			html;
 
 		$(win.document.body).addClass('dt-print-view');
 
@@ -157,20 +166,17 @@ DataTable.ext.buttons.print = {
 			config.customize( win );
 		}
 
-		// Allow stylesheets time to load
 		setTimeout( function () {
 			if ( config.autoPrint ) {
 				win.print(); // blocking - so close will not
 				win.close(); // execute until this is done
 			}
-		}, 1000 );
+		}, 250 );
 	},
 
 	title: '*',
 
-	messageTop: '*',
-
-	messageBottom: '*',
+	message: '',
 
 	exportOptions: {},
 

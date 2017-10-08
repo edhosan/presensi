@@ -184,6 +184,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         browner12\helpers\HelperServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class
 
     ],
 

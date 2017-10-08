@@ -2,18 +2,18 @@
   "_args": [
     [
       {
-        "raw": "paper-css",
+        "raw": "paper-css@^0.3.0",
         "scope": null,
         "escapedName": "paper-css",
         "name": "paper-css",
-        "rawSpec": "",
-        "spec": "latest",
-        "type": "tag"
+        "rawSpec": "^0.3.0",
+        "spec": ">=0.3.0 <0.4.0",
+        "type": "range"
       },
-      "D:\\Work\\System\\presensi"
+      "/home/edo/www/presensi"
     ]
   ],
-  "_from": "paper-css@latest",
+  "_from": "paper-css@>=0.3.0 <0.4.0",
   "_id": "paper-css@0.3.0",
   "_inCache": true,
   "_location": "/paper-css",
@@ -29,23 +29,22 @@
   "_npmVersion": "3.10.8",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "paper-css",
+    "raw": "paper-css@^0.3.0",
     "scope": null,
     "escapedName": "paper-css",
     "name": "paper-css",
-    "rawSpec": "",
-    "spec": "latest",
-    "type": "tag"
+    "rawSpec": "^0.3.0",
+    "spec": ">=0.3.0 <0.4.0",
+    "type": "range"
   },
   "_requiredBy": [
-    "#USER",
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/paper-css/-/paper-css-0.3.0.tgz",
   "_shasum": "0abdfd304a6846471e23c873eaacafd5fe66ec39",
   "_shrinkwrap": null,
-  "_spec": "paper-css",
-  "_where": "D:\\Work\\System\\presensi",
+  "_spec": "paper-css@^0.3.0",
+  "_where": "/home/edo/www/presensi",
   "author": {
     "name": "Tsutomu Kawamura"
   },

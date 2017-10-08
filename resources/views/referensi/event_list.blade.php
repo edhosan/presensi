@@ -19,7 +19,9 @@
                 </div>
 
                 <div class="widget-content">
-                  <a href="{{ route('kalendar_create') }} " class="btn btn-primary"><i class="icon-plus"> Tambah Data</i></a>
+                  @permission('add-event')
+                    <a href="{{ route('kalendar_create') }} " class="btn btn-primary"><i class="icon-plus"> Tambah Data</i></a>
+                  @endpermission
                   <div id="calendar" class="fc"></div>
                 </div>
               </div>

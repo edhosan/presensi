@@ -52,7 +52,7 @@ class RoleController extends Controller
     public function update(Request $request)
     {
       $this->validate($request, [
-          'name' => 'required|unique:roles|max:255',
+          'name' => 'required|max:255',
           'display_name' => 'required',
           'permission' => 'required|array|min:1'
       ]);

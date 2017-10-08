@@ -10,6 +10,7 @@
         "browner12/helpers": "^1.1",
         "davejamesmiller/laravel-breadcrumbs": "^3.0",
         "doctrine/dbal": "^2.5",
+        "fx3costa/laravelchartjs": "^2.3",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",

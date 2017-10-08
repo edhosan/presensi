@@ -63,10 +63,12 @@
                         </div>
 
                         <div class="form-actions">
-                          @if(!empty($data))
-                            <button type="button" id="delete" class="btn btn-danger">Hapus</button>
-                          @endif
-                          <button type="submit" class="btn btn-primary">Simpan</button>
+                          @permission(['delete-event','edit-event'])
+                            @if(!empty($data))
+                              <button type="button" id="delete" class="btn btn-danger">Hapus</button>
+                            @endif
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                          @endpermission
                           <a href="{{ route('kalendar_list') }} " class="btn">Batal</a>
                         </div>
                       </fieldset>
