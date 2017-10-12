@@ -2,6 +2,21 @@
 @push('css')
 <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
+<style media="screen">
+.loader {
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
 @endpush
 @section('content')
 @if(Auth::check())
@@ -85,6 +100,7 @@
 
                       <div class="form-actions">
                         <button type="submit" class="btn btn-primary">Proses</button>
+                        <div class="loader" id="loader"></div>
                       </div>
 
                       <div class="progress progress-striped active" id="progressouter">
@@ -109,7 +125,7 @@
 <script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
 <script>
 $(function() {
-
+  $('#loader').hide();
   var formatCalendar = {
     format: 'dd-mm-yyyy',
     language: 'id',
@@ -179,7 +195,7 @@ $(function() {
   form.on('submit', function() {
       $("#progress").css('width','0%');
       $("#progress").html("");
-
+      $('#loader').show();
       var progresspump = setInterval(function(){
           $.ajax({
             url       : "{{ url('kalkulasi_progress') }}",
@@ -207,6 +223,7 @@ $(function() {
           dataType  : 'json',
           async     : true,
           success   : function( json ) {
+            $('#loader').hide();
             clearInterval(progresspump);
             $("#progress").css('width',json+'%');
             $("#progr essouter").removeClass("active");
