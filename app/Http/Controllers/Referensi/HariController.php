@@ -68,7 +68,7 @@ class HariController extends Controller
           'toleransi_pulang'  => $item->toleransi_pulang,
           'val_hari'  => $item->hari,
           'absensi_masuk' => $item->scan_in1.' - '.$item->scan_in2,
-          'absensi_pulang' => $item->scan_out1.' - '.$item->scan_out1
+          'absensi_pulang' => $item->scan_out1.' - '.$item->scan_out2
         ]);
       }
 
