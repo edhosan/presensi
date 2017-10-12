@@ -134,7 +134,7 @@ class RegisterController extends Controller
     {
       $unker = Auth::user()->unker;
 
-      if($request->exists('opd')){
+      if($request->has('opd')){
         $unker = $request->opd;
       }
 
