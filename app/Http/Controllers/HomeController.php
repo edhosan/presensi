@@ -28,6 +28,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+      $status = [];
       $unker = Auth::user()->unker;
       $tanggal = [
         'start' => Carbon::now()->subDays(7),
@@ -59,17 +60,19 @@ class HomeController extends Controller
       $jml_hari = $tanggal['end']->diffInDays($tanggal['start']) + 1;
       $jml_hari_efektif = $jml_hari - with(clone $table)->where('peg_jadwal.status','L')->groupBy('peg_jadwal.peg_id')->count();
 
-      $status = [
-        'Hadir' => (with(clone $table)->where('peg_jadwal.status','H')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
-        'Hadir Terlambat' => (with(clone $table)->where('peg_jadwal.status','HT')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
-        'Hadir Pulang Awal' => (with(clone $table)->where('peg_jadwal.status','HP')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
-        'Ijin' => (with(clone $table)->where('peg_jadwal.status','I')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
-        'Cuti' => (with(clone $table)->where('peg_jadwal.status','C')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
-        'Sakit' => (with(clone $table)->where('peg_jadwal.status','S')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
-        'Dinas Luar' => (with(clone $table)->where('peg_jadwal.status','DL')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
-        'Tugas Belajar' => (with(clone $table)->where('peg_jadwal.status','TB')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
-        'Alpha' => (with(clone $table)->where('peg_jadwal.status','A')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100
-      ];
+      if(!empty($count_pegawai)){
+        $status = [
+          'Hadir' => (with(clone $table)->where('peg_jadwal.status','H')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
+          'Hadir Terlambat' => (with(clone $table)->where('peg_jadwal.status','HT')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
+          'Hadir Pulang Awal' => (with(clone $table)->where('peg_jadwal.status','HP')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
+          'Ijin' => (with(clone $table)->where('peg_jadwal.status','I')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
+          'Cuti' => (with(clone $table)->where('peg_jadwal.status','C')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
+          'Sakit' => (with(clone $table)->where('peg_jadwal.status','S')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
+          'Dinas Luar' => (with(clone $table)->where('peg_jadwal.status','DL')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
+          'Tugas Belajar' => (with(clone $table)->where('peg_jadwal.status','TB')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100,
+          'Alpha' => (with(clone $table)->where('peg_jadwal.status','A')->count() / ($count_pegawai * $jml_hari_efektif) ) * 100
+        ];
+      }
 
       $chartjs = app()->chartjs
         ->name('piePersentase')
@@ -81,15 +84,15 @@ class HomeController extends Controller
                 'backgroundColor' => ['#FF6384', '#36A2EB','#33cc33','#ff00ff','#ffff00','#ff6666','#ccccff','#993333','#666633'],
                 'hoverBackgroundColor' => ['#FF6384', '#36A2EB','#33cc33','#ff00ff','#ffff00','#ff6666','#ccccff','#993333','#666633'],
                 'data' => [
-                  $status['Hadir'],
-                  $status['Hadir Terlambat'],
-                  $status['Hadir Pulang Awal'],
-                  $status['Ijin'],
-                  $status['Cuti'],
-                  $status['Sakit'],
-                  $status['Dinas Luar'],
-                  $status['Tugas Belajar'],
-                  $status['Alpha'],
+                  isset($status['Hadir'])?$status['Hadir']:'',
+                  isset($status['Hadir Terlambat'])?$status['Hadir Terlambat']:'',
+                  isset($status['Hadir Pulang Awal'])?$status['Hadir Pulang Awal']:'',
+                  isset($status['Ijin'])?$status['Ijin']:'',
+                  isset($status['Cuti'])?$status['Cuti']:'',
+                  isset($status['Sakit'])?$status['Sakit']:'',
+                  isset($status['Dinas Luar'])?$status['Dinas Luar']:'',
+                  isset($status['Tugas Belajar'])?$status['Tugas Belajar']:'',
+                  isset($status['Alpha'])?$status['Alpha']:'',
                 ]
             ]
         ])
