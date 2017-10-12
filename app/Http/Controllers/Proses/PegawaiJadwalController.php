@@ -75,29 +75,35 @@ class PegawaiJadwalController extends Controller
     {
       $this->validate($request, $this->rules);
 
-      $jadwal = Jadwal::find($request->jadwal);
+      foreach ($request->jadwal as $j) {
+        $jadwal = Jadwal::where('id', $j)->first();
 
-      $date = dateRange($jadwal->start, $jadwal->end);
+        $date = dateRange($jadwal->start, $jadwal->end);
 
-      $data = [];
-      foreach ($date as  $value) {
-        $tanggal = Carbon::parse($value);
+        $data = [];
+        foreach ($date as  $value) {
+          $tanggal = Carbon::parse($value);
 
-        PegawaiJadwal::where('peg_id', $request->id_peg)
-          ->where('tanggal', $value)
-          ->forceDelete();
+          foreach ($request->pegawai as $p) {
+            PegawaiJadwal::where('peg_id', $p)
+                              ->where('tanggal', $value)
+                              ->forceDelete();
 
-        $peg_jadwal = new PegawaiJadwal();
-        $peg_jadwal->tanggal = $value;
-        $peg_jadwal->peg_id = $request->id_peg;
-        $peg_jadwal->jadwal_id = $request->jadwal;
-        //$peg_jadwal->hari_id = $tanggal->format('N');
-        $event = Event::where('start_date', '=',$value)->orWhere('end_date','=',$value)->first();
-        if(!empty($event)){
-          $peg_jadwal->event_id = $event->id;
+            $peg_jadwal = new PegawaiJadwal();
+            $peg_jadwal->tanggal = $value;
+            $peg_jadwal->peg_id = $p;
+            $peg_jadwal->jadwal_id = $j;
+            //$peg_jadwal->hari_id = $tanggal->format('N');
+            $event = Event::where('start_date', '=',$value)->orWhere('end_date','=',$value)->first();
+            if(!empty($event)){
+              $peg_jadwal->event_id = $event->id;
+            }
+            $peg_jadwal->save();
+          }
+
         }
-        $peg_jadwal->save();
       }
+
 
       return redirect('peg_jadwal_list')->with('success','Data berhasil disimpan!');
     }
