@@ -207,19 +207,8 @@
 
                           <div class="controls">
                               @php $selected_jabatan = isset($data)?$data->id_jabatan:old('jabatan') @endphp
-                              <select class="span4" name="jabatan" id="jabatan">
-                                <option value="">Pilih Jabatan</option>
-                                @foreach($jabatan as $eselon)
-                                  <optgroup label="{{ $eselon->nama}}">
-                                    @foreach($eselon->jabatan as $item)
-                                    <option value="{{ $item->id_jabatan }}" @if($selected_jabatan == $item->id_jabatan) selected="selected" @endif>
-                                      {{ $item->nama_jabatan }}
-                                    </option>
-                                    @endforeach
-                                  </optgroup>
-                                @endforeach
-                              </select>
-                              <div class="loader" id="loaderJabatan"></div>
+                              {{ Form::select('jabatan', $jabatan, $selected_jabatan, ['id' => 'jabatan', 'placeholder' => "Please Select", 'class' => 'span4']) }}
+
                               @if($errors->has('jabatan'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('jabatan') }}</strong>
@@ -276,6 +265,14 @@
 <script>
 
 $(function() {
+  var formatCalendar = {
+    format: 'dd-mm-yyyy',
+    language: 'id',
+    autoclose : true,
+    todayHighlight : true
+  };
+
+  $('#tmt_pangkat').datepicker( formatCalendar );
   $('input[type=radio][name=type]').change(function() {
       if (this.value == 'pns') {
         $('#nip').prop('disabled', false);
@@ -344,11 +341,65 @@ $(function() {
     return repo.nama || repo.text;
   }
 
+  $('#jabatan').select2({
+    placeholder: 'Pilih Jabatan',
+    allowClear: true,
+    ajax: {
+      url: "{{ url('api/jabatan?api_token=') }}{{ Auth::user()->api_token }}",
+      dataType: 'json',
+      delay: 250,
+      data: function(params){
+        return {
+          q: params.term,
+          page: params.page,
+          per_page: 10,
+          eselon: $('#eselon').val()
+        };
+      },
+      processResults: function(data, params) {
+        params.page = params.page || 1;
+        return {
+          results: data.data,
+          pagination: {
+            more: (params.page * data.per_page) < data.total
+          }
+        };
+      },
+      cache: true
+    },
+    escapeMarkup: function( markup ){ return markup; },
+    minimumInputLength: 1,
+    templateResult: formatRepoJabatan,
+    templateSelection: formatRepoSelectionJabatan
+  })
+
+  function formatRepoJabatan (repo) {
+      if (repo.loading) return repo.text;
+
+      var markup = "<div class='select2-result-repository clearfix'>" +
+        "<div class='select2-result-repository__meta'>" +
+          "<div class='select2-result-repository__title'>" + repo.nama_jabatan + "</div>";
+
+      if (repo.description) {
+        markup += "<div class='select2-result-repository__description'>" + repo.nama + "</div>";
+      }
+
+      markup += "<div class='select2-result-repository__statistics'>" +
+        "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i>Eselon: " + repo.nama + "</div>" +
+      "</div>" +
+      "</div></div>";
+
+      return markup;
+  }
+
+  function formatRepoSelectionJabatan (repo) {
+    return repo.nama_jabatan || repo.text;
+  }
+
   $('#opd').select2({placeholder: 'Pilih OPD',allowClear: true});
   $('#subunit').select2({placeholder: 'Pilih Sub Unit',allowClear: true});
   $('#pangkat').select2({placeholder: 'Pilih Pangkat / Golongan',allowClear: true});
   $('#eselon').select2({placeholder: 'Pilih Eselon',allowClear: true, minimumResultsForSearch: Infinity});
-  $('#jabatan').select2({placeholder: 'Pilih Jabatan',allowClear: true});
 
   $('#peg').on('select2:select', function(e) {
     $('#nip').val(e.params.data.nip).trigger("change");;
@@ -359,12 +410,13 @@ $(function() {
     $("#gelar_belakang").val(e.params.data.gelar_belakang).trigger("change");
     $("#pangkat").val(e.params.data.id_pangkat).trigger("change");
     $("#eselon").val(e.params.data.id_eselon).trigger("change");
-    $("#jabatan").val(e.params.data.id_jabatan).trigger("change");
+    $('#jabatan').append(
+       '<option value="' + e.params.data.id_jabatan + '" selected="selected">' + e.params.data.nama_jabatan + '</option>'
+     ).trigger('change');
     $("#tmt_pangkat").datepicker('update',e.params.data.tmt_pangkat);
   });
 
   $('#loaderSubUnit').hide();
-  $('#loaderJabatan').hide();
 
   $('#opd').on('select2:select', function(e) {
     $('#loaderSubUnit').show();
@@ -384,32 +436,6 @@ $(function() {
             subunit.append('<option value="'+el.id_subunit+'">'+el.nama_subunit+'</option>');
           });
           subunit.append('</optgroup>');
-        });
-      },
-      error: function(error){
-        console.log(error);
-      }
-    });
-  });
-
-  $('#eselon').on('select2:select', function(e) {
-    $('#loaderJabatan').show();
-    $.ajax({
-      url: "{{ url('api/jabatan?api_token=') }}{{ Auth::user()->api_token }}",
-      type: "POST",
-      dataType: "json",
-      data: { eselon: e.params.data.id },
-      success: function(response){
-        $('#loaderJabatan').hide();
-        var jabatan = $('#jabatan');
-        jabatan.empty();
-        jabatan.append('<option value="">Pilih Jabatan</option>');
-        $.each(response, function(index, value){
-          jabatan.append('<optgroup label="'+value.nama+'">');
-          $.each(value.jabatan, function(i, el) {
-            jabatan.append('<option value="'+el.id_jabatan+'">'+el.nama_jabatan+'</option>');
-          });
-          jabatan.append('</optgroup>');
         });
       },
       error: function(error){

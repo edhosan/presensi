@@ -55,7 +55,7 @@ class DataIndukController extends Controller
             ->withSubunit($subunit)
             ->withPangkat($pangkat)
             ->withEselon($eselon)
-            ->withJabatan($jabatan);
+            ->withJabatan([]);
     }
 
     public function create(Request $request)
@@ -228,7 +228,7 @@ class DataIndukController extends Controller
 
       $eselon = Eselon::orderBy('id_eselon','asc')->pluck('nama', 'id_eselon');
 
-      $jabatan = Eselon::with('jabatan')->orderBy('id_eselon','asc')->get();
+      $jabatan = Jabatan::where('id_jabatan', $datainduk->id_jabatan)->pluck('nama_jabatan','id_jabatan');
 
       return view('proses.datainduk_form')
             ->withType($type)
@@ -300,16 +300,24 @@ class DataIndukController extends Controller
 
     public function apiGetJabatan(Request $request)
     {
-      $jabatan = Eselon::with('jabatan')
+      $term = trim($request->q);
+
+      $jabatan = Jabatan::join('ref_eselon','ref_eselon.id_eselon','=','ref_jabatan.id_eselon')
                 ->where(function($query) use($request) {
                   if($request->has('eselon')){
-                    $query->where('id_eselon', $request->eselon);
+                    $query->where('ref_jabatan.id_eselon', $request->eselon);
                   }
                 })
-                ->get();
+                ->select(DB::raw('ref_jabatan.id_jabatan as id'), 'ref_jabatan.nama_jabatan','ref_eselon.nama');
 
-      return response()->json($jabatan);
+      if(!empty($term)){
+        $jabatan->where(function($q) use($term){
+          $value = "{$term}%";
+          $q->where('ref_jabatan.nama_jabatan', 'like', $value);
+        });
+      }
 
+      return response()->json($jabatan->paginate($request->per_page));
     }
 
     public function apiSearchPegawai(Request $request)
