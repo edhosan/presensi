@@ -76,8 +76,12 @@ $tot_day = $date->endOfMonth()->day;
                 <td>{{ $item['nama'] }}</td>
                 <td>{{ $item['nip'] }}</td>
                 @for($i=1;$i<=$tot_day;$i++)
-                  @if(!empty($item['jadwal']))
-                    <td>{{ $item['jadwal'][$i] }}</td>
+                  @if(count($item['jadwal']) > 0)
+                    <td>
+                      @if(array_key_exists($i, $item['jadwal']))
+                        {{ $item['jadwal'][$i] }}
+                      @endif
+                    </td>
                   @else
                     <td></td>
                   @endif

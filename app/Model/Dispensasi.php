@@ -9,7 +9,7 @@ class Dispensasi extends Model
 {
       use SoftDeletes;
 
-      protected $table = 'Dispensasi';
+      protected $table = 'dispensasi';
 
       protected $fillable = ['id','peg_id','tanggal','koreksi_jam','alasan','filename'];
 
