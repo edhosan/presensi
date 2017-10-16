@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Referensi;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Jadwal;
+use App\Model\DataInduk;
 use Yajra\Datatables\Datatables;
 use Auth;
 
@@ -12,7 +13,6 @@ class JadwalController extends Controller
 {
     private $rules = [
       'name'  => 'required',
-      'id_unker'  => 'required'
     ];
 
     public function index()
@@ -22,14 +22,36 @@ class JadwalController extends Controller
 
     public function create()
     {
-      return view('referensi.jadwal_form');
+      $unker = Auth::user()->unker;
+
+      $opd = DataInduk::orderBy('nama_unker','asc')
+             ->groupBy('id_unker','nama_unker')
+             ->where(function($query) use($unker) {
+               if(!empty($unker)) {
+                 $query->where('id_unker',$unker);
+               }
+             })
+             ->pluck('nama_unker','id_unker');
+
+      return view('referensi.jadwal_form')->withOpd($opd);
     }
 
     public function edit($id)
     {
+      $unker = Auth::user()->unker;
+
+      $opd = DataInduk::orderBy('nama_unker','asc')
+             ->groupBy('id_unker','nama_unker')
+             ->where(function($query) use($unker) {
+               if(!empty($unker)) {
+                 $query->where('id_unker',$unker);
+               }
+             })
+             ->pluck('nama_unker','id_unker');
+
       $jadwal = Jadwal::find($id);
 
-      return view('referensi.jadwal_form')->withData($jadwal);
+      return view('referensi.jadwal_form')->withData($jadwal)->withOpd($opd);
     }
 
     public function store(Request $request)
@@ -41,8 +63,7 @@ class JadwalController extends Controller
           'title' => $request->title,
           'start' => date('Y-m-d', strtotime($request->start) ),
           'end' => date('Y-m-d', strtotime($request->end) ),
-          'id_unker' => $request->id_unker,
-          'nama_unker' => $request->nama_unker,
+          'id_unker' => $request->opd
         ]);
 
         return redirect('jadwal_list')->with('success','Data berhasil disimpan!');
@@ -59,8 +80,7 @@ class JadwalController extends Controller
         'title' => $request->title,
         'start' => date('Y-m-d', strtotime($request->start) ),
         'end' => date('Y-m-d', strtotime($request->end) ),
-        'id_unker' => $request->id_unker,
-        'nama_unker' => $request->nama_unker
+        'id_unker' => $request->id_unker
       ]);
 
       return redirect('jadwal_list')->with('success','Data berhasil diupdate!');

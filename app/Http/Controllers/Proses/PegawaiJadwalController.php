@@ -38,7 +38,7 @@ class PegawaiJadwalController extends Controller
       $jadwal = Jadwal::orderBy('name','asc')
                   ->where(function($query) use($unker) {
                     if(!empty($unker)) {
-                      $query->where('id_unker',$unker);
+                      $query->where('id_unker',$unker)->orWhere('id_unker', null);
                     }
                   })
                   ->pluck('name','id');
@@ -108,9 +108,9 @@ class PegawaiJadwalController extends Controller
       return redirect('peg_jadwal_list')->with('success','Data berhasil disimpan!');
     }
 
-    public function deleteJadwal($jadwal_id)
+    public function deleteJadwal($peg_id, $jadwal_id)
     {
-      $peg_jadwal = PegawaiJadwal::where('jadwal_id', $jadwal_id)->forceDelete();
+      $peg_jadwal = PegawaiJadwal::where('peg_id',$peg_id)->where('jadwal_id', $jadwal_id)->forceDelete();
 
       return redirect('peg_jadwal_list')->with('success','Data berhasil disimpan!');
     }

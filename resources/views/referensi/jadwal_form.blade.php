@@ -1,8 +1,7 @@
 @extends('layouts.app')
 @push('css')
+<link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.min.css') }}" rel="stylesheet">
-<link href="{{ asset('easy-autocomplete/dist/easy-autocomplete.themes.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
 <div class="main">
@@ -50,15 +49,16 @@
                             </div>
                         </div>
 
-                        <div class="control-group {{ $errors->has('id_unker') ? 'error' : '' }}">
+                        <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
                             <label for="opd" class="control-label">Organisasi Perangkat Daerah</label>
 
                             <div class="controls">
-                                <input id="nama_unker" type="text" class="span4 autocomplete" name="nama_unker" value="{{$data->nama_unker or old('nama_unker') }}">
-                                <input type="hidden" name="id_unker" value="{{$data->id_unker or old('id_unker') }}" id="id_unker">
-                                @if ($errors->has('id_unker'))
+                              <?php $selected_opd = isset($data)?$data->id_unker:old('opd') ?>
+                              {{ Form::select('opd', $opd, $selected_opd, ['id' => 'opd', 'placeholder' => "Please Select", 'class' => 'span4']) }}
+
+                                @if ($errors->has('opd'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('id_unker') }}</strong>
+                                        <strong>{{ $errors->first('opd') }}</strong>
                                     </span>
                                 @endif
                             </div>
@@ -117,55 +117,12 @@
 </div>
 @endsection
 @push('script')
-<script src="{{ asset('easy-autocomplete/lib/jquery-1.11.2.min.js') }}"></script>
-<script src="{{ asset('easy-autocomplete/dist/jquery.easy-autocomplete.min.js') }}"></script>
+<script src="{{ asset('js/select2.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
 <script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
 <script type="text/javascript">
 $('#start').datepicker({ format: 'dd-mm-yyyy', language: 'id' });
 $('#end').datepicker({ format: 'dd-mm-yyyy', language: 'id' });
-
-var optUnker = {
-    url: function(phrase) {
-      return "{{ url('api/unker?api_token=') }}{{ Auth::user()->api_token }}";
-    },
-
-    getValue: function(element) {
-      return element.nama_unker;
-    },
-
-    ajaxSettings: {
-      dataType: "json",
-      method: "POST",
-      data: {
-        dataType: "json"
-      }
-    },
-
-    template: {
-      type: "description",
-      fields: {
-        description: "id_unker"
-      }
-    },
-
-    list: {
-      match: {
-        enabled: true
-      },
-      onSelectItemEvent: function() {
-        var value = $("#nama_unker").getSelectedItemData().id_unker;
-        $("#id_unker").val(value).trigger("change");
-      }
-    },
-
-    preparePostData: function(data) {
-      data.phrase = $("#nama_unker").val();
-      data.unker = "{{ Auth::user()->unker }}";
-      return data;
-    }
-  };
-
-  $("#nama_unker").easyAutocomplete(optUnker);
+$('#opd').select2({placeholder: 'Pilih OPD',allowClear: true});
 </script>
 @endpush

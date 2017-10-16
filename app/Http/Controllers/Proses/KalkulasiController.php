@@ -117,10 +117,6 @@ class KalkulasiController extends Controller
                 ->where('jadwal_id',$jadwal->jadwal_id)
                 ->first();
 
-        if(!empty($jadwal->event_id)){
-          PegawaiJadwal::where('id',$jadwal->id)->update(['status' => 'L']);
-        }
-
         if($hari){
           $jm = Carbon::parse($hari->jam_masuk);
           $toleransi_terlambat = Carbon::parse($hari->toleransi_terlambat);
@@ -232,7 +228,12 @@ class KalkulasiController extends Controller
           }
 
           if($in->toTimeString() == '00:00:00' || $out->toTimeString() == '00:00:00'){
-              PegawaiJadwal::find($jadwal->id)->update(['status' => 'A']);
+              if(!empty($jadwal->event_id)){
+                PegawaiJadwal::where('id',$jadwal->id)->update(['status' => 'L']);
+              }
+              else{
+                PegawaiJadwal::find($jadwal->id)->update(['status' => 'A']);
+              }
           }
 
           if($jadwal->ketidakhadiran_id != 0) {

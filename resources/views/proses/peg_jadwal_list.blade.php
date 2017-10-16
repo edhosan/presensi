@@ -208,7 +208,7 @@ $(function() {
                           '<td>'+value.end+'</td>'+
                           '<td>'+
                             '<a href='+urlEdit+'/'+d.id+'/'+value.id+' class="btn btn-mini btn-success"><i class="icon-edit"> Edit</i></a> '+
-                            '<a href='+urlDelete+'/'+value.id+' class="btn btn-mini btn-danger"><i class="icon-remove"> Hapus</i></a> '+
+                            '<a href='+urlDelete+'/'+d.id+'/'+value.id+' class="btn btn-mini btn-danger"><i class="icon-remove"> Hapus</i></a> '+
                           '</td>'+
                          '</tr>';
             });

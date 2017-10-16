@@ -102,10 +102,6 @@
                         <button type="submit" class="btn btn-primary">Proses</button>
                         <div class="loader" id="loader"></div>
                       </div>
-
-                      <div class="progress progress-striped active" id="progressouter">
-                       <div class="bar" id="progress"></div>
-                      </div>
                     </fieldset>
 
                   </form>
@@ -193,29 +189,7 @@ $(function() {
 
   var form = $('#form');
   form.on('submit', function() {
-      $("#progress").css('width','0%');
-      $("#progress").html("");
       $('#loader').show();
-      var progresspump = setInterval(function(){
-          $.ajax({
-            url       : "{{ url('kalkulasi_progress') }}",
-            type      : "GET",
-            dataType  : "JSON",
-            async     : true,
-            success   : function(data) {
-              if(data === -1){
-                $("#progress").css('width','100%');
-                $("#progressouter").removeClass("active");
-                $("#progress").html("Error Kalkulasi Data");
-                clearInterval(progresspump);
-              }
-              /* update the progress bar width */
-              $("#progress").css('width',data+'%');
-              /* and display the numeric value */
-              $("#progress").html(data+'%');
-            }
-          })
-        }, 500);
         $.ajax({
           url       : form.attr('action'),
           type      : form.attr('method'),
@@ -224,13 +198,10 @@ $(function() {
           async     : true,
           success   : function( json ) {
             $('#loader').hide();
-            clearInterval(progresspump);
-            $("#progress").css('width',json+'%');
-            $("#progr essouter").removeClass("active");
-            $("#progress").html("Done");
           },
           error     : function( jqXhr, json, errorThrown) {
-            clearInterval(progresspump);
+            console.log(jqXhr);
+            $('#loader').hide();
             var errors = $.parseJSON(jqXhr.responseText);
             var errorsHtml= '';
             $.each( errors, function( key, value ) {
