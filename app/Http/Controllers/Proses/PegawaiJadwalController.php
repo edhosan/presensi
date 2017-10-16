@@ -38,7 +38,7 @@ class PegawaiJadwalController extends Controller
       $jadwal = Jadwal::orderBy('name','asc')
                   ->where(function($query) use($unker) {
                     if(!empty($unker)) {
-                      $query->where('id_unker',$unker)->orWhere('id_unker', null);
+                      $query->where('id_unker',$unker)->orwhereNull('id_unker');
                     }
                   })
                   ->pluck('name','id');
@@ -57,7 +57,7 @@ class PegawaiJadwalController extends Controller
       $jadwal = Jadwal::orderBy('name','asc')
                   ->where(function($query) use($unker) {
                     if(!empty($unker)) {
-                      $query->where('id_unker',$unker);
+                      $query->where('id_unker',$unker)->orwhereNull('id_unker');
                     }
                   })
                   ->pluck('name','id');
