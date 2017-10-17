@@ -150,12 +150,12 @@ class RegisterController extends Controller
                       $peg_pangkat->on('y.id_peg_pangkat','=','peg_pangkat.id_peg_pangkat');
                     })
                   ->join('ref_pangkat','ref_pangkat.id_pangkat','=','peg_pangkat.id_pangkat')
-                  ->join('peg_jabatan','peg_jabatan.nip','=','peg_datadasar.nip')
+                  ->leftJoin('peg_jabatan','peg_jabatan.nip','=','peg_datadasar.nip')
                   ->join(DB::raw('(select max(id_peg_jabatan)id_peg_jabatan from peg_jabatan group by nip)z'), function($peg_jabatan) {
                       $peg_jabatan->on('z.id_peg_jabatan','=','peg_jabatan.id_peg_jabatan');
                     })
-                  ->join('ref_jabatan','ref_jabatan.id_jabatan','=','peg_jabatan.id_jabatan')
-                  ->join('ref_eselon','ref_jabatan.id_eselon','=','ref_eselon.id_eselon')
+                  ->leftJoin('ref_jabatan','ref_jabatan.id_jabatan','=','peg_jabatan.id_jabatan')
+                  ->leftJoin('ref_eselon','ref_jabatan.id_eselon','=','ref_eselon.id_eselon')
                   ->whereNotIn('peg_stat_duk.id_status_pegawai',[3, 4, 5, 5, 6, 7, 8])
                   ->select(DB::raw('peg_datadasar.nip as id'), 'peg_datadasar.nip','peg_datadasar.nama','ref_unker.id_unker','ref_unker.nama_unker','peg_datadasar.gelar_depan',
                            'peg_datadasar.gelar_belakang','ref_subunit.id_subunit','ref_subunit.nama_subunit','y.id_pangkat','peg_jabatan.id_jabatan',
