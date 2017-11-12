@@ -19,8 +19,8 @@ class KetidakhadiranController extends Controller
     private $rules = [
       'pegawai'  => 'required',
       'ijin'  => 'required',
-      'start' => 'required|before:end',
-      'end' => 'required',
+      'start' => 'required',
+      'end' => 'required|after_or_equal:start',
       'keperluan' => 'required',
       'file' => 'mimes:pdf'
     ];
@@ -160,15 +160,11 @@ class KetidakhadiranController extends Controller
               $end =  Carbon::parse($peg_ijin_list->end);
               $interval = $end->diffInDays($start) + 1;
 
-              $time1 = Carbon::parse($peg_ijin_list->jam_start);
+/*              $time1 = Carbon::parse($peg_ijin_list->jam_start);
               $time2 =  Carbon::parse($peg_ijin_list->jam_end);
-              $interval_time = $time2->diffInHours($time1);
+              $interval_time = $time2->diffInHours($time1);*/
 
-              if($interval > 1) {
-                return $interval.' hari';
-              }else{
-                return $interval_time.' jam';
-              }
+              return $interval.' hari';
             })
             ->make(true);
     }

@@ -51,7 +51,7 @@ class HomeController extends Controller
                   }
                 });
 
-    $count_pegawai = DataInduk::where(function($query) use($unker){
+      $count_pegawai = DataInduk::where(function($query) use($unker){
                         if(!empty($unker)){
                           $query->where('peg_data_induk.id_unker',$unker);
                         }
@@ -84,7 +84,7 @@ class HomeController extends Controller
                 'backgroundColor' => ['#FF6384', '#36A2EB','#33cc33','#ff00ff','#ffff00','#ff6666','#ccccff','#993333','#666633'],
                 'hoverBackgroundColor' => ['#FF6384', '#36A2EB','#33cc33','#ff00ff','#ffff00','#ff6666','#ccccff','#993333','#666633'],
                 'data' => [
-                  isset($status['Hadir'])?$status['Hadir']:'',
+                  isset($status['Hadir'])?round($status['Hadir'],2):'',
                   isset($status['Hadir Terlambat'])?$status['Hadir Terlambat']:'',
                   isset($status['Hadir Pulang Awal'])?$status['Hadir Pulang Awal']:'',
                   isset($status['Ijin'])?$status['Ijin']:'',

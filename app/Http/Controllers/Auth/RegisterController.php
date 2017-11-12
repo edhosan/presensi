@@ -71,7 +71,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
       if(array_key_exists('opd', $data)){
-        $opd = OPD::findOrFail($data['opd']);
+        $opd = OPD::find($data['opd']);
       }
 
       $user = User::create([
@@ -79,9 +79,11 @@ class RegisterController extends Controller
           'username' => $data['username'],
           'password' => bcrypt($data['password']),
           'api_token' => str_random(60),
-          'unker' =>array_key_exists('opd', $data)?$data['opd']:'',
-          'nm_unker' =>array_key_exists('opd', $data)?$opd->nama_unker:''
+          'unker' =>array_key_exists('opd', $data)?$data['opd']:null,
+          'nm_unker' =>isset($opd)?$opd->nama_unker:null
       ]);
+
+
 
       foreach ($data['tipe'] as $key => $value) {
         $user->roles()->attach($value);
@@ -243,7 +245,7 @@ class RegisterController extends Controller
        $data = $request->all();
 
        if(array_key_exists('opd', $data)){
-         $opd = OPD::findOrFail($data['opd']);
+         $opd = OPD::find($data['opd']);
        }
 
        $arr = array(
