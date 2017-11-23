@@ -83,6 +83,7 @@ $(function() {
                 },
                 enabled: false
             },
+            @role(['super-admin'])
             {
                 text: '<i class="icon-remove"> Hapus</i>',
                 action: function ( e, dt, node, config ) {
@@ -125,6 +126,7 @@ $(function() {
                 },
                 enabled: false
             },
+            @endrole
             {
                 extend: 'print',
                 customize: function ( win ) {
