@@ -11,12 +11,19 @@ class Jadwal extends Model
 
   protected $table = 'jadwal_kerja';
 
-  protected $fillable = ['name','title','start','end','id_unker','nama_unker'];
+  protected $fillable = ['name','title','start','end','id_unker','nama_unker','aktif'];
 
   protected $dates = ['deleted_at'];
 
   public function hari()
   {
      return $this->hasMany('App\Model\Hari');
+  }
+
+  protected $casts = ['aktif' => 'boolean' ];
+
+  public function scopeAktif($query) 
+  {
+  	return $query->where('aktif', true);
   }
 }

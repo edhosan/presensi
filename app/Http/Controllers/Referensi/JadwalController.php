@@ -86,6 +86,14 @@ class JadwalController extends Controller
       return redirect('jadwal_list')->with('success','Data berhasil diupdate!');
     }
 
+    public function updateAktif($id)
+    {
+      $jadwal = Jadwal::find($id);
+      $jadwal->update([ 'aktif' => !$jadwal->aktif ]);      
+
+      return redirect('jadwal_list')->with('success','Data berhasil diupdate!');
+    }
+
     public function apiJadwalList()
     {
       $unker = Auth::user()->unker;
@@ -99,7 +107,14 @@ class JadwalController extends Controller
         }
       })
       ->addColumn('action', function ($data) {
-         return '<a href="'.url('hari_create').'/'.$data->id.'" class="btn btn-mini btn-info"><i class="icon-plus"></i> Hari Kerja</a>';
+          if($data->aktif)
+            $icon = "icon-ok";
+          else
+            $icon = "icon-ban-circle";
+
+          $action = '<a href="'.url('hari_create').'/'.$data->id.'" class="btn btn-mini btn-info"><i class="icon-plus"></i> Hari Kerja</a>'; 
+          $action .= ' <a href="'.url('updateAktif').'/'.$data->id.'" class="btn btn-mini"><i class="'.$icon.'"></i></a>';
+         return $action;
       })
       ->editColumn('start','{!! Carbon\Carbon::parse($start)->format("d-m-Y") !!}')
       ->editColumn('end','{!! Carbon\Carbon::parse($end)->format("d-m-Y") !!}')

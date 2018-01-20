@@ -60,6 +60,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::post('jadwal_create', 'Referensi\JadwalController@store')->name('jadwal_create');
   Route::get('jadwal_edit/{id}', 'Referensi\JadwalController@edit')->name('jadwal_edit');
   Route::post('jadwal_update', 'Referensi\JadwalController@update')->name('jadwal.update');
+  Route::get('updateAktif/{id}', 'Referensi\JadwalController@updateAktif')->name('updateAktif');
 
   Route::get('hari_create/{id_jadwal}', 'Referensi\HariController@create')->name('hari.create');
   Route::post('hari_create', 'Referensi\HariController@store')->name('hari.store');

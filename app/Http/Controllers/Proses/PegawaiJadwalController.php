@@ -35,7 +35,7 @@ class PegawaiJadwalController extends Controller
     {
       $unker = Auth::user()->unker;
 
-      $jadwal = Jadwal::orderBy('name','asc')
+      $jadwal = Jadwal::aktif()->orderBy('name','asc')
                   ->where(function($query) use($unker) {
                     if(!empty($unker)) {
                       $query->where('id_unker',$unker)->orwhereNull('id_unker');
