@@ -54,10 +54,49 @@
               </tr>
             @php $no++ @endphp
             @endforeach
-          </tbody>
+          </tbody>         
         </table>
       </td>
     </tr>
   </tbody>
+  <tfoot>
+      <tr>
+        <td></td>
+        <td>
+           <table style="margin-top:50px; margin-left: 400px" width="25%" border="0">
+            <tr align="center">
+              <td>Tanjung Redeb, {{ Carbon\Carbon::now()->day }} {{ monthName(Carbon\Carbon::now()->month) }} {{ Carbon\Carbon::now()->year }}</td>
+            </tr>
+            <tr align="center">
+              <td>MENGETAHUI</td>
+            </tr>
+            <tr align="center">
+              <td>KEPALA</td>
+            </tr>
+            <tr align="center" style="margin: 100px">            
+              <td>
+                <div style="margin-top: 50px">
+                  <strong>
+                  <u>
+                    @if(isset($kepala))
+                      {{ $kepala->nama }}
+                    @endif
+                  </u>
+                  </strong>
+                </div>
+              </td>            
+            </tr>   
+            <tr align="center">
+              <td>
+                @if(isset($kepala))
+                  NIP. {{ $kepala->nip }}
+                @endif
+              </td>
+            </tr>       
+          </table>
+        </td>
+      </tr>
+
+    </tfoot>
 </table>
 @endsection

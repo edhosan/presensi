@@ -18,7 +18,7 @@
           <td align="right" width="5">
             <img src="{{ asset('images/logo.png') }}" alt="" height="62">
           </td>
-          <td align="center" >
+          <td align="center" colspan="3" >
             <h2>PEMERINTAH KABUPATEN BERAU</h2>
             <h1>{{ $opd->nama_unker }}</h1>
             <h4>LAPORAN KEHADIRAN HARIAN</h4>
@@ -29,7 +29,7 @@
       </thead>
       <tbody>
         <tr>
-          <td align="center" colspan="2">
+          <td align="center" colspan="3">
             <table class="border thick data">
               <thead>
                 <tr class="thick">
@@ -98,11 +98,55 @@
           </td>
         </tr>
       </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">
+            <blockquote>
+              <strong>Keterangan:</strong>
+              <small>H = Hadir&nbsp;&nbsp;&nbsp;HT = Hadir Terlambat&nbsp;&nbsp;&nbsp;HP = Hadir Pulang Awal&nbsp;&nbsp;&nbsp;A = Absent</small>
+              <small>I = Ijin&nbsp;&nbsp;&nbsp;S = Sakit&nbsp;&nbsp;&nbsp;C = Cuti&nbsp;&nbsp;&nbsp;DL = Dinas Luar&nbsp;&nbsp;&nbsp;TB = Tugas Belajar</small>
+            </blockquote>
+          </td>
+        </tr>
+        <tr>
+          <td></td>       
+          <td></td>            
+          <td align="center">
+            <table style="margin-top:50px; margin-left: 400px" width="50%">
+              <tr align="center">
+                <td>Tanjung Redeb, {{ Carbon\Carbon::now()->day }} {{ monthName(Carbon\Carbon::now()->month) }} {{ Carbon\Carbon::now()->year }}</td>
+              </tr>
+              <tr align="center">
+                <td>MENGETAHUI</td>
+              </tr>
+              <tr align="center">
+                <td>KEPALA</td>
+              </tr>
+              <tr align="center" style="margin: 100px">            
+                <td>
+                  <div style="margin-top: 50px">
+                    <strong>
+                    <u>
+                      @if(isset($kepala))
+                        {{ $kepala->nama }}
+                      @endif
+                    </u>
+                    </strong>
+                  </div>
+                </td>            
+              </tr>   
+              <tr align="center">
+                <td>
+                  @if(isset($kepala))
+                    NIP. {{ $kepala->nip }}
+                  @endif
+                </td>
+              </tr>       
+            </table>
+          </td>
+        </tr>   
+      </tfoot>
     </table>
 
-    <blockquote>
-      <strong>Keterangan:</strong>
-      <small>H = Hadir&nbsp;&nbsp;&nbsp;HT = Hadir Terlambat&nbsp;&nbsp;&nbsp;HP = Hadir Pulang Awal&nbsp;&nbsp;&nbsp;A = Absent</small>
-      <small>I = Ijin&nbsp;&nbsp;&nbsp;S = Sakit&nbsp;&nbsp;&nbsp;C = Cuti&nbsp;&nbsp;&nbsp;DL = Dinas Luar&nbsp;&nbsp;&nbsp;TB = Tugas Belajar</small>
-    </blockquote>
+
 @endsection

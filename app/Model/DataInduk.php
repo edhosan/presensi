@@ -21,4 +21,9 @@ class DataInduk extends Model
     {
       return $this->hasMany('App\Model\Ketidakhadiran','peg_id','id');
     }
+
+    public function scopeKepala($query)
+    {
+      return $query->where('id_jabatan', 1366);
+    }
 }

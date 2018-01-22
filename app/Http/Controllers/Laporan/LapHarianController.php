@@ -104,8 +104,10 @@ class LapHarianController extends Controller
         $start->addDay();
       }
 
+      $kepala =  DataInduk::where('id_unker', $opd->id_unker)->kepala()->first();
+
 
       return view('laporan.cetak_laporan_harian')->withOpd($opd)->withStart($request->start)->withEnd($request->end)
-              ->withData($data);
+              ->withData($data)->withKepala($kepala);
     }
 }

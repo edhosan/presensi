@@ -66,6 +66,8 @@ class LapKetidakhadiranController extends Controller
                     ->select('peg_data_induk.nip','peg_data_induk.nama','peg_jadwal.tanggal','ref_ijin.name','ketidakhadiran.keperluan')
                     ->get();
 
-     return view('laporan.cetak_laporan_ketidakhadiran')->withOpd($opd)->withStart($request->start)->withEnd($request->end)->withData($peg_jadwal);
+      $kepala =  DataInduk::where('id_unker', $opd->id_unker)->kepala()->first();
+
+     return view('laporan.cetak_laporan_ketidakhadiran')->withOpd($opd)->withStart($request->start)->withEnd($request->end)->withData($peg_jadwal)->withKepala($kepala);
     }
 }

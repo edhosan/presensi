@@ -91,7 +91,10 @@ class RekapOPDController extends Controller
 
         $no++;
       }
-      return view('laporan.cetak_laporan_bulanan')->withOpd($opd)->withBulan($request->bulan)->withTahun($request->tahun)->withData($data);
+
+      $kepala =  DataInduk::where('id_unker', $opd->id_unker)->kepala()->first();
+
+      return view('laporan.cetak_laporan_bulanan')->withOpd($opd)->withBulan($request->bulan)->withTahun($request->tahun)->withData($data)->withKepala($kepala);
     }
 
     public function cetak()
