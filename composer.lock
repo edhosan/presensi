@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b8f909f6aa28b75b4ebab3b725c881b8",
+    "content-hash": "aa3859f0a78ec76bbbcf44ce6a27b468",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -114,6 +114,48 @@
                 "helpers"
             ],
             "time": "2017-07-17T03:46:27+00:00"
+        },
+        {
+            "name": "caouecs/laravel-lang",
+            "version": "3.0.41",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/caouecs/Laravel-lang.git",
+                "reference": "1ec55fb2d6315fd4f977c5e2419ba530efea5d3f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/caouecs/Laravel-lang/zipball/1ec55fb2d6315fd4f977c5e2419ba530efea5d3f",
+                "reference": "1ec55fb2d6315fd4f977c5e2419ba530efea5d3f",
+                "shasum": ""
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^1.10"
+            },
+            "suggest": {
+                "ablunier/laravel-lang-installer": "Command for easily add languages to a Laravel project",
+                "arcanedev/laravel-lang": "Translations manager and checker for Laravel 5",
+                "overtrue/laravel-lang": "Command to add languages in your project"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "caouecs",
+                    "email": "caouecs@caouecs.net"
+                }
+            ],
+            "description": "Languages for Laravel",
+            "keywords": [
+                "lang",
+                "languages",
+                "laravel",
+                "lpm"
+            ],
+            "time": "2018-01-19T08:47:27+00:00"
         },
         {
             "name": "davejamesmiller/laravel-breadcrumbs",
