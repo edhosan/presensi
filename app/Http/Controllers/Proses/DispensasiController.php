@@ -60,6 +60,7 @@ class DispensasiController extends Controller
 
   public function saveCreate(Request $request)
   {
+
       $this->validate($request, $this->rules);
 
       $file_name = '';
@@ -67,6 +68,13 @@ class DispensasiController extends Controller
         $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->tanggal)).'.'.$request->file->extension();
 
         $request->file('file')->move('catalog/surat/dispensasi/', $file_name);
+      }
+
+      $peg_jadwal = PegawaiJadwal::where('peg_id', $request->pegawai)
+                                  ->where('tanggal', date('Y-m-d', strtotime($request->tanggal) ))
+                                  ->first();
+      if(empty($peg_jadwal)){
+        return back()->withInput()->withError('Gagal simpan data, Jadwal kerja pegawai belum ada!');
       }
 
       $dispensasi = Dispensasi::create([
