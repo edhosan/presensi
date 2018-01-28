@@ -16,7 +16,8 @@
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
         "watson/active": "^2.0",
-        "yajra/laravel-datatables-oracle": "^7.4",
+        "yajra/laravel-datatables-buttons": "2.0",
+        "yajra/laravel-datatables-oracle": "7.0",
         "zizaco/entrust": "5.2.x-dev"
     },
     "require-dev": {

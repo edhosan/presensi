@@ -43,26 +43,24 @@
       </div>
 
       <div class="span6">
-        <div class="widget-header">
-          <i class="icon-bookmark"></i>
-          <h3>Tombol Cepat</h3>
-        </div>
-        <div class="widget-content">
-          <div class="shortcuts">
-            <a class="shortcut" href="{{ route('user') }}"><i class="shortcut-icon icon-user"></i><span class="shortcut-label">Manajemen User</span></a>
-            <a class="shortcut" href="{{ route('datainduk_list') }}"><i class="shortcut-icon icon-group"></i><span class="shortcut-label">Pegawai</span></a>
-            <a class="shortcut" href="{{ route('peg_jadwal.list') }}"><i class="shortcut-icon icon-time"></i><span class="shortcut-label">Jadwal</span></a>
-            <a class="shortcut" href="{{ route('ketidakhadiran.list') }}"><i class="shortcut-icon icon-exclamation-sign"></i><span class="shortcut-label">Berhalangan Hadir</span></a>
-            <a class="shortcut" href="{{ route('dispensasi.list') }}"><i class="shortcut-icon icon-warning-sign"></i><span class="shortcut-label">Dispensasi</span></a>
-            <a class="shortcut" href="{{ route('kalkulasi.form') }}"><i class="shortcut-icon icon-tasks"></i><span class="shortcut-label">Kalkulasi Kehadiran</span></a>
-              <a class="shortcut" href="{{ route('laporan.bulanan') }}"><i class="shortcut-icon icon-bar-chart"></i><span class="shortcut-label">Laporan Bulanan</span></a>
+        <div class="widget">
+          <div class="widget-header">
+            <i class="icon-bookmark"></i>
+            <h3>Tombol Cepat</h3>
+          </div>
+          <div class="widget-content">
+            <div class="shortcuts">
+              <a class="shortcut" href="{{ route('user') }}"><i class="shortcut-icon icon-user"></i><span class="shortcut-label">Manajemen User</span></a>
+              <a class="shortcut" href="{{ route('datainduk_list') }}"><i class="shortcut-icon icon-group"></i><span class="shortcut-label">Pegawai</span></a>
+              <a class="shortcut" href="{{ route('peg_jadwal.list') }}"><i class="shortcut-icon icon-time"></i><span class="shortcut-label">Jadwal</span></a>
+              <a class="shortcut" href="{{ route('ketidakhadiran.list') }}"><i class="shortcut-icon icon-exclamation-sign"></i><span class="shortcut-label">Berhalangan Hadir</span></a>
+              <a class="shortcut" href="{{ route('dispensasi.list') }}"><i class="shortcut-icon icon-warning-sign"></i><span class="shortcut-label">Dispensasi</span></a>
+              <a class="shortcut" href="{{ route('kalkulasi.form') }}"><i class="shortcut-icon icon-tasks"></i><span class="shortcut-label">Kalkulasi Kehadiran</span></a>
+                <a class="shortcut" href="{{ route('laporan.bulanan') }}"><i class="shortcut-icon icon-bar-chart"></i><span class="shortcut-label">Laporan Bulanan</span></a>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="row">
-      <div class="span12">
         <div class="widget">
           <div class="widget-header">
             <i class="icon-calendar"></i>
@@ -72,6 +70,14 @@
             <div id="calendar" class="fc"></div>
           </div>
         </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+      
+
       </div>
     </div>
 </div>

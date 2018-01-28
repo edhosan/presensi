@@ -15,7 +15,7 @@
             </ul>
           </li>
         @endrole
-        <li class="dropdown {{ active(['home/*','register','kalendar_list','jadwal_list','ref_ijin_list']) }}">
+        <li class="dropdown {{ active(['home/*','register','kalendar_list','jadwal_list','ref_ijin_list','pengumuman_index']) }}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-list-alt"></i><span>Data Referensi</span> </a>
           <ul class="dropdown-menu">
             @role(['super-admin','admin'])
@@ -24,6 +24,7 @@
             @endrole
             @role(['super-admin'])
               <li><a href="{{ route('ref_ijin.list') }}">Keterangan Tidak Hadir</a></li>
+              <li><a href="{{ route('widget.pengumuman.index') }}">Widget Pengumuman</a></li>
             @endrole
           </ul>
         </li>

@@ -180,6 +180,7 @@ return [
         Watson\Active\ActiveServiceProvider::class,
         DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
+        Yajra\Datatables\ButtonsServiceProvider::class,
         Zizaco\Entrust\EntrustServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         browner12\helpers\HelperServiceProvider::class,

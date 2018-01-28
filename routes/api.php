@@ -63,3 +63,7 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::get('dispensasi_list', 'Proses\DispensasiController@apiListDispensasi')->name('dispensasi.list');
   Route::post('dispensasi_delete', 'Proses\DispensasiController@apiDeleteDispensasi')->name('dispensasi.delete');
 });
+
+Route::group(['namespace' => 'api\v1', 'middleware' => 'auth:api'], function() {
+  Route::get('/pengumuman_index','api\v1\WidgetController@pengumumanList');
+});

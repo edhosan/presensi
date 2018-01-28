@@ -117,7 +117,7 @@ class PegawaiJadwalController extends Controller
 
     public function apiJadwalDetail(Request $request)
     {
-      $peg_jadwal = PegawaiJadwal::join('jadwal_kerja','jadwal_kerja.id','=','peg_jadwal.jadwal_id')
+      $peg_jadwal = PegawaiJadwal::join('jadwal_kerja','jadwal_kerja.id','=','peg_jadwal.jadwal_id')                    
                     ->select('jadwal_kerja.*')
                     ->where('peg_id',$request->id)
                     ->groupBy('peg_jadwal.jadwal_id')

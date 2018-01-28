@@ -208,5 +208,12 @@ Breadcrumbs::register('dispensasi.form', function($breadcrumbs)
     $breadcrumbs->push('Form Dispensasi', route('dispensasi.list'));
 });
 
+// Home > Referensi > Widget Pengumuman
+Breadcrumbs::register('widget.pengumuman.index', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Widget Pengumuman', route('widget.pengumuman.index'));
+});
+
 
 ?>

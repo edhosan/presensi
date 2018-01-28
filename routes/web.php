@@ -111,3 +111,7 @@ Route::group(['middleware' => 'auth'], function() {
 
   Route::post('piechart_filter', 'HomeController@index')->name('piechart.filter');
 });
+
+Route::group(['namespace' => 'Referensi', 'middleware' => 'auth'], function() {
+  Route::get('/pengumuman_index','WidgetPengumumanController@index')->name('widget.pengumuman.index');
+});

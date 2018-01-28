@@ -134,7 +134,7 @@ class RegisterController extends Controller
 
     public function apiGetPegawai(Request $request)
     {
-      $unker = Auth::user()->unker;
+      //$unker = Auth::user()->unker;
 
       if($request->has('opd')){
         $unker = $request->opd;
