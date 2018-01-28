@@ -58,6 +58,7 @@
               <li><a href="{{ route('laporan.bulanan') }}">Laporan Kehadiran Bulanan</a></li>
               <li><a href="{{ route('laporan.harian') }}">Laporan Kehadiran Harian</a></li>
               <li><a href="{{ route('laporan.ketidakhadiran') }}">Laporan Ketidakhadiran Pegawai</a></li>
+              <li><a href="#">Laporan TPP</a></li>
             @endrole
           </ul>
         </li>
