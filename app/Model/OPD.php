@@ -12,6 +12,8 @@ class OPD extends Model
 
   protected $primaryKey = 'id_unker';
 
+  protected $cast = [ 'id_unker' => 'string' ];
+
   public function subUnit()
   {
     return $this->hasMany('App\Model\SubUnit','id_unker','id_unker');

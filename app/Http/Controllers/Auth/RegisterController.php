@@ -79,7 +79,7 @@ class RegisterController extends Controller
           'username' => $data['username'],
           'password' => bcrypt($data['password']),
           'api_token' => str_random(60),
-          'unker' =>array_key_exists('opd', $data)?$data['opd']:null,
+          'unker' =>array_key_exists('opd', $data)?str_pad($data['opd'], 8,"0", STR_PAD_LEFT) :null,
           'nm_unker' =>isset($opd)?$opd->nama_unker:null
       ]);
 
