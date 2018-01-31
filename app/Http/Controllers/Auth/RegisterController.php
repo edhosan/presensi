@@ -13,6 +13,8 @@ use App\Model\OPD;
 use Yajra\Datatables\Datatables;
 use App\Model\Role;
 use Auth;
+use App\Mail\MailUser;
+use Mail;
 
 class RegisterController extends Controller
 {
@@ -83,11 +85,11 @@ class RegisterController extends Controller
           'nm_unker' =>isset($opd)?$opd->nama_unker:null
       ]);
 
-
-
       foreach ($data['tipe'] as $key => $value) {
         $user->roles()->attach($value);
       }
+
+      Mail::to('asamediadigital@gmail.com')->send(new MailUser);
 
       return $user;
     }
