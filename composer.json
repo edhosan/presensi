@@ -15,6 +15,7 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
+        "snowfire/beautymail": "dev-master",
         "watson/active": "^2.0",
         "yajra/laravel-datatables-buttons": "2.0",
         "yajra/laravel-datatables-oracle": "7.0",

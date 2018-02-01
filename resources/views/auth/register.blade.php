@@ -94,6 +94,34 @@
                         </div>
                     </div>
 
+                    <div class="control-group {{ $errors->has('email') ? 'error' : '' }}">
+                        <label for="type" class="control-label">E-Mail</label>
+
+                        <div class="controls">
+                            <input id="email" type="email" class="span6" name="email" value="{{$data->email or old('email') }}" required>
+
+                            @if ($errors->has('email'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('email') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="control-group {{ $errors->has('phone') ? 'error' : '' }}">
+                        <label for="type" class="control-label">No. Telphone</label>
+
+                        <div class="controls">
+                            <input id="phone" type="text" class="span6" name="phone" value="{{$data->phone or old('phone') }}">
+
+                            @if ($errors->has('phone'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('phone') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="control-group {{ $errors->has('tipe') ? 'error' : '' }}">
                         <label for="tipe" class="control-label">Tipe User</label>
 

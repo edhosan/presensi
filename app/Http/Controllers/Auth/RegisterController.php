@@ -15,6 +15,7 @@ use App\Model\Role;
 use Auth;
 use App\Mail\MailUser;
 use Mail;
+use Beautymail;
 
 class RegisterController extends Controller
 {
@@ -60,6 +61,8 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,id,'.$data['id'],
             'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'numeric',
             'tipe'  => 'required|array|min:1'
         ]);
     }
@@ -82,14 +85,25 @@ class RegisterController extends Controller
           'password' => bcrypt($data['password']),
           'api_token' => str_random(60),
           'unker' =>array_key_exists('opd', $data)?str_pad($data['opd'], 8,"0", STR_PAD_LEFT) :null,
-          'nm_unker' =>isset($opd)?$opd->nama_unker:null
+          'nm_unker' =>isset($opd)?$opd->nama_unker:null,
+          'email' => $data['email'],
+          'phone' => $data['phone']
       ]);
 
       foreach ($data['tipe'] as $key => $value) {
         $user->roles()->attach($value);
       }
 
-      Mail::to('asamediadigital@gmail.com')->send(new MailUser);
+     // Mail::to($data['email'])->send(new MailUser);
+
+      //$beautymail = app()->make(Snowfire\Beautymail\Beautymail::class);
+      Beautymail::send('mail.user', ['data' => $user,'password' => $data['password']], function($message) use($data)
+      {
+        $message
+        ->from('presensi.beraukab@gmail.com')
+        ->to($data['email'], $data['name'])
+        ->subject('User & Password Operator OPD!');
+      });
 
       return $user;
     }
@@ -255,7 +269,9 @@ class RegisterController extends Controller
          'username' => $data['username'],
          'password' => bcrypt($data['password']),
          'unker' =>array_key_exists('opd', $data)?$data['opd']:'',
-         'nm_unker' =>array_key_exists('opd', $data)?$opd->nama_unker:''
+         'nm_unker' =>array_key_exists('opd', $data)?$opd->nama_unker:'',
+         'email' => $data['email'],
+         'phone' => $data['phone']
        );
 
        $user = User::find($data['id']);
@@ -263,7 +279,7 @@ class RegisterController extends Controller
 
        $user->roles()->detach();
 
-      foreach ($data['tipe'] as $key => $value) {
+       foreach ($data['tipe'] as $key => $value) {
         $user->roles()->attach($value);
        }
 

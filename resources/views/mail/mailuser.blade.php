@@ -12,8 +12,8 @@
 	 </thead>
 	 <tbody>
 	 	<tr>
-	 		<td>
-	 			<h1>Laravel Email</h1>
+	 		<td align="center">
+	 			<h1>User & Password Operator OPD</h1>
 
 				<p>The email has been send</p>
 	 		</td>

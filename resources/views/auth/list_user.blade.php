@@ -31,6 +31,8 @@
                           <th>Username</th>
                           <th>Name</th>
                           <th>OPD</th>
+                          <th>E-Mail</th>
+                          <th>Phone</th>
                           <th>Created At</th>
                           <th>Updated At</th>
                       </tr>
@@ -159,6 +161,8 @@
               { data: 'username', name: 'username' },
               { data: 'name', name: 'name' },
               { data: 'nm_unker', name: 'nm_unker', width: "25%" },
+              { data: 'email', name: 'email' },
+              { data: 'phone', name: 'phone' },
               { data: 'created_at', name: 'created_at' },
               { data: 'updated_at', name: 'updated_at' }
           ]

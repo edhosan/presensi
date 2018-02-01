@@ -185,7 +185,8 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         browner12\helpers\HelperServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
-        Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class
+        Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class,
+        Snowfire\Beautymail\BeautymailServiceProvider::class,
 
     ],
 
@@ -242,6 +243,7 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Beautymail' => Snowfire\Beautymail\BeautymailFacade::class,
 
     ],
 
