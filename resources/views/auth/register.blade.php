@@ -49,7 +49,12 @@
                         <label for="password" class="control-label">Password</label>
 
                         <div class="controls">
-                            <input id="password" type="password" class="span4" name="password" required>
+                            <div class="input-prepend input-append">
+                              <input id="password" type="password" class="span4" name="password" required>                          
+                              <span class="add-on" id="password_show_button"><i class="icon-eye-open" aria-hidden="true"></i></span>
+                              <button class="btn" type="button" data-loading-text="Loading..." id="btnGeneratePassword">Generate Password</button>
+                            </div>
+                          
 
                             @if ($errors->has('password'))
                                 <span class="help-block">
@@ -160,6 +165,48 @@
   <script src="{{ asset('js/select2.min.js') }}"></script>
   <script type="text/javascript">
   $(function() {
+
+      function randString(){
+        var dataKarakter = "a-z,A-Z,0-9,#"; 
+        var size="8";
+        var dataSet = dataKarakter.split(',');  
+        var possible = '';
+        if($.inArray('a-z', dataSet) >= 0){
+          possible += 'abcdefghijklmnopqrstuvwxyz';
+        }
+        if($.inArray('A-Z', dataSet) >= 0){
+          possible += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        }
+        if($.inArray('0-9', dataSet) >= 0){
+          possible += '0123456789';
+        }
+        if($.inArray('#', dataSet) >= 0){
+          possible += '![]{}()%&*$#^<>~@|';
+        }
+        var text = '';
+        for(var i=0; i < size; i++) {
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return text;
+      }
+
+      $("#password_show_button").mouseup(function(){   
+          $("#password").prop("type", "password");
+          $("#password-confirm").prop("type", "password");
+      });
+      $("#password_show_button").mousedown(function(){
+          $("#password").prop("type", "text");
+          $("#password-confirm").prop("type", "text");
+      }); 
+
+      $('#btnGeneratePassword').click(function() {
+        var btn = $(this);
+        btn.button('loading');  
+        $('#password').val(randString());
+        $('#password-confirm').val($('#password').val());
+        btn.button('reset');  
+      });
+
     $('#pegawai').select2({
       placeholder: 'Cari Pegawai',
       allowClear: true,
