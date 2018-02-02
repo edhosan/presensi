@@ -104,8 +104,8 @@
                     <div class="control-group">
                       <label for="" class="control-label"></label>
                       <div class="controls">
-                        <iframe src="{{ URL::to('/') }}/catalog/surat/dispensasi/{{ $data->filename }}" width="30%" height="5%"></iframe>
-                        <a href="{{ URL::to('/') }}/catalog/surat/dispensasi/{{ $data->filename }}">&nbsp;Download File</a>
+                        <iframe src="{{ URL::to('/') }}/public/catalog/surat/dispensasi/{{ $data->filename }}" width="30%" height="5%"></iframe>
+                        <a href="{{ URL::to('/') }}/public/catalog/surat/dispensasi/{{ $data->filename }}">&nbsp;Download File</a>
                       </div>
                     </div>
                     @endif

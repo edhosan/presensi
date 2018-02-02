@@ -20,7 +20,7 @@ class DispensasiController extends Controller
     'tanggal'  => 'required',
     'alasan' => 'required',
     'koreksi_jam' => 'required|date_format:G:i',
-    'file' => 'mimes:pdf'
+    'file' => 'mimes:pdf,doc,docx,jpeg'
   ];
 
   public function index()
@@ -61,20 +61,20 @@ class DispensasiController extends Controller
   public function saveCreate(Request $request)
   {
 
-      $this->validate($request, $this->rules);
-
-      $file_name = '';
-      if($request->hasFile('file')){
-        $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->tanggal)).'.'.$request->file->extension();
-
-        $request->file('file')->move('catalog/surat/dispensasi/', $file_name);
-      }
+      $this->validate($request, $this->rules);     
 
       $peg_jadwal = PegawaiJadwal::where('peg_id', $request->pegawai)
                                   ->where('tanggal', date('Y-m-d', strtotime($request->tanggal) ))
                                   ->first();
       if(empty($peg_jadwal)){
         return back()->withInput()->withError('Gagal simpan data, Jadwal kerja pegawai belum ada!');
+      }
+
+      $file_name = '';
+      if($request->hasFile('file')){
+        $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->tanggal)).'.'.$request->file->extension();
+
+        $request->file('file')->move('public/catalog/surat/dispensasi/', $file_name);
       }
 
       $dispensasi = Dispensasi::create([
@@ -100,9 +100,9 @@ class DispensasiController extends Controller
     if($request->hasFile('file')){
       $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->tanggal)).'.'.$request->file->extension();
 
-      File::delete('catalog/surat/dispensasi/'.$dispensasi->filename);
+      File::delete('public/catalog/surat/dispensasi/'.$dispensasi->filename);
 
-      $request->file('file')->move('catalog/surat/dispensasi/', $file_name);
+      $request->file('file')->move('public/catalog/surat/dispensasi/', $file_name);
     }
 
     $dispensasi->update([

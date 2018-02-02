@@ -22,7 +22,7 @@ class KetidakhadiranController extends Controller
       'start' => 'required',
       'end' => 'required|after_or_equal:start',
       'keperluan' => 'required',
-      'file' => 'mimes:pdf'
+      'file' => 'mimes:pdf,doc,docx,jpeg'
     ];
 
     public function index()
@@ -74,11 +74,18 @@ class KetidakhadiranController extends Controller
     {
       $this->validate($request, $this->rules);
 
+      $peg_jadwal = PegawaiJadwal::where('peg_id', $request->pegawai)
+                                  ->where('tanggal', date('Y-m-d', strtotime($request->start) ))
+                                  ->first();
+      if(empty($peg_jadwal)){
+        return back()->withInput()->withError('Gagal simpan data, Jadwal kerja pegawai belum ada!');
+      }
+
       $file_name = '';
       if($request->hasFile('file')){
         $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->start)).'.'.$request->file->extension();
 
-        $request->file('file')->move('catalog/surat/tidak_hadir/', $file_name);
+        $request->file('file')->move('public/catalog/surat/tidak_hadir/', $file_name);
       }
 
       $ketidakhadiran = Ketidakhadiran::create([
@@ -107,9 +114,9 @@ class KetidakhadiranController extends Controller
       if($request->hasFile('file')){
         $file_name = $request->pegawai.'_'.date('Ymd', strtotime($request->start)).'.'.$request->file->extension();
 
-        File::delete('catalog/surat/tidak_hadir/'.$ketidakhadiran->filename);
+        File::delete('public/catalog/surat/tidak_hadir/'.$ketidakhadiran->filename);
 
-        $request->file('file')->move('catalog/surat/tidak_hadir/', $file_name);
+        $request->file('file')->move('public/catalog/surat/tidak_hadir/', $file_name);
       }
 
       $ketidakhadiran->update([
