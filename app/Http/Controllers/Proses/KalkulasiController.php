@@ -44,8 +44,8 @@ class KalkulasiController extends Controller
 
     public function prosesKalkulasi(Request $request)
     {
-      dispatch(new ProsesPerhitungan($request->opd, $request->start, $request->end, $request->peg));
-/*      set_time_limit(0);
+      //dispatch(new ProsesPerhitungan($request->opd, $request->start, $request->end, $request->peg));
+      set_time_limit(0);
 
       $peg_jadwal = PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
                     ->leftJoin('ketidakhadiran','ketidakhadiran.id','=','peg_jadwal.ketidakhadiran_id')
@@ -249,7 +249,7 @@ class KalkulasiController extends Controller
         $status = round($i * 100 / $total);
         Session::put('progress', $status);
         $i++;
-      }*/
+      }
 
       return response()->json(true);
     }
