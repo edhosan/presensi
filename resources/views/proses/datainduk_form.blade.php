@@ -101,7 +101,7 @@
                           <label for="nip" class="control-label">NIP</label>
 
                           <div class="controls">
-                              <input id="nip" type="text" class="span4" name="nip" value="{{ $data->nip or old('nip') }}" autofocus>
+                              <input id="nip" type="text" class="span4" name="nip" value="{{ $data->nip or old('nip') }}" @if($type == 'nonpns') readonly="readonly" @endif autofocus>
 
                               @if ($errors->has('nip'))
                                   <span class="help-block">
@@ -175,9 +175,9 @@
                       <div class="control-group {{ $errors->has('pangkat') ? 'error' : '' }}">
                           <label for="pangkat" class="control-label">Pangkat / Golongan</label>
 
-                          <div class="controls">
+                          <div class="controls">     
                               <?php $selected_pangkat = isset($data)?$data->id_pangkat:old('pangkat') ?>
-                              {{ Form::select('pangkat', $pangkat, $selected_pangkat, ['id' => 'pangkat', 'placeholder' => "Please Select", 'class' => 'span4']) }}
+                              {{ Form::select('pangkat', $pangkat, $selected_pangkat, ['id' => 'pangkat', 'placeholder' => "Please Select", 'class' => 'span4' ]) }}
 
                               @if ($errors->has('pangkat'))
                                   <span class="help-block">
@@ -227,7 +227,7 @@
                                   $new_date = Carbon\Carbon::parse($data->tmt_pangkat)->format('d-m-Y');
                                 }
                               @endphp
-                              <input id="tmt_pangkat" type="text" name="tmt_pangkat" value="{{ $new_date }}">
+                              <input id="tmt_pangkat" type="text" name="tmt_pangkat" value="{{ $new_date }}" >
                               @if ($errors->has('tmt_pangkat'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('tmt_pangkat') }}</strong>
@@ -271,6 +271,12 @@ $(function() {
     autoclose : true,
     todayHighlight : true
   };
+
+  @if($type == 'nonpns')
+      $('#nip').prop('disabled', true);
+      $('#pangkat').prop('disabled', true);
+      $('#tmt_pangkat').prop('disabled', true);
+  @endif
 
   $('#tmt_pangkat').datepicker( formatCalendar );
   $('input[type=radio][name=type]').change(function() {
