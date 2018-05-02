@@ -50,7 +50,9 @@
           </div>
           <div class="widget-content">
             <div class="shortcuts">
-              <a class="shortcut" href="{{ route('user') }}"><i class="shortcut-icon icon-user"></i><span class="shortcut-label">Manajemen User</span></a>
+              @role(['super-admin'])  
+                <a class="shortcut" href="{{ route('user') }}"><i class="shortcut-icon icon-user"></i><span class="shortcut-label">Manajemen User</span></a>
+              @endrole
               <a class="shortcut" href="{{ route('datainduk_list') }}"><i class="shortcut-icon icon-group"></i><span class="shortcut-label">Pegawai</span></a>
               <a class="shortcut" href="{{ route('peg_jadwal.list') }}"><i class="shortcut-icon icon-time"></i><span class="shortcut-label">Jadwal</span></a>
               <a class="shortcut" href="{{ route('ketidakhadiran.list') }}"><i class="shortcut-icon icon-exclamation-sign"></i><span class="shortcut-label">Berhalangan Hadir</span></a>
