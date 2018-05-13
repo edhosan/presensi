@@ -111,7 +111,7 @@ $.extend( DataTable.ext.buttons, {
 
 			dt
 				.on( 'column-visibility.dt'+conf.namespace, function (e, settings) {
-					if ( ! settings.bDestroying ) {
+					if ( ! settings.bDestroying && settings.nTable == dt.settings()[0].nTable ) {
 						that.active( dt.column( conf.columns ).visible() );
 					}
 				} )
@@ -148,7 +148,9 @@ $.extend( DataTable.ext.buttons, {
 			var idx = dt.column( conf.columns ).index();
 			var title = dt.settings()[0].aoColumns[ idx ].sTitle
 				.replace(/\n/g," ")        // remove new lines
-				.replace( /<.*?>/g, "" )   // strip HTML
+				.replace(/<br\s*\/?>/gi, " ")  // replace line breaks with spaces
+				.replace(/<select(.*?)<\/select>/g, "") // remove select tags, including options text
+				.replace(/<.*?>/g, "")   // strip HTML
 				.replace(/^\s+|\s+$/g,""); // trim
 
 			return conf.columnText ?
