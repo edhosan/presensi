@@ -1,67 +1,40 @@
 {
-  "_args": [
-    [
-      {
-        "raw": "paper-css@^0.3.0",
-        "scope": null,
-        "escapedName": "paper-css",
-        "name": "paper-css",
-        "rawSpec": "^0.3.0",
-        "spec": ">=0.3.0 <0.4.0",
-        "type": "range"
-      },
-      "/home/edo/www/presensi"
-    ]
-  ],
-  "_from": "paper-css@>=0.3.0 <0.4.0",
+  "_from": "paper-css@^0.3.0",
   "_id": "paper-css@0.3.0",
-  "_inCache": true,
+  "_inBundle": false,
+  "_integrity": "sha1-Cr39MEpoRkceI8hz6qyv1f5m7Dk=",
   "_location": "/paper-css",
-  "_nodeVersion": "6.9.1",
-  "_npmOperationalInternal": {
-    "host": "packages-18-east.internal.npmjs.com",
-    "tmp": "tmp/paper-css-0.3.0.tgz_1489569626712_0.9698277786374092"
-  },
-  "_npmUser": {
-    "name": "cognitom",
-    "email": "kawamura@cognitom.com"
-  },
-  "_npmVersion": "3.10.8",
   "_phantomChildren": {},
   "_requested": {
+    "type": "range",
+    "registry": true,
     "raw": "paper-css@^0.3.0",
-    "scope": null,
-    "escapedName": "paper-css",
     "name": "paper-css",
+    "escapedName": "paper-css",
     "rawSpec": "^0.3.0",
-    "spec": ">=0.3.0 <0.4.0",
-    "type": "range"
+    "saveSpec": null,
+    "fetchSpec": "^0.3.0"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/paper-css/-/paper-css-0.3.0.tgz",
   "_shasum": "0abdfd304a6846471e23c873eaacafd5fe66ec39",
-  "_shrinkwrap": null,
   "_spec": "paper-css@^0.3.0",
-  "_where": "/home/edo/www/presensi",
+  "_where": "D:\\Work\\System\\presensi",
   "author": {
     "name": "Tsutomu Kawamura"
   },
   "bugs": {
     "url": "https://github.com/cognitom/paper-css/issues"
   },
-  "dependencies": {},
+  "bundleDependencies": false,
+  "deprecated": false,
   "description": "Paper CSS for happy printing",
   "devDependencies": {
     "clean-css": "^3.4.23",
     "electron-pdf": "^1.2.0",
     "live-server": "^1.2.0"
-  },
-  "directories": {},
-  "dist": {
-    "shasum": "0abdfd304a6846471e23c873eaacafd5fe66ec39",
-    "tarball": "https://registry.npmjs.org/paper-css/-/paper-css-0.3.0.tgz"
   },
   "files": [
     "bin",
@@ -69,7 +42,6 @@
     "paper.css",
     "paper.min.css"
   ],
-  "gitHead": "6e4205536ed22e0c439b250e6ecc2e7cca0d2ef7",
   "homepage": "https://github.com/cognitom/paper-css",
   "keywords": [
     "css",
@@ -78,15 +50,7 @@
     "cli"
   ],
   "license": "MIT",
-  "maintainers": [
-    {
-      "name": "cognitom",
-      "email": "kawamura@cognitom.com"
-    }
-  ],
   "name": "paper-css",
-  "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cognitom/paper-css.git"

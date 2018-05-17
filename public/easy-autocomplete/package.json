@@ -1,51 +1,27 @@
 {
-  "_args": [
-    [
-      {
-        "raw": "easy-autocomplete@1.3.5",
-        "scope": null,
-        "escapedName": "easy-autocomplete",
-        "name": "easy-autocomplete",
-        "rawSpec": "1.3.5",
-        "spec": "1.3.5",
-        "type": "version"
-      },
-      "/home/edo/www/presensi"
-    ]
-  ],
-  "_from": "easy-autocomplete@1.3.5",
+  "_from": "easy-autocomplete@^1.3.5",
   "_id": "easy-autocomplete@1.3.5",
-  "_inCache": true,
+  "_inBundle": false,
+  "_integrity": "sha1-Ki0t9pnxPdxIZhyTdblDes8aCpw=",
   "_location": "/easy-autocomplete",
-  "_nodeVersion": "5.5.0",
-  "_npmOperationalInternal": {
-    "host": "packages-12-west.internal.npmjs.com",
-    "tmp": "tmp/easy-autocomplete-1.3.5.tgz_1462305814209_0.5064758020453155"
-  },
-  "_npmUser": {
-    "name": "pawelczak",
-    "email": "lukaspawelczak@gmail.com"
-  },
-  "_npmVersion": "3.3.12",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "easy-autocomplete@1.3.5",
-    "scope": null,
-    "escapedName": "easy-autocomplete",
+    "type": "range",
+    "registry": true,
+    "raw": "easy-autocomplete@^1.3.5",
     "name": "easy-autocomplete",
-    "rawSpec": "1.3.5",
-    "spec": "1.3.5",
-    "type": "version"
+    "escapedName": "easy-autocomplete",
+    "rawSpec": "^1.3.5",
+    "saveSpec": null,
+    "fetchSpec": "^1.3.5"
   },
   "_requiredBy": [
-    "#USER",
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/easy-autocomplete/-/easy-autocomplete-1.3.5.tgz",
   "_shasum": "2a2d2df699f13ddc48661c9375b9437acf1a0a9c",
-  "_shrinkwrap": null,
-  "_spec": "easy-autocomplete@1.3.5",
-  "_where": "/home/edo/www/presensi",
+  "_spec": "easy-autocomplete@^1.3.5",
+  "_where": "D:\\Work\\System\\presensi",
   "author": {
     "name": "Łukasz Pawełczak",
     "url": "http://github.com/pawelczak"
@@ -53,6 +29,7 @@
   "bugs": {
     "url": "https://github.com/pawelczak/EasyAutocomplete/issues"
   },
+  "bundleDependencies": false,
   "contributors": [
     {
       "name": "Łukasz Pawełczak",
@@ -63,6 +40,7 @@
   "dependencies": {
     "jquery": "*"
   },
+  "deprecated": false,
   "description": "Jquery autocomplete plugin",
   "devDependencies": {
     "grunt": "~0.4.5",
@@ -81,12 +59,6 @@
     "grunt-stripcomments": "~0.3.1",
     "matchdep": "~0.3.0"
   },
-  "directories": {},
-  "dist": {
-    "shasum": "2a2d2df699f13ddc48661c9375b9437acf1a0a9c",
-    "tarball": "https://registry.npmjs.org/easy-autocomplete/-/easy-autocomplete-1.3.5.tgz"
-  },
-  "gitHead": "88ea3fd6da896b4210126bdeb5abd260cf44a907",
   "homepage": "http://easyautocomplete.com",
   "keywords": [
     "jquery",
@@ -97,13 +69,11 @@
   "main": "dist/jquery.easy-autocomplete.js",
   "maintainers": [
     {
-      "name": "pawelczak",
-      "email": "lukaspawelczak@gmail.com"
+      "name": "Łukasz Pawełczak",
+      "url": "http://github.com/pawelczak"
     }
   ],
   "name": "easy-autocomplete",
-  "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pawelczak/EasyAutocomplete.git"

@@ -17,161 +17,270 @@
 
                   <div class="widget-content">
                     <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('hari.update'):route('hari.store') }}" novalidate="novalidate">
-                      {{ csrf_field() }}
-                      <input type="hidden" name="id" value="{{ $data['id'] or 0 }}">
-                      <input type="hidden" name="id_jadwal" value="{{ $data['jadwal_id'] or $jadwal->id }}">
-                      <fieldset>
-                        <div class="control-group {{ $errors->has('hari') ? 'error' : '' }}">
-                            <label for="hari" class="control-label">Hari</label>
 
-                            <div class="controls">
-                              @php $selected_data = isset($data)?$data->hari : old('hari') @endphp
-                              @if(isset($data))
-                                {{ Form::select('hari', $hari, $selected_data, ['id' => 'hari', 'placeholder' => "Please Select", 'disabled' => 'true']) }}
-                              @else
-                                {{ Form::select('hari', $hari, $selected_data, ['id' => 'hari', 'placeholder' => "Please Select"]) }}
-                              @endif
+                      <div class="row">
+                        <div class="span12">
+                          <fieldset>
+                            {{ csrf_field() }}
+                            <input type="hidden" name="id" value="{{ $data['id'] or 0 }}">
+                            <input type="hidden" name="id_jadwal" value="{{ $data['jadwal_id'] or $jadwal->id }}"> 
+                            <div class="span6">
+                              <fieldset>
+                                <legend>Waktu Kerja</legend>
+                                <div class="control-group {{ $errors->has('hari') ? 'error' : '' }}">
+                                  <label for="hari" class="control-label">Hari</label>
 
-                                @if ($errors->has('hari'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('hari') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                                  <div class="controls">
+                                    @php $selected_data = isset($data)?$data->hari : old('hari') @endphp
+                                    @if(isset($data))
+                                      {{ Form::select('hari', $hari, $selected_data, ['id' => 'hari', 'placeholder' => "Please Select", 'disabled' => 'true', 'class' => 'span1']) }}
+                                    @else
+                                      {{ Form::select('hari', $hari, $selected_data, ['id' => 'hari', 'placeholder' => "Please Select", 'class' => 'span1']) }}
+                                    @endif
 
-                        <div class="control-group {{ $errors->has('jam_masuk') ? 'error' : '' }}">
-                            <label for="jam_masuk" class="control-label">Jam Masuk</label>
+                                      @if ($errors->has('hari'))
+                                          <span class="help-block">
+                                              <strong>{{ $errors->first('hari') }}</strong>
+                                          </span>
+                                      @endif
+                                  </div>
+                                </div> <!-- end div hari kerja -->
 
-                            <div class="controls">
-                                <div class="input-append bootstrap-timepicker timepicker">
-                                    <input id="jam_masuk" name="jam_masuk" type="text" class="span2 m-wrap" value="{{ $data->jam_masuk or old('jam_masuk') }}">
-                                    <button type="button" class="btn"><i class="icon-time "></i></button>
+
+                                <div class="control-group {{ $errors->has('jam_masuk') ? 'error' : '' }} {{ $errors->has('jam_pulang') ? 'error' : '' }}">
+                                  <label for="jam_masuk" class="control-label">Waktu Kerja</label>
+
+                                  <div class="controls">
+                                      <div class="input-append bootstrap-timepicker timepicker">
+                                          <input id="jam_masuk" name="jam_masuk" type="text" class="span1 m-wrap" value="{{ $data->jam_masuk or old('jam_masuk') }}">
+                                          <button type="button" class="btn"><i class="icon-time "></i></button>
+                                      </div>
+                                      <span>-</span>
+                                      <div class="input-append bootstrap-timepicker timepicker">
+                                        <input id="jam_pulang" name="jam_pulang" type="text" class="span1 m-wrap" value="{{ $data->jam_pulang or old('jam_pulang') }}">
+                                        <button type="button" class="btn"><i class="icon-time "></i></button>
+                                      </div>
+                                      <p class="help-block">
+                                        *Diisi jam masuk dan pulang kerja
+                                      </p>
+
+                                      @if ($errors->has('jam_masuk'))
+                                          <span class="help-block">
+                                              <strong>{{ $errors->first('jam_masuk') }}</strong>
+                                          </span>
+                                      @endif
+
+                                      @if ($errors->has('jam_pulang'))
+                                          <span class="help-block">
+                                              <strong>{{ $errors->first('jam_pulang') }}</strong>
+                                          </span>
+                                      @endif
+                                  </div>                              
+                                </div> <!-- End Div Waktu Kerja -->
+
+                                <div class="control-group {{ $errors->has('toleransi_terlambat') ? 'error' : '' }}">
+                                  <label for="toleransi_terlambat" class="control-label">Toleransi Terlambat</label>
+
+                                  <div class="controls">
+                                    <div class="input-append bootstrap-timepicker timepicker">
+                                      <input id="toleransi_terlambat" name="toleransi_terlambat" type="text" class="span1 m-wrap" value="{{ $data->toleransi_terlambat or old('toleransi_terlambat') }}">
+                                      <button type="button" class="btn"><i class="icon-time "></i></button>
+                                    </div>
+
+                                    @if ($errors->has('toleransi_terlambat'))
+                                      <span class="help-block">
+                                        <strong>{{ $errors->first('toleransi_terlambat') }}</strong>
+                                      </span>
+                                    @endif
+                                  </div>
+                                </div> <!-- End div toleransi terlambat -->
+
+                                <div class="control-group {{ $errors->has('toleransi_pulang') ? 'error' : '' }}">
+                                  <label for="end" class="control-label">Toleransi Pulang Awal</label>
+
+                                  <div class="controls">
+                                    <div class="input-append bootstrap-timepicker timepicker">
+                                        <input id="toleransi_pulang" name="toleransi_pulang" type="text" class="span1 m-wrap" value="{{ $data->toleransi_pulang or old('toleransi_pulang') }}">
+                                        <button type="button" class="btn"><i class="icon-time "></i></button>
+                                    </div>
+
+                                    @if ($errors->has('toleransi_pulang'))
+                                      <span class="help-block">
+                                        <strong>{{ $errors->first('toleransi_pulang') }}</strong>
+                                      </span>
+                                    @endif
+                                  </div>
+                                </div> <!-- End Div Toleransi Pulang -->
+
+                              </fieldset> <!-- End Fieldset -->
+
+                              <fieldset>
+                                <legend>Batas Waktu Absensi</legend>
+                                <div class="control-group {{ $errors->has('scan_in1') ? 'error' : '' }} {{ $errors->has('scan_in2') ? 'error' : '' }}">
+                                  <label for="scan_in1" class="control-label">Absensi Masuk</label>
+
+                                  <div class="controls">
+                                    <div class="input-append bootstrap-timepicker timepicker">
+                                        <input id="scan_in1" name="scan_in1" type="text" class="span1 m-wrap" value="{{ $data->scan_in1 or old('scan_in1') }}">
+                                        <button type="button" class="btn"><i class="icon-time "></i></button>
+                                    </div>
+                                    &nbsp;s/d&nbsp;
+                                    <div class="input-append bootstrap-timepicker timepicker">
+                                        <input id="scan_in2" name="scan_in2" type="text" class="span1 m-wrap" value="{{ $data->scan_in2 or old('scan_in2') }}">
+                                        <button type="button" class="btn"><i class="icon-time "></i></button>
+                                    </div>
+                                    <p class="help-block">
+                                       *Diisi batas waktu untuk absensi masuk
+                                    </p>
+
+                                    @if ($errors->has('scan_in1'))
+                                      <span class="help-block">
+                                        <strong>{{ $errors->first('scan_in1') }}</strong>
+                                      </span>
+                                    @endif
+
+                                    @if ($errors->has('scan_in2'))
+                                      <span class="help-block">
+                                        <strong>{{ $errors->first('scan_in2') }}</strong>
+                                      </span>
+                                    @endif
+                                  </div>
                                 </div>
 
-                                @if ($errors->has('jam_masuk'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('jam_masuk') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                                <div class="control-group {{ $errors->has('scan_out1') ? 'error' : '' }} {{ $errors->has('scan_out2') ? 'error' : '' }}">
+                                  <label for="scan_out1" class="control-label">Absensi Pulang</label>
 
-                        <div class="control-group {{ $errors->has('jam_pulang') ? 'error' : '' }}">
-                            <label for="jam_pulang" class="control-label">Jam Pulang</label>
+                                  <div class="controls">
+                                    <div class="input-append bootstrap-timepicker timepicker">
+                                      <input id="scan_out1" name="scan_out1" type="text" class="span1 m-wrap" value="{{ $data->scan_out1 or old('scan_out1') }}">
+                                        <button type="button" class="btn"><i class="icon-time "></i></button>
+                                    </div>
+                                    &nbsp;s/d&nbsp;
+                                    <div class="input-append bootstrap-timepicker timepicker">
+                                        <input id="scan_out2" name="scan_out2" type="text" class="span1 m-wrap" value="{{ $data->scan_out2 or old('scan_out2') }}">
+                                        <button type="button" class="btn"><i class="icon-time "></i></button>
+                                    </div>
+                                    <p class="help-block">
+                                       *Diisi batas waktu untuk absensi pulang
+                                    </p>
 
-                            <div class="controls">
-                              <div class="input-append bootstrap-timepicker timepicker">
-                                  <input id="jam_pulang" name="jam_pulang" type="text" class="span2 m-wrap" value="{{ $data->jam_pulang or old('jam_pulang') }}">
-                                  <button type="button" class="btn"><i class="icon-time "></i></button>
-                              </div>
-                                @if ($errors->has('jam_pulang'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('jam_pulang') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="control-group {{ $errors->has('toleransi_terlambat') ? 'error' : '' }}">
-                            <label for="toleransi_terlambat" class="control-label">Toleransi Keterlambatan</label>
-
-                            <div class="controls">
-                              <div class="input-append bootstrap-timepicker timepicker">
-                                  <input id="toleransi_terlambat" name="toleransi_terlambat" type="text" class="span2 m-wrap" value="{{ $data->toleransi_terlambat or old('toleransi_terlambat') }}">
-                                  <button type="button" class="btn"><i class="icon-time "></i></button>
-                              </div>
-
-                                @if ($errors->has('toleransi_terlambat'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('toleransi_terlambat') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="control-group {{ $errors->has('toleransi_pulang') ? 'error' : '' }}">
-                            <label for="end" class="control-label">Toleransi Pulang Awal</label>
-
-                            <div class="controls">
-                              <div class="input-append bootstrap-timepicker timepicker">
-                                  <input id="toleransi_pulang" name="toleransi_pulang" type="text" class="span2 m-wrap" value="{{ $data->toleransi_pulang or old('toleransi_pulang') }}">
-                                  <button type="button" class="btn"><i class="icon-time "></i></button>
-                              </div>
-
-                                @if ($errors->has('toleransi_pulang'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('toleransi_pulang') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="control-group {{ $errors->has('scan_in1') ? 'error' : '' }} {{ $errors->has('scan_in2') ? 'error' : '' }}">
-                            <label for="scan_in1" class="control-label">Batas Waktu Absensi Masuk</label>
-
-                            <div class="controls">
-                              <div class="input-append bootstrap-timepicker timepicker">
-                                  <input id="scan_in1" name="scan_in1" type="text" class="span2 m-wrap" value="{{ $data->scan_in1 or old('scan_in1') }}">
-                                  <button type="button" class="btn"><i class="icon-time "></i></button>
-                              </div>
-                              &nbsp;s/d&nbsp;
-                              <div class="input-append bootstrap-timepicker timepicker">
-                                  <input id="scan_in2" name="scan_in2" type="text" class="span2 m-wrap" value="{{ $data->scan_in2 or old('scan_in2') }}">
-                                  <button type="button" class="btn"><i class="icon-time "></i></button>
-                              </div>
-
-                                @if ($errors->has('scan_in1'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('scan_in1') }}</strong>
-                                    </span>
-                                @endif
-
-                                @if ($errors->has('scan_in2'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('scan_in2') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="control-group {{ $errors->has('scan_out1') ? 'error' : '' }} {{ $errors->has('scan_out2') ? 'error' : '' }}">
-                            <label for="scan_out1" class="control-label">Batas Waktu Absensi Pulang</label>
-
-                            <div class="controls">
-                              <div class="input-append bootstrap-timepicker timepicker">
-                                  <input id="scan_out1" name="scan_out1" type="text" class="span2 m-wrap" value="{{ $data->scan_out1 or old('scan_out1') }}">
-                                  <button type="button" class="btn"><i class="icon-time "></i></button>
-                              </div>
-                              &nbsp;s/d&nbsp;
-                              <div class="input-append bootstrap-timepicker timepicker">
-                                  <input id="scan_out2" name="scan_out2" type="text" class="span2 m-wrap" value="{{ $data->scan_out2 or old('scan_out2') }}">
-                                  <button type="button" class="btn"><i class="icon-time "></i></button>
-                              </div>
-
-                                @if ($errors->has('scan_out1'))
-                                    <span class="help-block">
+                                    @if ($errors->has('scan_out1'))
+                                      <span class="help-block">
                                         <strong>{{ $errors->first('scan_out1') }}</strong>
-                                    </span>
-                                @endif
+                                      </span>
+                                    @endif
 
-                                @if ($errors->has('scan_out2'))
-                                    <span class="help-block">
+                                    @if ($errors->has('scan_out2'))
+                                      <span class="help-block">
                                         <strong>{{ $errors->first('scan_out2') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+                                      </span>
+                                    @endif
+                                  </div>
+                                </div>                            
+                              </fieldset>
+
+                            </div> 
+
+                            <div class="span5">
+                        
+                            <fieldset>
+                              <fieldset>
+                              <legend>Waktu Istirahat</legend>
+
+                              <div class="control-group">
+                                <label for="istirahat" class="control-label">Gunakan Istirahat</label>
+
+                                <div class="controls">
+                                  <label class="checkbox inline">
+                                    <input type="checkbox" id="istirahat_check" name="istirahat_check" value="1" 
+                                      @if(old('istirahat_out1') == 1) checked @endif
+                                    > Ya
+                                  </label>
+                                </div>
+                              </div>
+
+                              <div id="istirahat_controls">
+                                <div class="control-group {{ $errors->has('istirahat_out1') ? 'error' : '' }} {{ $errors->has('istirahat_out2') ? 'error' : '' }}">
+                                <label for="istirahat_out1" class="control-label">Istirahat Keluar</label>
+                                <div class="controls">
+                                  <div class="input-append bootstrap-timepicker timepicker">
+                                      <input id="istirahat_out1" name="istirahat_out1" type="text" class="span1 m-wrap" value="{{ $data->istirahat_out1 or old('istirahat_out1') }}">
+                                      <button type="button" class="btn"><i class="icon-time "></i></button>
+                                  </div>
+                                  &nbsp;s/d&nbsp;
+                                  <div class="input-append bootstrap-timepicker timepicker">
+                                      <input id="istirahat_out2" name="istirahat_out2" type="text" class="span1 m-wrap" value="{{ $data->istirahat_out2 or old('istirahat_out2') }}">
+                                      <button type="button" class="btn"><i class="icon-time "></i></button>
+                                  </div>
+
+                                    @if ($errors->has('istirahat_out1'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('istirahat_out1') }}</strong>
+                                        </span>
+                                    @endif
+
+                                    @if ($errors->has('istirahat_out2'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('istirahat_out2') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+
+                                </div>
+
+                                <div class="control-group {{ $errors->has('istirahat_in1') ? 'error' : '' }} {{ $errors->has('istirahat_in2') ? 'error' : '' }}">
+                                  <label for="istirahat_in1" class="control-label">Istirahat Masuk / Kembali</label>
+                                  <div class="controls">
+                                    <div class="input-append bootstrap-timepicker timepicker">
+                                        <input id="istirahat_in1" name="istirahat_in1" type="text" class="span1 m-wrap" value="{{ $data->istirahat_in1 or old('istirahat_in1') }}">
+                                        <button type="button" class="btn"><i class="icon-time "></i></button>
+                                    </div>
+                                    &nbsp;s/d&nbsp;
+                                    <div class="input-append bootstrap-timepicker timepicker">
+                                        <input id="istirahat_in2" name="istirahat_in2" type="text" class="span1 m-wrap" value="{{ $data->istirahat_int2 or old('istirahat_int2') }}">
+                                        <button type="button" class="btn"><i class="icon-time "></i></button>
+                                    </div>
+
+                                      @if ($errors->has('istirahat_in1'))
+                                          <span class="help-block">
+                                              <strong>{{ $errors->first('istirahat_in1') }}</strong>
+                                          </span>
+                                      @endif
+
+                                      @if ($errors->has('istirahat_in2'))
+                                          <span class="help-block">
+                                              <strong>{{ $errors->first('istirahat_int2') }}</strong>
+                                          </span>
+                                      @endif
+                                  </div>
+                                </div>   
+  
+                              </div>
+                            </fieldset>
+
+                        </fieldset>
+
                         </div>
 
+
+                      </fieldset>
                         <div class="form-actions">
                           <button type="submit" class="btn btn-primary">Simpan</button>
                           <a href="{{ route('jadwal_list') }} " class="btn">Batal</a>
                         </div>
-                      </fieldset>
+
+                      </div>
+
+
+                      </div>
+
+
                     </form>
                   </div>
                 </div>
               </div>
+
+
           </div>
         </div>
     </div>
@@ -188,5 +297,20 @@ $('#scan_in1').timepicker({ showMeridian: false });
 $('#scan_in2').timepicker({ showMeridian: false });
 $('#scan_out1').timepicker({ showMeridian: false });
 $('#scan_out2').timepicker({ showMeridian: false });
+$('#istirahat_out1').timepicker({ showMeridian: false });
+$('#istirahat_out2').timepicker({ showMeridian: false });
+$('#istirahat_in1').timepicker({ showMeridian: false });
+$('#istirahat_in2').timepicker({ showMeridian: false });
+$('#istirahat_controls').hide();
+
+$("#istirahat_check").change(function() {
+  if(this.checked){
+    $('#istirahat_controls').show();
+  }else{
+    $('#istirahat_controls').hide();
+  }
+});
+
+
 </script>
 @endpush

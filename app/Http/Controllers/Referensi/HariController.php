@@ -96,10 +96,11 @@ class HariController extends Controller
         'scan_in1'  => 'required|date_format:G:i',
         'scan_in2'  => 'required|date_format:G:i',
         'scan_out1'  => 'required|date_format:G:i',
-        'scan_out2'  => 'required|date_format:G:i'
+        'scan_out2'  => 'required|date_format:G:i',
+        'istirahat_out1' => 'required_if:istirahat_check, 1'
       ]);
 
-      $hari->update([
+/*      $hari->update([
         'jam_masuk' => $request->jam_masuk,
         'jam_pulang'  => $request->jam_pulang,
         'toleransi_terlambat' => $request->toleransi_terlambat,
@@ -108,9 +109,10 @@ class HariController extends Controller
         'scan_in2'  => $request->scan_in2,
         'scan_out1'  => $request->scan_out1,
         'scan_out2'  => $request->scan_out2
-      ]);
+      ]); */
 
-      return redirect('jadwal_list')->with('success','Data berhasil diupdate!');
+      return $validate; 
+      //redirect('jadwal_list')->with('success','Data berhasil diupdate!');
     }
 
     public function delete(Request $request)
