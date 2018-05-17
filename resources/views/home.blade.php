@@ -50,7 +50,11 @@
           </div>
           <div class="widget-content">
             <div class="shortcuts">
+<<<<<<< HEAD
               @role(['super-admin'])  
+=======
+              @role(['super-admin'])
+>>>>>>> issue18
                 <a class="shortcut" href="{{ route('user') }}"><i class="shortcut-icon icon-user"></i><span class="shortcut-label">Manajemen User</span></a>
               @endrole
               <a class="shortcut" href="{{ route('datainduk_list') }}"><i class="shortcut-icon icon-group"></i><span class="shortcut-label">Pegawai</span></a>
