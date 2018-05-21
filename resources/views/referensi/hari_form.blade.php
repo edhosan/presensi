@@ -304,6 +304,22 @@ $('#absensi_siang_out2').timepicker({ showMeridian: false, icons:{ up: 'icon ico
 $('#absensi_siang_in1').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
 $('#absensi_siang_in2').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
 
+disableControlAbsensi(true);
+
+function disableControlAbsensi(is_disabled){
+  $('#absensi_siang_out1').prop('disabled', is_disabled);
+  $('#absensi_siang_out2').prop('disabled', is_disabled);
+  $('#absensi_siang_in1').prop('disabled', is_disabled);
+  $('#absensi_siang_in2').prop('disabled', is_disabled);
+}
+
+$("#absensi_siang_check").change(function() {
+  if(this.checked) {
+    disableControlAbsensi(false);
+  }else{
+    disableControlAbsensi(true);
+  }
+});
 
 </script>
 @endpush
