@@ -97,7 +97,10 @@ class HariController extends Controller
         'scan_in2'  => 'required|date_format:G:i',
         'scan_out1'  => 'required|date_format:G:i',
         'scan_out2'  => 'required|date_format:G:i',
-        'istirahat_out1' => 'required_if:istirahat_check, 1'
+        'absensi_siang_out1' => 'required_if:absensi_siang_check, "true"',
+        'absensi_siang_out2' => 'required_if:absensi_siang_check, "true"',
+        'absensi_siang_in1' => 'required_if:absensi_siang_check, "true"',
+        'absensi_siang_in2' => 'required_if:absensi_siang_check, "true"'
       ]);
 
 /*      $hari->update([
@@ -111,7 +114,7 @@ class HariController extends Controller
         'scan_out2'  => $request->scan_out2
       ]); */
 
-      return $validate; 
+      //return $validate; 
       //redirect('jadwal_list')->with('success','Data berhasil diupdate!');
     }
 
