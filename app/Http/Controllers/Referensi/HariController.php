@@ -29,12 +29,16 @@ class HariController extends Controller
         'scan_in1'  => 'required|date_format:G:i',
         'scan_in2'  => 'required|date_format:G:i',
         'scan_out1'  => 'required|date_format:G:i',
-        'scan_out2'  => 'required|date_format:G:i'
+        'scan_out2'  => 'required|date_format:G:i',
+        'absensi_siang_out1' => 'required_if:absensi_siang_check, "1"',
+        'absensi_siang_out2' => 'required_if:absensi_siang_check, "1"',
+        'absensi_siang_in1' => 'required_if:absensi_siang_check, "1"',
+        'absensi_siang_in2' => 'required_if:absensi_siang_check, "1"'
       ]);
 
       $jadwal = Jadwal::find($request->id_jadwal);
 
-      $jadwal->hari()->create([
+      $tmp_hari = $jadwal->hari()->create([
         'hari'  => $request->hari,
         'jam_masuk' => $request->jam_masuk,
         'jam_pulang'  => $request->jam_pulang,
@@ -45,6 +49,15 @@ class HariController extends Controller
         'scan_out1'  => $request->scan_out1,
         'scan_out2'  => $request->scan_out2
       ]);
+
+      $this->updateAbsensiSiang($tmp_hari, [
+        'is_siang_absensi' => $request->absensi_siang_check,
+        'absensi_siang_out_1' => $request->absensi_siang_out1,
+        'absensi_siang_out_2' => $request->absensi_siang_out2,
+        'absensi_siang_in_1' => $request->absensi_siang_in1,
+        'absensi_siang_in_2' => $request->absensi_siang_in2
+      ]); 
+
 
       return redirect('jadwal_list')->with('success','Data berhasil disimpan!');
     }
@@ -97,13 +110,13 @@ class HariController extends Controller
         'scan_in2'  => 'required|date_format:G:i',
         'scan_out1'  => 'required|date_format:G:i',
         'scan_out2'  => 'required|date_format:G:i',
-        'absensi_siang_out1' => 'required_if:absensi_siang_check, "true"',
-        'absensi_siang_out2' => 'required_if:absensi_siang_check, "true"',
-        'absensi_siang_in1' => 'required_if:absensi_siang_check, "true"',
-        'absensi_siang_in2' => 'required_if:absensi_siang_check, "true"'
+        'absensi_siang_out1' => 'required_if:absensi_siang_check, "1"',
+        'absensi_siang_out2' => 'required_if:absensi_siang_check, "1"',
+        'absensi_siang_in1' => 'required_if:absensi_siang_check, "1"',
+        'absensi_siang_in2' => 'required_if:absensi_siang_check, "1"'
       ]);
 
-/*      $hari->update([
+      $hari->update([
         'jam_masuk' => $request->jam_masuk,
         'jam_pulang'  => $request->jam_pulang,
         'toleransi_terlambat' => $request->toleransi_terlambat,
@@ -112,10 +125,17 @@ class HariController extends Controller
         'scan_in2'  => $request->scan_in2,
         'scan_out1'  => $request->scan_out1,
         'scan_out2'  => $request->scan_out2
-      ]); */
+      ]);
 
-      //return $validate; 
-      //redirect('jadwal_list')->with('success','Data berhasil diupdate!');
+      $this->updateAbsensiSiang($hari, [
+        'is_siang_absensi' => $request->absensi_siang_check,
+        'absensi_siang_out_1' => $request->absensi_siang_out1,
+        'absensi_siang_out_2' => $request->absensi_siang_out2,
+        'absensi_siang_in_1' => $request->absensi_siang_in1,
+        'absensi_siang_in_2' => $request->absensi_siang_in2
+      ]);
+ 
+      return redirect('jadwal_list')->with('success','Data berhasil diupdate!');
     }
 
     public function delete(Request $request)
@@ -124,5 +144,20 @@ class HariController extends Controller
       $hari->delete();
 
       return redirect('jadwal_list')->with('success','Data berhasil dihapus!');
+    }
+
+    private function updateAbsensiSiang(Hari $hari, Array $arr_data)
+    {
+      if(!empty($arr_data['is_siang_absensi'])){
+        $hari->update($arr_data);
+      }else{
+        $hari->update([
+          'is_siang_absensi' => 0,
+          'absensi_siang_out_1' => "00:00:00",
+          'absensi_siang_out_2' => "00:00:00",
+          'absensi_siang_in_1' => "00:00:00",
+          'absensi_siang_in_2' => "00:00:00"
+        ]);
+      }
     }
 }

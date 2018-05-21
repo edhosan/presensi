@@ -14,10 +14,10 @@
                     <i class="icon-file"></i>
                     <h3>Hari Kerja</h3>
                   </div>
-
+  
                   <div class="widget-content">
                     <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('hari.update'):route('hari.store') }}" novalidate="novalidate">
-
+                 
                       <div class="row">
                         <div class="span12">
                           <fieldset>
@@ -192,8 +192,8 @@
 
                                 <div class="controls">
                                   <label class="checkbox inline">
-                                    <input type="checkbox" id="absensi_siang_check" name="absensi_siang_check" value="true" 
-                                      @if(old('absensi_siang_check') == "true") checked @endif
+                                    <input type="checkbox" id="absensi_siang_check" name="absensi_siang_check" value="1" 
+                                      @if(old('absensi_siang_check') == "1" || $data->is_siang_absensi == 1) checked @endif
                                     > Ya
                                   </label>
                                 </div>
@@ -304,7 +304,15 @@ $('#absensi_siang_out2').timepicker({ showMeridian: false, icons:{ up: 'icon ico
 $('#absensi_siang_in1').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
 $('#absensi_siang_in2').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
 
-disableControlAbsensi(true);
+@if(isset($data))
+  @if($data->is_siang_absensi == 1)
+    disableControlAbsensi(false);
+  @else
+    disableControlAbsensi(true);
+  @endif
+@else
+  disableControlAbsensi(true);
+@endif
 
 function disableControlAbsensi(is_disabled){
   $('#absensi_siang_out1').prop('disabled', is_disabled);
