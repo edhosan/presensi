@@ -23,7 +23,17 @@ class PegawaiJadwalController extends Controller
 
     public function index()
     {
-       return view('proses.peg_jadwal_list');
+      $unker = Auth::user()->unker;
+
+      $jadwal = Jadwal::aktif()->orderBy('name','asc')
+            ->where(function($query) use($unker) {
+              if(!empty($unker)) {
+                $query->where('id_unker',$unker)->orwhereNull('id_unker');
+              }
+            })
+            ->pluck('name','id');
+
+       return view('proses.peg_jadwal_split')->withJadwal($jadwal);
     }
 
     public function detail($id)
@@ -33,17 +43,9 @@ class PegawaiJadwalController extends Controller
 
     public function create()
     {
-      $unker = Auth::user()->unker;
 
-      $jadwal = Jadwal::aktif()->orderBy('name','asc')
-                  ->where(function($query) use($unker) {
-                    if(!empty($unker)) {
-                      $query->where('id_unker',$unker)->orwhereNull('id_unker');
-                    }
-                  })
-                  ->pluck('name','id');
 
-      return view('proses.peg_jadwal_form')->withJadwal($jadwal)->withPegawai([]);
+      return view('proses.peg_jadwal_form')->withPegawai([]);
     }
 
     public function edit($peg_id, $jadwal_id)
@@ -217,6 +219,8 @@ class PegawaiJadwalController extends Controller
                       $query->OrWhere('nip', 'like', $request->search['value'].'%');
                     }
                   })
+                  ->join('peg_jadwal','peg_jadwal.peg_id','=','peg_data_induk.id')
+                  ->where('peg_jadwal.jadwal_id','=',$request->jadwal_id)
                   ->orderBy('id_eselon','asc')
                   ->orderBy('id_pangkat','desc')
                   ->orderBy('tmt_pangkat','desc');
