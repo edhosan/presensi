@@ -14,10 +14,10 @@
                     <i class="icon-file"></i>
                     <h3>Hari Kerja</h3>
                   </div>
-
+  
                   <div class="widget-content">
                     <form class="form-horizontal" role="form" method="POST" action="{{ isset($data)? route('hari.update'):route('hari.store') }}" novalidate="novalidate">
-
+                 
                       <div class="row">
                         <div class="span12">
                           <fieldset>
@@ -185,75 +185,77 @@
                         
                             <fieldset>
                               <fieldset>
-                              <legend>Waktu Istirahat</legend>
+                              <legend>Absensi Siang</legend>
 
                               <div class="control-group">
-                                <label for="istirahat" class="control-label">Gunakan Istirahat</label>
+                                <label for="absensi_siang" class="control-label">Gunakan Absensi Siang</label>
 
                                 <div class="controls">
                                   <label class="checkbox inline">
-                                    <input type="checkbox" id="istirahat_check" name="istirahat_check" value="1" 
-                                      @if(old('istirahat_out1') == 1) checked @endif
+                                    <input type="checkbox" id="absensi_siang_check" name="absensi_siang_check" value="1" 
+                                      @if(old('absensi_siang_check') == "1" || $data->is_siang_absensi == 1) checked @endif
                                     > Ya
                                   </label>
                                 </div>
                               </div>
 
-                              <div id="istirahat_controls">
-                                <div class="control-group {{ $errors->has('istirahat_out1') ? 'error' : '' }} {{ $errors->has('istirahat_out2') ? 'error' : '' }}">
-                                <label for="istirahat_out1" class="control-label">Istirahat Keluar</label>
-                                <div class="controls">
-                                  <div class="input-append bootstrap-timepicker timepicker">
-                                      <input id="istirahat_out1" name="istirahat_out1" type="text" class="span1 m-wrap" value="{{ $data->istirahat_out1 or old('istirahat_out1') }}">
-                                      <button type="button" class="btn"><i class="icon-time "></i></button>
-                                  </div>
-                                  &nbsp;s/d&nbsp;
-                                  <div class="input-append bootstrap-timepicker timepicker">
-                                      <input id="istirahat_out2" name="istirahat_out2" type="text" class="span1 m-wrap" value="{{ $data->istirahat_out2 or old('istirahat_out2') }}">
-                                      <button type="button" class="btn"><i class="icon-time "></i></button>
-                                  </div>
-
-                                    @if ($errors->has('istirahat_out1'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('istirahat_out1') }}</strong>
-                                        </span>
-                                    @endif
-
-                                    @if ($errors->has('istirahat_out2'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('istirahat_out2') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-
-                                </div>
-
-                                <div class="control-group {{ $errors->has('istirahat_in1') ? 'error' : '' }} {{ $errors->has('istirahat_in2') ? 'error' : '' }}">
-                                  <label for="istirahat_in1" class="control-label">Istirahat Masuk / Kembali</label>
+                              <div id="absensi_siang_controls">
+                                <div class="control-group {{ $errors->has('absensi_siang_out1') ? 'error' : '' }} {{ $errors->has('absensi_siang_out2') ? 'error' : '' }}">
+                                  <label for="absensi_siang_out1" class="control-label">Absensi Siang 1</label>
                                   <div class="controls">
                                     <div class="input-append bootstrap-timepicker timepicker">
-                                        <input id="istirahat_in1" name="istirahat_in1" type="text" class="span1 m-wrap" value="{{ $data->istirahat_in1 or old('istirahat_in1') }}">
+                                        <input id="absensi_siang_out1" name="absensi_siang_out1" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_out1 or old('absensi_siang_out1') }}">
                                         <button type="button" class="btn"><i class="icon-time "></i></button>
                                     </div>
                                     &nbsp;s/d&nbsp;
                                     <div class="input-append bootstrap-timepicker timepicker">
-                                        <input id="istirahat_in2" name="istirahat_in2" type="text" class="span1 m-wrap" value="{{ $data->istirahat_int2 or old('istirahat_int2') }}">
+                                        <input id="absensi_siang_out2" name="absensi_siang_out2" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_out2 or old('absensi_siang_out2') }}">
                                         <button type="button" class="btn"><i class="icon-time "></i></button>
                                     </div>
 
-                                      @if ($errors->has('istirahat_in1'))
+                                      @if ($errors->has('absensi_siang_out1'))
                                           <span class="help-block">
-                                              <strong>{{ $errors->first('istirahat_in1') }}</strong>
+                                              <strong>{{ $errors->first('absensi_siang_out1') }}</strong>
                                           </span>
                                       @endif
 
-                                      @if ($errors->has('istirahat_in2'))
+                                      @if ($errors->has('absensi_siang_out2'))
                                           <span class="help-block">
-                                              <strong>{{ $errors->first('istirahat_int2') }}</strong>
+                                              <strong>{{ $errors->first('absensi_siang_out2') }}</strong>
                                           </span>
                                       @endif
                                   </div>
-                                </div>   
+
+                                </div>
+
+                                <div class="control-group {{ $errors->has('absensi_siang_in1') ? 'error' : '' }} {{ $errors->has('absensi_siang_in2') ? 'error' : '' }}">
+                                  <label for="absensi_siang_in1" class="control-label">Absensi Siang 2</label>
+                                  <div class="controls">
+                                    <div class="input-append bootstrap-timepicker timepicker">
+                                        <input id="absensi_siang_in1" name="absensi_siang_in1" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_in1 or old('absensi_siang_in1') }}">
+                                        <button type="button" class="btn"><i class="icon-time "></i></button>
+                                    </div>
+                                    &nbsp;s/d&nbsp;
+                                    <div class="input-append bootstrap-timepicker timepicker">
+                                        <input id="absensi_siang_in2" name="absensi_siang_in2" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_in2 or old('absensi_siang_in2') }}">
+                                        <button type="button" class="btn"><i class="icon-time "></i></button>
+                                    </div>
+
+                                      @if ($errors->has('absensi_siang_in1'))
+                                          <span class="help-block">
+                                              <strong>{{ $errors->first('absensi_siang_in1') }}</strong>
+                                          </span>
+                                      @endif
+
+                                      @if ($errors->has('absensi_siang_in2'))
+                                          <span class="help-block">
+                                              <strong>{{ $errors->first('absensi_siang_in2') }}</strong>
+                                          </span>
+                                      @endif
+                                  </div>
+
+                                </div>
+
   
                               </div>
                             </fieldset>
@@ -266,7 +268,7 @@
                       </fieldset>
                         <div class="form-actions">
                           <button type="submit" class="btn btn-primary">Simpan</button>
-                          <a href="{{ route('jadwal_list') }} " class="btn">Batal</a>
+                          <a href="{{ route('jadwal_list') }}" class="btn">Batal</a>
                         </div>
 
                       </div>
@@ -289,28 +291,43 @@
 @push('script')
 <script src="{{ asset('bootstrap-timepicker/js/bootstrap-timepicker.js') }}"></script>
 <script type="text/javascript">
-$('#jam_masuk').timepicker({ showMeridian: false });
-$('#jam_pulang').timepicker({ showMeridian: false });
-$('#toleransi_terlambat').timepicker({ showMeridian: false });
-$('#toleransi_pulang').timepicker({ showMeridian: false });
-$('#scan_in1').timepicker({ showMeridian: false });
-$('#scan_in2').timepicker({ showMeridian: false });
-$('#scan_out1').timepicker({ showMeridian: false });
-$('#scan_out2').timepicker({ showMeridian: false });
-$('#istirahat_out1').timepicker({ showMeridian: false });
-$('#istirahat_out2').timepicker({ showMeridian: false });
-$('#istirahat_in1').timepicker({ showMeridian: false });
-$('#istirahat_in2').timepicker({ showMeridian: false });
-$('#istirahat_controls').hide();
+$('#jam_masuk').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#jam_pulang').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#toleransi_terlambat').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#toleransi_pulang').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#scan_in1').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#scan_in2').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#scan_out1').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#scan_out2').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#absensi_siang_out1').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#absensi_siang_out2').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#absensi_siang_in1').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
+$('#absensi_siang_in2').timepicker({ showMeridian: false, icons:{ up: 'icon icon-caret-up', down: 'icon icon-caret-down' } });
 
-$("#istirahat_check").change(function() {
-  if(this.checked){
-    $('#istirahat_controls').show();
+@if(isset($data))
+  @if($data->is_siang_absensi == 1)
+    disableControlAbsensi(false);
+  @else
+    disableControlAbsensi(true);
+  @endif
+@else
+  disableControlAbsensi(true);
+@endif
+
+function disableControlAbsensi(is_disabled){
+  $('#absensi_siang_out1').prop('disabled', is_disabled);
+  $('#absensi_siang_out2').prop('disabled', is_disabled);
+  $('#absensi_siang_in1').prop('disabled', is_disabled);
+  $('#absensi_siang_in2').prop('disabled', is_disabled);
+}
+
+$("#absensi_siang_check").change(function() {
+  if(this.checked) {
+    disableControlAbsensi(false);
   }else{
-    $('#istirahat_controls').hide();
+    disableControlAbsensi(true);
   }
 });
-
 
 </script>
 @endpush
