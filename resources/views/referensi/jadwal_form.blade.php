@@ -49,6 +49,7 @@
                             </div>
                         </div>
 
+                        @role(['super-admin'])
                         <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
                             <label for="opd" class="control-label">Organisasi Perangkat Daerah</label>
 
@@ -63,6 +64,7 @@
                                 @endif
                             </div>
                         </div>
+                        @endrole
 
                         <div class="control-group {{ $errors->has('start') ? 'error' : '' }}">
                             <label for="start" class="control-label">Berlaku Mulai</label>

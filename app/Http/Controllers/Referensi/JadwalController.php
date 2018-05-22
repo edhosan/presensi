@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Jadwal;
 use App\Model\DataInduk;
+use App\Model\OPD;
 use Yajra\Datatables\Datatables;
 use Auth;
 
@@ -58,12 +59,23 @@ class JadwalController extends Controller
     {
         $this->validate($request, $this->rules);
 
+        $unker = Auth::user()->unker;
+        $nm_unker = Auth::user()->nm_unker;
+
+        if(empty($unker)){
+          $unker = $request->opd;
+
+          $opd = OPD::where('id_unker', $unker)->where('status', 1)->first();
+          $nm_unker = $opd->nama_unker;
+        }
+
         Jadwal::create([
           'name' => $request->name,
           'title' => $request->title,
           'start' => date('Y-m-d', strtotime($request->start) ),
           'end' => date('Y-m-d', strtotime($request->end) ),
-          'id_unker' => $request->opd
+          'id_unker' => $unker,
+          'nama_unker' => $nm_unker
         ]);
 
         return redirect('jadwal_list')->with('success','Data berhasil disimpan!');
@@ -73,6 +85,16 @@ class JadwalController extends Controller
     {
       $this->validate($request, $this->rules);
 
+      $unker = Auth::user()->unker;
+      $nm_unker = Auth::user()->nm_unker;
+
+      if(empty($unker)){
+        $unker = $request->opd;
+
+        $opd = OPD::where('id_unker', $unker)->where('status', 1)->first();
+        $nm_unker = $opd->nama_unker;
+      }
+
       $jadwal = Jadwal::find($request->id);
 
       $jadwal->update([
@@ -80,7 +102,8 @@ class JadwalController extends Controller
         'title' => $request->title,
         'start' => date('Y-m-d', strtotime($request->start) ),
         'end' => date('Y-m-d', strtotime($request->end) ),
-        'id_unker' => $request->id_unker
+        'id_unker' => $unker,
+        'nama_unker' => $nm_unker
       ]);
 
       return redirect('jadwal_list')->with('success','Data berhasil diupdate!');
