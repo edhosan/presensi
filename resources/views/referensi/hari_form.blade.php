@@ -193,7 +193,12 @@
                                 <div class="controls">
                                   <label class="checkbox inline">
                                     <input type="checkbox" id="absensi_siang_check" name="absensi_siang_check" value="1" 
-                                      @if(old('absensi_siang_check') == "1" || $data->is_siang_absensi == 1) checked @endif
+                                      @if(old('absensi_siang_check') == "1") checked @endif
+                                      @if(isset($data)) 
+                                        @if($data->is_siang_absensi == 1)
+                                          checked
+                                        @endif
+                                      @endif
                                     > Ya
                                   </label>
                                 </div>
@@ -204,12 +209,12 @@
                                   <label for="absensi_siang_out1" class="control-label">Absensi Siang 1</label>
                                   <div class="controls">
                                     <div class="input-append bootstrap-timepicker timepicker">
-                                        <input id="absensi_siang_out1" name="absensi_siang_out1" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_out1 or old('absensi_siang_out1') }}">
+                                        <input id="absensi_siang_out1" name="absensi_siang_out1" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_out_1 or old('absensi_siang_out1') }}">
                                         <button type="button" class="btn"><i class="icon-time "></i></button>
                                     </div>
                                     &nbsp;s/d&nbsp;
                                     <div class="input-append bootstrap-timepicker timepicker">
-                                        <input id="absensi_siang_out2" name="absensi_siang_out2" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_out2 or old('absensi_siang_out2') }}">
+                                        <input id="absensi_siang_out2" name="absensi_siang_out2" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_out_2 or old('absensi_siang_out2') }}">
                                         <button type="button" class="btn"><i class="icon-time "></i></button>
                                     </div>
 
@@ -232,12 +237,12 @@
                                   <label for="absensi_siang_in1" class="control-label">Absensi Siang 2</label>
                                   <div class="controls">
                                     <div class="input-append bootstrap-timepicker timepicker">
-                                        <input id="absensi_siang_in1" name="absensi_siang_in1" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_in1 or old('absensi_siang_in1') }}">
+                                        <input id="absensi_siang_in1" name="absensi_siang_in1" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_in_1 or old('absensi_siang_in1') }}">
                                         <button type="button" class="btn"><i class="icon-time "></i></button>
                                     </div>
                                     &nbsp;s/d&nbsp;
                                     <div class="input-append bootstrap-timepicker timepicker">
-                                        <input id="absensi_siang_in2" name="absensi_siang_in2" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_in2 or old('absensi_siang_in2') }}">
+                                        <input id="absensi_siang_in2" name="absensi_siang_in2" type="text" class="span1 m-wrap" value="{{ $data->absensi_siang_in_2 or old('absensi_siang_in2') }}">
                                         <button type="button" class="btn"><i class="icon-time "></i></button>
                                     </div>
 

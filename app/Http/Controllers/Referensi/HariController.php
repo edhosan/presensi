@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Jadwal;
 use App\Model\Hari;
+use Carbon\Carbon;
 
 class HariController extends Controller
 {
@@ -75,13 +76,15 @@ class HariController extends Controller
           'id' =>$item->id,
           'id_jadwal' => $item->jadwal_id,
           'hari'  => $obj_hari->getHari()[$item->hari],
-          'jam_masuk' => $item->jam_masuk,
-          'jam_pulang'  => $item->jam_pulang,
-          'toleransi_terlambat' => $item->toleransi_terlambat,
-          'toleransi_pulang'  => $item->toleransi_pulang,
+          'jam_masuk' => date('H:i', strtotime($item->jam_masuk)),
+          'jam_pulang'  => date('H:i', strtotime($item->jam_pulang)),
+          'toleransi_terlambat' => date('H:i', strtotime($item->toleransi_terlambat)),
+          'toleransi_pulang'  => date('H:i', strtotime($item->toleransi_pulang)),
           'val_hari'  => $item->hari,
-          'absensi_masuk' => $item->scan_in1.' - '.$item->scan_in2,
-          'absensi_pulang' => $item->scan_out1.' - '.$item->scan_out2
+          'absensi_masuk' => date('H:i', strtotime($item->scan_in1)).' - '. date("H:i", strtotime($item->scan_in2)),
+          'absensi_pulang' => date('H:i', strtotime($item->scan_out1)).' - '.date('H:i', strtotime($item->scan_out2)),
+          'absensi_siang_1' => date('H:i', strtotime($item->absensi_siang_out_1)).' - '.date('H:i', strtotime($item->absensi_siang_out_2)),
+          'absensi_siang_2' => date('H:i', strtotime($item->absensi_siang_in_1)).' - '.date('H:i', strtotime($item->absensi_siang_in_2)) 
         ]);
       }
 
