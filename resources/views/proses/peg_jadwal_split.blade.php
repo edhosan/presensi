@@ -53,11 +53,11 @@
 		               	    	<div class="span5">
 		               	    	 <fieldset>
 		               	    	 	<legend>Jadwal Kerja Pegawai</legend>
-		               	    	 	<table class="table table-striped table-bordered display nowrap" id="pegjadwal-table" width="100%" >
+		               	    	 	<table class="table table-striped table-bordered display" id="pegjadwal-table" width="100%" >
 				                      <thead>
 				                          <tr>
 				                              <th></th>
-	   			                              <th></th>
+	   			                             <th></th>
 				                              <th>Nip</th>
 				                              <th>OPD</th>
 				                              <th>Nama</th>
@@ -67,13 +67,13 @@
 		               	    	 </fieldset>		   		                 
 			                	</div>
 			                	<div class="span1">
-			                		<button class="btn btn-small" style="margin-top: 100px"><i class="icon-chevron-left"></i></button><br>
-	             			        <button class="btn btn-small" style="margin-top: 25px"><i class="icon-chevron-right"></i></button>
+			                		<button class="btn btn-small" style="margin-top: 100px" id="btn-jadwal-add"><i class="icon-chevron-left"></i></button><br>
+	             			        <button class="btn btn-small" style="margin-top: 25px" id="btn-jadwal-remove"><i class="icon-chevron-right"></i></button>
 			                	</div>
 			                	<div class="span5">
 			                		<fieldset>
 			                			<legend>Daftar Pegawai</legend>
-			               				<table class="table table-striped table-bordered display nowrap" width="100%" >
+			               				<table class="table table-striped table-bordered display" width="100%" id="daftarpeg-table">
 					                      <thead>
 					                          <tr>
 					                              <th></th>
@@ -125,7 +125,7 @@ $(function() {
         serverSide: true,
         ajax: '{{ url("api/peg_jadwal_list?api_token=") }}{{ Auth::user()->api_token }}',       
         columns: [
-            { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
+            { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false, width: '15px' },
             { data: 'id', name: 'id', visible: false },
             { data: 'nip', name: 'nip' },
             { data: 'nama_unker', name: 'nama_unker', width:'250px', visible: false },
@@ -149,15 +149,79 @@ $(function() {
     });
 
     $('#pegjadwal-table').on('preXhr.dt', function(e, settings, data){
-    	console.log('ajax start');
+  		NProgress.start();
     });
 
     $('#pegjadwal-table').on('xhr.dt', function(e, settings, data){
-    	console.log('ajax stop');
+	   	NProgress.done();
     });
 
     $('#jadwal_select').change(function() {    
     	table.ajax.url('{{ url("api/peg_jadwal_list?api_token=") }}{{ Auth::user()->api_token }}&jadwal_id='+$(this).val()).load();
+    });
+
+    var table_daftar_pegawai = $('#daftarpeg-table').DataTable({
+    	dom: 'Bfrtip',
+        scrollX: true,
+        select: {
+            style:    'multi',
+            selector: 'td:first-child'
+        },
+        buttons: [
+          'selectAll',
+          'selectNone',
+        ],        
+        processing: true,
+        language:{
+        	processing: '<i><span class="loader"></span></i>'
+        },
+        serverSide: true,
+        ajax: '{{ url("api/datainduk_list?api_token=") }}{{ Auth::user()->api_token }}',
+        columns: [
+            { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false, width: '15px' },
+            { data: 'id', name: 'id', visible: false },
+            { data: 'nip', name: 'nip' },
+            { data: 'nama_unker', name: 'nama_unker', width:'250px', visible: false },
+            { data: 'nama', name: 'nama', width: '150px' },
+        ],
+        drawCallback: function( settings ){
+          var api = this.api();
+          var rows = api.rows( {page:'current'} ).nodes();
+          var last=null;
+
+          api.column(3, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group"><td colspan="5">'+group+'</td></tr>'
+                    );
+
+                    last = group;
+                }
+            } );
+        }
+    });
+
+    $('#daftarpeg-table').on('preXhr.dt', function(e, settings, data){
+      NProgress.start();
+    });
+
+    $('#daftarpeg-table').on('xhr.dt', function(e, settings, data){
+      NProgress.done();
+    });
+
+    $('#btn-jadwal-add').click(function(){
+      var selectedRows = table_daftar_pegawai.rows( { selected: true } ).data().pluck('id');
+
+      var arrData = [];
+      $.each(selectedRows, function(key, value) {
+        arrData[key] = value;
+      });
+      
+      console.log(arrData);
+    });
+
+    $('#btn-jadwal-remove').click(function(){
+      alert('');
     });
 
 });

@@ -1,26 +1,31 @@
 {
-  "_from": "bootstrap-timepicker@^0.5.2",
+  "_args": [
+    [
+      "bootstrap-timepicker@0.5.2",
+      "D:\\Work\\System\\presensi"
+    ]
+  ],
+  "_from": "bootstrap-timepicker@0.5.2",
   "_id": "bootstrap-timepicker@0.5.2",
   "_inBundle": false,
   "_integrity": "sha1-EO2fKi8LjMrvzeD89qBzi5GaODU=",
   "_location": "/bootstrap-timepicker",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "bootstrap-timepicker@^0.5.2",
+    "raw": "bootstrap-timepicker@0.5.2",
     "name": "bootstrap-timepicker",
     "escapedName": "bootstrap-timepicker",
-    "rawSpec": "^0.5.2",
+    "rawSpec": "0.5.2",
     "saveSpec": null,
-    "fetchSpec": "^0.5.2"
+    "fetchSpec": "0.5.2"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/bootstrap-timepicker/-/bootstrap-timepicker-0.5.2.tgz",
-  "_shasum": "10ed9f2a2f0b8ccaefcde0fcf6a0738b919a3835",
-  "_spec": "bootstrap-timepicker@^0.5.2",
+  "_spec": "0.5.2",
   "_where": "D:\\Work\\System\\presensi",
   "author": {
     "name": "Joris de Wit",
@@ -30,8 +35,6 @@
   "bugs": {
     "url": "https://github.com/jdewit/bootstrap-timepicker/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "Timepicker widget for Twitter Bootstrap",
   "devDependencies": {
     "bower": "latest",

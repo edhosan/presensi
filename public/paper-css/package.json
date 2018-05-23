@@ -1,26 +1,31 @@
 {
-  "_from": "paper-css@^0.3.0",
+  "_args": [
+    [
+      "paper-css@0.3.0",
+      "D:\\Work\\System\\presensi"
+    ]
+  ],
+  "_from": "paper-css@0.3.0",
   "_id": "paper-css@0.3.0",
   "_inBundle": false,
   "_integrity": "sha1-Cr39MEpoRkceI8hz6qyv1f5m7Dk=",
   "_location": "/paper-css",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "paper-css@^0.3.0",
+    "raw": "paper-css@0.3.0",
     "name": "paper-css",
     "escapedName": "paper-css",
-    "rawSpec": "^0.3.0",
+    "rawSpec": "0.3.0",
     "saveSpec": null,
-    "fetchSpec": "^0.3.0"
+    "fetchSpec": "0.3.0"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/paper-css/-/paper-css-0.3.0.tgz",
-  "_shasum": "0abdfd304a6846471e23c873eaacafd5fe66ec39",
-  "_spec": "paper-css@^0.3.0",
+  "_spec": "0.3.0",
   "_where": "D:\\Work\\System\\presensi",
   "author": {
     "name": "Tsutomu Kawamura"
@@ -28,8 +33,6 @@
   "bugs": {
     "url": "https://github.com/cognitom/paper-css/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "Paper CSS for happy printing",
   "devDependencies": {
     "clean-css": "^3.4.23",

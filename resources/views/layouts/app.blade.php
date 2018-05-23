@@ -18,6 +18,7 @@
     <link href="{{ asset('admin_template/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('toastr/toastr.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('nprogress/nprogress.css') }}" rel="stylesheet">
     @stack('css')
 </head>
 <body>
@@ -60,6 +61,7 @@
     <script src="{{ asset('admin_template/js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('toastr/toastr.min.js') }}"></script>
+    <script src="{{ asset('nprogress/nprogress.js') }}"></script>
     <script type="text/javascript">
       @if(session('success'))
         toastr.success('{{ session("success") }}','Success');

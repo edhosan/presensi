@@ -30,3 +30,4 @@ mix.copyDirectory('node_modules/bootstrap-timepicker', 'public/bootstrap-timepic
 mix.copyDirectory('node_modules/paper-css', 'public/paper-css');
 mix.copyDirectory('node_modules/normalize.css', 'public/normalize.css');
 mix.copyDirectory('node_modules/chart.js/dist', 'public/chart.js');
+mix.copyDirectory('node_modules/nprogress', 'public/nprogress');
