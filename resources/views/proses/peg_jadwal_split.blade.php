@@ -40,14 +40,36 @@
                 		</div>               		
 		                <div class="widget-content">
 		                	<div class="row">
-		                		<div class="span11">
+		                		<div class="span5">
 		                			<form class="well form-search" role="form" method="post">
 	   				                  {{ csrf_field() }}
 	   				                  <label>Pilih jadwal kerja :</label>
 		                            <?php $selected_data = isset($data)?$data['peg_jadwal']->id:old('jadwal') ?>
-        		                    {{ Form::select('jadwal[]', $jadwal, $selected_data, ['id' => 'jadwal_select', 'class' => "span3"]) }}
+        		                    {{ Form::select('jadwal[]', $jadwal, $selected_data, ['id' => 'jadwal_select', 'class' => "span3"]) }}                   
 		                			</form>
 		                		</div>
+                        <div class="span6">
+                            <fieldset>
+                              <legend>Hari Kerja</legend>
+                                <table class="table table-condensed" width="100%" >
+                                    <thead>
+                                        <tr>
+                                            <td rowspan="2" style="vertical-align:center">Hari</td>
+                                            <th colspan="2" align="center">Jam Kerja</th>
+                                            <th colspan="2">Toleransi</th>
+                                            <th></th>
+                                            <th>Nama</th>
+                                        </tr>
+                                        <tr>
+                                          <th>Masuk</th>
+                                          <th>Pulang</th>
+                                          <th>Terlambat</th>
+                                          <th>Pulang Awal</th>
+                                        </tr>
+                                    </thead>
+                              </table>              
+                            </fieldset>
+                        </div>
 		                	</div>
 		                	<div class="row">
 		               	    	<div class="span5">
@@ -57,7 +79,8 @@
 				                      <thead>
 				                          <tr>
 				                              <th></th>
-	   			                             <th></th>
+    			                             <th></th>
+                                       <th>Aksi</th>
 				                              <th>Nip</th>
 				                              <th>OPD</th>
 				                              <th>Nama</th>
@@ -67,7 +90,7 @@
 		               	    	 </fieldset>		   		                 
 			                	</div>
 			                	<div class="span1">
-			                		<button class="btn btn-small" style="margin-top: 100px" id="btn-jadwal-add"><i class="icon-chevron-left"></i></button><br>
+			                		<button class="btn btn-small" style="margin-top: 150px" id="btn-jadwal-add"><i class="icon-chevron-left"></i></button><br>
 	             			        <button class="btn btn-small" style="margin-top: 25px" id="btn-jadwal-remove"><i class="icon-chevron-right"></i></button>
 			                	</div>
 			                	<div class="span5">
@@ -123,10 +146,11 @@ $(function() {
         	processing: '<i><span class="loader"></span></i>'
         },
         serverSide: true,
-        ajax: '{{ url("api/peg_jadwal_list?api_token=") }}{{ Auth::user()->api_token }}',       
+        ajax: '{{ url("api/peg_jadwal_list?api_token=") }}{{ Auth::user()->api_token }}&jadwal_id='+$("#jadwal_select").val(),       
         columns: [
             { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false, width: '15px' },
             { data: 'id', name: 'id', visible: false },
+            { data: 'action', name: 'action', orderable: false, searchable: false},
             { data: 'nip', name: 'nip' },
             { data: 'nama_unker', name: 'nama_unker', width:'250px', visible: false },
             { data: 'nama', name: 'nama', width: '150px' },
@@ -136,7 +160,7 @@ $(function() {
           var rows = api.rows( {page:'current'} ).nodes();
           var last=null;
 
-          api.column(3, {page:'current'} ).data().each( function ( group, i ) {
+          api.column(4, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
                         '<tr class="group"><td colspan="5">'+group+'</td></tr>'
@@ -216,12 +240,53 @@ $(function() {
       $.each(selectedRows, function(key, value) {
         arrData[key] = value;
       });
-      
-      console.log(arrData);
+
+     NProgress.start();
+      $.ajax({
+         url: '{{ url("api/peg_jadwal_add?api_token=") }}{{ Auth::user()->api_token }}',
+         type: 'post',
+         dataType: "json",
+         data: { 
+            peg_id: arrData,
+            jadwal_id: $('#jadwal_select').val()
+         },
+         success: function(response){    
+          table.ajax.url('{{ url("api/peg_jadwal_list?api_token=") }}{{ Auth::user()->api_token }}&jadwal_id='+$("#jadwal_select").val()).load(); 
+          NProgress.done();
+         },
+         error: function(error){
+           //console.log(error);
+           NProgress.done();
+         }
+      });
     });
 
     $('#btn-jadwal-remove').click(function(){
-      alert('');
+      var selectedRows = table.rows( { selected: true } ).data().pluck('id');
+
+      var arrData = [];
+      $.each(selectedRows, function(key, value) {
+        arrData[key] = value;
+      });
+
+      NProgress.start();
+      $.ajax({
+         url: '{{ url("api/peg_jadwal_delete?api_token=") }}{{ Auth::user()->api_token }}',
+         type: 'post',
+         dataType: "json",
+         data: { 
+            peg_id: arrData,
+            jadwal_id: $('#jadwal_select').val()
+         },
+         success: function(response){
+          NProgress.done();
+          table.ajax.url('{{ url("api/peg_jadwal_list?api_token=") }}{{ Auth::user()->api_token }}&jadwal_id='+$("#jadwal_select").val()).load(); 
+         },
+         error: function(error){
+           console.log(error);
+           NProgress.done();
+         }
+      });
     });
 
 });

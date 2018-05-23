@@ -41,13 +41,6 @@ class PegawaiJadwalController extends Controller
       return view('proses.peg_jadwal_detail')->withId($id);
     }
 
-    public function create()
-    {
-
-
-      return view('proses.peg_jadwal_form')->withPegawai([]);
-    }
-
     public function edit($peg_id, $jadwal_id)
     {
       $unker = Auth::user()->unker;
@@ -71,43 +64,6 @@ class PegawaiJadwalController extends Controller
               'peg_jadwal'  => $peg_jadwal,
               'pegawai'     => $pegawai
             ));
-    }
-
-    public function saveCreate(Request $request)
-    {
-      $this->validate($request, $this->rules);
-
-      foreach ($request->jadwal as $j) {
-        $jadwal = Jadwal::where('id', $j)->first();
-
-        $date = dateRange($jadwal->start, $jadwal->end);
-
-        $data = [];
-        foreach ($date as  $value) {
-          $tanggal = Carbon::parse($value);
-
-          foreach ($request->pegawai as $p) {
-            PegawaiJadwal::where('peg_id', $p)
-                              ->where('tanggal', $value)
-                              ->forceDelete();
-
-            $peg_jadwal = new PegawaiJadwal();
-            $peg_jadwal->tanggal = $value;
-            $peg_jadwal->peg_id = $p;
-            $peg_jadwal->jadwal_id = $j;
-            //$peg_jadwal->hari_id = $tanggal->format('N');
-            $event = Event::where('start_date', '=',$value)->orWhere('end_date','=',$value)->first();
-            if(!empty($event)){
-              $peg_jadwal->event_id = $event->id;
-            }
-            $peg_jadwal->save();
-          }
-
-        }
-      }
-
-
-      return redirect('peg_jadwal_list')->with('success','Data berhasil disimpan!');
     }
 
     public function deleteJadwal($peg_id, $jadwal_id)
@@ -233,18 +189,45 @@ class PegawaiJadwalController extends Controller
           if(!empty($unker)){
             $query->where('id_unker', $unker);
           }
+        })
+        ->addColumn('action', function ($data) {
+          $action = ' <a href="'.url('peg_jadwal_detail').'/'.$data->id.'" class="btn btn-mini"><i class="icon-calendar"></i></a>';
+         return $action;
         })     
         ->make(true);
     }
 
-    public function apiDeleteAll(Request $request)
+    public function apiAddJadwal(Request $request)
     {
-      $data = $request->input('data');
+      $jadwal = Jadwal::where('id', $request->jadwal_id)->first();
+      $date = dateRange($jadwal->start, $jadwal->end);
 
-      foreach ($data as $value) {
-        $peg_jadwal = PegawaiJadwal::where('peg_id', $value)->forceDelete();
+      PegawaiJadwal::whereIn('peg_id', $request->peg_id)->where('tanggal','>=',$jadwal->start)->where('tanggal','<=',$jadwal->end)->forceDelete();
+
+      $data = [];
+      foreach ($date as  $value) {
+        $tanggal = Carbon::parse($value);
+        $event = Event::where('start_date', '=',$value)->orWhere('end_date','=',$value)->first();
+
+        foreach ($request->peg_id as $p) {
+          $data[] = [
+            'tanggal' => $tanggal,
+            'peg_id'  => $p,
+            'jadwal_id' => $request->jadwal_id,
+            'event_id' => isset($event)?$event->id:null
+          ];       
+        }      
       }
+      PegawaiJadwal::insert($data);
 
-      return response()->json($peg_jadwal);
+      return response()->json(true);
+    }
+
+    public function apiDeleteJadwal(Request $request)
+    {
+      $jadwal = Jadwal::where('id', $request->jadwal_id)->first();
+      PegawaiJadwal::whereIn('peg_id', $request->peg_id)->where('tanggal','>=',$jadwal->start)->where('tanggal','<=',$jadwal->end)->forceDelete();
+
+      return response()->json(true);
     }
 }
