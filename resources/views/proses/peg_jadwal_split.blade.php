@@ -5,6 +5,21 @@
 <link href="{{ asset('datatables.net-buttons-dt/buttons.dataTables.css') }}" rel="stylesheet">
 <link href="{{ asset('datatables.net-select-dt/select.dataTables.css') }}" rel="stylesheet">
 <link href="{{ asset('css/rowGroup.dataTables.min.css') }}" rel="stylesheet">
+<style media="screen">
+.loader {
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
 @endpush
 
 @section('content')
@@ -25,18 +40,20 @@
                 		</div>               		
 		                <div class="widget-content">
 		                	<div class="row">
-		                		<div class="span5">
+		                		<div class="span11">
 		                			<form class="well form-search" role="form" method="post">
 	   				                  {{ csrf_field() }}
 	   				                  <label>Pilih jadwal kerja :</label>
 		                            <?php $selected_data = isset($data)?$data['peg_jadwal']->id:old('jadwal') ?>
-        		                    {{ Form::select('jadwal[]', $jadwal, $selected_data, ['id' => 'jadwal', 'class' => "span3"]) }}
+        		                    {{ Form::select('jadwal[]', $jadwal, $selected_data, ['id' => 'jadwal_select', 'class' => "span3"]) }}
 		                			</form>
 		                		</div>
 		                	</div>
 		                	<div class="row">
 		               	    	<div class="span5">
-		   		                  <table class="table table-striped table-bordered display nowrap" id="pegjadwal-table" width="100%" >
+		               	    	 <fieldset>
+		               	    	 	<legend>Jadwal Kerja Pegawai</legend>
+		               	    	 	<table class="table table-striped table-bordered display nowrap" id="pegjadwal-table" width="100%" >
 				                      <thead>
 				                          <tr>
 				                              <th></th>
@@ -46,24 +63,28 @@
 				                              <th>Nama</th>
 				                          </tr>
 				                      </thead>
-				                  </table>
+					                </table>
+		               	    	 </fieldset>		   		                 
 			                	</div>
 			                	<div class="span1">
 			                		<button class="btn btn-small" style="margin-top: 100px"><i class="icon-chevron-left"></i></button><br>
 	             			        <button class="btn btn-small" style="margin-top: 25px"><i class="icon-chevron-right"></i></button>
 			                	</div>
 			                	<div class="span5">
-			                		<table class="table table-striped table-bordered display nowrap" id="pegjadwal-table" width="100%" >
-				                      <thead>
-				                          <tr>
-				                              <th></th>
-	   			                              <th></th>
-				                              <th>Nip</th>
-				                              <th>OPD</th>
-				                              <th>Nama</th>
-				                          </tr>
-				                      </thead>
-				                  </table>
+			                		<fieldset>
+			                			<legend>Daftar Pegawai</legend>
+			               				<table class="table table-striped table-bordered display nowrap" width="100%" >
+					                      <thead>
+					                          <tr>
+					                              <th></th>
+		   			                              <th></th>
+					                              <th>Nip</th>
+					                              <th>OPD</th>
+					                              <th>Nama</th>
+					                          </tr>
+					                      </thead>
+					                  	</table>
+			                		</fieldset>
 			                	</div>
 		                	</div>
 
@@ -96,10 +117,13 @@ $(function() {
         buttons: [
           'selectAll',
           'selectNone',
-        ],
+        ],        
         processing: true,
+        language:{
+        	processing: '<i><span class="loader"></span></i>'
+        },
         serverSide: true,
-        ajax: '{{ url("api/peg_jadwal_list?api_token=") }}{{ Auth::user()->api_token }}',
+        ajax: '{{ url("api/peg_jadwal_list?api_token=") }}{{ Auth::user()->api_token }}',       
         columns: [
             { orderable: false, className: 'select-checkbox', data: null, defaultContent:'', searchable: false },
             { data: 'id', name: 'id', visible: false },
@@ -123,6 +147,19 @@ $(function() {
             } );
         }
     });
+
+    $('#pegjadwal-table').on('preXhr.dt', function(e, settings, data){
+    	console.log('ajax start');
+    });
+
+    $('#pegjadwal-table').on('xhr.dt', function(e, settings, data){
+    	console.log('ajax stop');
+    });
+
+    $('#jadwal_select').change(function() {    
+    	table.ajax.url('{{ url("api/peg_jadwal_list?api_token=") }}{{ Auth::user()->api_token }}&jadwal_id='+$(this).val()).load();
+    });
+
 });
 </script>
 @endpush

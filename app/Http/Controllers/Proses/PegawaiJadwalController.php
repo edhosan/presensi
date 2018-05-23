@@ -212,15 +212,18 @@ class PegawaiJadwalController extends Controller
     {
       $unker = Auth::user()->unker;
 
-      $datainduk = DataInduk::orderBy('type','asc')
+     $datainduk = DataInduk::orderBy('type','asc')
                   ->where(function($query) use($request) {
                     if($request->has('search')) {
                       $query->where('nama', 'like', $request->search['value'].'%');
                       $query->OrWhere('nip', 'like', $request->search['value'].'%');
+                      $query->OrWhere('nama_unker', 'like', $request->search['value'].'%');
                     }
                   })
                   ->join('peg_jadwal','peg_jadwal.peg_id','=','peg_data_induk.id')
-                  ->where('peg_jadwal.jadwal_id','=',$request->jadwal_id)
+                  ->where('peg_jadwal.jadwal_id','=',$request->input('jadwal_id'))
+                  ->select('peg_data_induk.id','peg_data_induk.nip','peg_data_induk.nama','peg_data_induk.nama_unker')
+                  ->groupBy('peg_data_induk.id')
                   ->orderBy('id_eselon','asc')
                   ->orderBy('id_pangkat','desc')
                   ->orderBy('tmt_pangkat','desc');
@@ -230,12 +233,7 @@ class PegawaiJadwalController extends Controller
           if(!empty($unker)){
             $query->where('id_unker', $unker);
           }
-        })
-        ->editColumn('pangkat','{{ isset($pangkat)?$pangkat." (".$golru.")":"" }}')
-        ->editColumn('nama_jabatan','{{ $nama_jabatan." ".$nama_subunit }}')
-        ->addColumn('action', function ($data) {
-           return '<a href="'.url('peg_jadwal_detail').'/'.$data->id.'"><i class="icon-eye-open"></i></a>';
-        })
+        })     
         ->make(true);
     }
 
