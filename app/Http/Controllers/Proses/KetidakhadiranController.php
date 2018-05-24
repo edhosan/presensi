@@ -13,6 +13,7 @@ use Auth;
 use DB;
 use Carbon\Carbon;
 use File;
+use App\Model\Jadwal;
 
 class KetidakhadiranController extends Controller
 {
@@ -165,11 +166,8 @@ class KetidakhadiranController extends Controller
             ->editColumn('jumlah', function($peg_ijin_list){
               $start = Carbon::parse($peg_ijin_list->start);
               $end =  Carbon::parse($peg_ijin_list->end);
-              $interval = $end->diffInDays($start) + 1;
-
-/*              $time1 = Carbon::parse($peg_ijin_list->jam_start);
-              $time2 =  Carbon::parse($peg_ijin_list->jam_end);
-              $interval_time = $time2->diffInHours($time1);*/
+             // $interval = $end->diffInDays($start) + 1;
+              $interval = $this->getJumlahHariIzin($peg_ijin_list->peg_id, $peg_ijin_list->start, $peg_ijin_list->end);
 
               return $interval.' hari';
             })
@@ -201,5 +199,23 @@ class KetidakhadiranController extends Controller
                     ->where('tanggal','<=', date('Y-m-d', strtotime($end) ))
                     ->update(['ketidakhadiran_id' => $ketidakhadiran_id]);
 
+    }
+
+    private function getJumlahHariIzin($peg_id, $start, $end)
+    {
+      $date = dateRange($start, $end);
+      $count_hari = 0;
+      foreach ($date as $value) {
+         $tanggal = Carbon::parse($value);
+         $peg_jadwal = PegawaiJadwal::where('peg_id', $peg_id)->where('tanggal','=',$value)->first();
+         $jadwal = Jadwal::where('id', $peg_jadwal->jadwal_id)->first();
+         $hari_id = $tanggal->format('N');
+         $hari = $jadwal->hari()->where('hari', $hari_id)->first();
+         if(!empty($hari) && $peg_jadwal->event_id == null){
+          $count_hari = $count_hari + 1;
+         }
+      }
+
+      return $count_hari;
     }
 }

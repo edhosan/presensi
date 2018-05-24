@@ -22,21 +22,6 @@
                   {{ csrf_field() }}
                   <input type="hidden" name="id" value="{{ $data->id or 0 }}">
                   <fieldset>
-                  <!--  <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
-                        <label for="type" class="control-label">OPD</label>
-
-                        <div class="controls">
-                            <?php $selected_data = isset($data)?$data->pegawai->id_unker:old('opd') ?>
-                            {{ Form::select('opd', $opd, $selected_data, ['id' => 'opd', 'placeholder' => "Please Select", 'class' => 'span5']) }}
-
-                            @if ($errors->has('opd'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('opd') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div> -->
-
                     <div class="control-group {{ $errors->has('pegawai') ? 'error' : '' }}">
                         <label for="nama" class="control-label">Nama / NIP Pegawai</label>
 
@@ -150,8 +135,16 @@
 
                     @if(isset($data->filename))
                     <div class="control-group">
-                      <label for="" class="control-label"></label>
+                      <label for="" class="control-label"></label>                   
                       <div class="controls">
+                        @php $url = URL::to("/").'/public/catalog/surat/tidak_hadir/'.$data->filename @endphp
+                        @php $header = @get_headers('.$url.') @endphp
+                        @if($header)
+                          yes
+                        @endif
+                       
+                        {{ $header }}
+                       
                         <iframe src="{{ URL::to('/') }}/public/catalog/surat/tidak_hadir/{{ $data->filename }}" width="30%" height="5%"></iframe>
                         <a href="{{ URL::to('/') }}/public/catalog/surat/tidak_hadir/{{ $data->filename }}">&nbsp;Download File</a>
                       </div>
