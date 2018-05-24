@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::post('peg_hari_kerja', 'Proses\PegawaiJadwalController@apiGetPegawaiHariKerja');
   Route::post('peg_jadwal_add', 'Proses\PegawaiJadwalController@apiAddJadwal');
   Route::post('peg_jadwal_delete', 'Proses\PegawaiJadwalController@apiDeleteJadwal');
+  Route::get('hari_kerja_detail', 'Proses\PegawaiJadwalController@apiHariKerja');
 
   Route::get('ref_ijin_list', 'Referensi\RefIjinController@apiListRefIjin');
   Route::post('ref_ijin_delete', 'Referensi\RefIjinController@apiDeleteRefIjin');

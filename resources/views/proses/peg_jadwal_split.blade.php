@@ -45,31 +45,10 @@
 	   				                  {{ csrf_field() }}
 	   				                  <label>Pilih jadwal kerja :</label>
 		                            <?php $selected_data = isset($data)?$data['peg_jadwal']->id:old('jadwal') ?>
-        		                    {{ Form::select('jadwal[]', $jadwal, $selected_data, ['id' => 'jadwal_select', 'class' => "span3"]) }}                   
+        		                    {{ Form::select('jadwal[]', $jadwal, $selected_data, ['id' => 'jadwal_select', 'class' => "span3"]) }} <br>
+                                <a href="#" id="hari-kerja-button"><i>Lihat Rincian Hari Kerja</i></a>                  
 		                			</form>
-		                		</div>
-                        <div class="span6">
-                            <fieldset>
-                              <legend>Hari Kerja</legend>
-                                <table class="table table-condensed" width="100%" >
-                                    <thead>
-                                        <tr>
-                                            <td rowspan="2" style="vertical-align:center">Hari</td>
-                                            <th colspan="2" align="center">Jam Kerja</th>
-                                            <th colspan="2">Toleransi</th>
-                                            <th></th>
-                                            <th>Nama</th>
-                                        </tr>
-                                        <tr>
-                                          <th>Masuk</th>
-                                          <th>Pulang</th>
-                                          <th>Terlambat</th>
-                                          <th>Pulang Awal</th>
-                                        </tr>
-                                    </thead>
-                              </table>              
-                            </fieldset>
-                        </div>
+		                		</div>                      
 		                	</div>
 		                	<div class="row">
 		               	    	<div class="span5">
@@ -119,6 +98,19 @@
 	</div>	
 </div>
 
+<div class="modal hide" id="hari-kerja-modal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Rincian Hari Kerja</h3>
+  </div>
+  <div class="modal-body">
+    <p>One fine body…</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>   
+  </div>
+</div>
+
 @endsection
 
 @push('script')
@@ -128,6 +120,7 @@
 <script src="{{ asset('datatables.net-buttons/dataTables.buttons.js') }}"></script>
 <script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
 <script src="{{ asset('js/dataTables.rowGroup.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-modal.js') }}"></script>
 <script>
 $(function() {
     var table = $('#pegjadwal-table').DataTable({
@@ -286,6 +279,15 @@ $(function() {
            console.log(error);
            NProgress.done();
          }
+      });
+    });
+
+    $('#hari-kerja-button').click(function(){
+      var url = '{{ url("api/hari_kerja_detail?api_token=") }}{{ Auth::user()->api_token }}&jadwal_id='+$("#jadwal_select").val();
+      NProgress.start();
+      $('.modal-body').load(url, function() {
+       $('#hari-kerja-modal').modal('show');
+       NProgress.done();
       });
     });
 

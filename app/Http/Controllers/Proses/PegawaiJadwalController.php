@@ -230,4 +230,31 @@ class PegawaiJadwalController extends Controller
 
       return response()->json(true);
     }
+
+    public function apiHariKerja(Request $request)
+    {
+      $jadwal = Jadwal::where('id', $request->jadwal_id)->first();
+      $hari_kerja = $jadwal->hari()->orderBy('hari')->get();
+
+      $obj_hari = new Hari();
+      $data = collect();
+      foreach ($hari_kerja as $item) {
+       $data->push([
+              'id' =>$item->id,
+              'id_jadwal' => $item->jadwal_id,
+              'hari'  => $obj_hari->getHari()[$item->hari],
+              'jam_masuk' => date('H:i', strtotime($item->jam_masuk)),
+              'jam_pulang'  => date('H:i', strtotime($item->jam_pulang)),
+              'toleransi_terlambat' => date('H:i', strtotime($item->toleransi_terlambat)),
+              'toleransi_pulang'  => date('H:i', strtotime($item->toleransi_pulang)),
+              'val_hari'  => $item->hari,
+              'absensi_masuk' => date('H:i', strtotime($item->scan_in1)).' - '. date("H:i", strtotime($item->scan_in2)),
+              'absensi_pulang' => date('H:i', strtotime($item->scan_out1)).' - '.date('H:i', strtotime($item->scan_out2)),
+              'absensi_siang_1' => date('H:i', strtotime($item->absensi_siang_out_1)).' - '.date('H:i', strtotime($item->absensi_siang_out_2)),
+              'absensi_siang_2' => date('H:i', strtotime($item->absensi_siang_in_1)).' - '.date('H:i', strtotime($item->absensi_siang_in_2)) 
+            ]);
+      }
+
+      return view('partial.hari_kerja')->withHari($data);    
+    }
 }
