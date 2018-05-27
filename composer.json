@@ -34,7 +34,8 @@
             "App\\": "app/"
         },
         "files": [
-            "app/Helpers/MyHelper.php"
+            "app/Helpers/MyHelper.php",
+            "app/Library/MasterPresensi.php"
         ]
     },
     "autoload-dev": {

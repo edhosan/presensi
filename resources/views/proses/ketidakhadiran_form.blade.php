@@ -133,18 +133,10 @@
                       </div>
                     </div>
 
-                    @if(isset($data->filename))
+                    @if(!empty($data->filename))
                     <div class="control-group">
                       <label for="" class="control-label"></label>                   
-                      <div class="controls">
-                        @php $url = URL::to("/").'/public/catalog/surat/tidak_hadir/'.$data->filename @endphp
-                        @php $header = @get_headers('.$url.') @endphp
-                        @if($header)
-                          yes
-                        @endif
-                       
-                        {{ $header }}
-                       
+                      <div class="controls">                       
                         <iframe src="{{ URL::to('/') }}/public/catalog/surat/tidak_hadir/{{ $data->filename }}" width="30%" height="5%"></iframe>
                         <a href="{{ URL::to('/') }}/public/catalog/surat/tidak_hadir/{{ $data->filename }}">&nbsp;Download File</a>
                       </div>

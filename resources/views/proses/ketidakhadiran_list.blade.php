@@ -30,7 +30,6 @@
                               <th>Nip</th>
                               <th>OPD</th>
                               <th>Nama</th>
-                              <th>Jabatan</th>
                               <th>Status</th>
                               <th>Tanggal</th>
                               <th>Jumlah</th>
@@ -134,7 +133,6 @@ $(function() {
             { data: 'nip', name: 'nip' },
             { data: 'nama_unker', name: 'nama_unker', width:'250px', visible: false },
             { data: 'nama', name: 'nama', width: '150px' },
-            { data: 'nama_jabatan', name: 'nama_jabatan', width: '300px' },
             { data: 'status', name: 'status', width:'30px' },
             { data: 'tanggal', name: 'tanggal', width:'230px' },
             { data: 'jumlah', name: 'jumlah', width:'30px' },

@@ -100,7 +100,7 @@
                       </div>
                     </div>
 
-                    @if(isset($data->filename))
+                    @if(!empty($data->filename))
                     <div class="control-group">
                       <label for="" class="control-label"></label>
                       <div class="controls">

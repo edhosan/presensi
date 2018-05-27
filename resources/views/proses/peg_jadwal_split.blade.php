@@ -46,7 +46,7 @@
 	   				                  <label>Pilih jadwal kerja :</label>
 		                            <?php $selected_data = isset($data)?$data['peg_jadwal']->id:old('jadwal') ?>
         		                    {{ Form::select('jadwal[]', $jadwal, $selected_data, ['id' => 'jadwal_select', 'class' => "span3"]) }} <br>
-                                <a href="#" id="hari-kerja-button"><i>Lihat Rincian Hari Kerja</i></a>                  
+                                <a href="#" id="hari-kerja-button"><i>Lihat Rincian Jadwal Kerja</i></a>                  
 		                			</form>
 		                		</div>                      
 		                	</div>
@@ -101,7 +101,7 @@
 <div class="modal hide" id="hari-kerja-modal">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">×</button>
-    <h3>Rincian Hari Kerja</h3>
+    <h3>Rincian Jadwal Kerja</h3>
   </div>
   <div class="modal-body">
     <p>One fine body…</p>

@@ -13,6 +13,7 @@ use Yajra\Datatables\Datatables;
 use App\Model\Event;
 use App\Model\Hari;
 use Debugbar;
+use App\Library\MasterPresensi;
 
 class PegawaiJadwalController extends Controller
 {
@@ -200,6 +201,7 @@ class PegawaiJadwalController extends Controller
     public function apiAddJadwal(Request $request)
     {
       $jadwal = Jadwal::where('id', $request->jadwal_id)->first();
+      $hari_kerja = $jadwal->hari()->pluck('hari');
       $date = dateRange($jadwal->start, $jadwal->end);
 
       PegawaiJadwal::whereIn('peg_id', $request->peg_id)->where('tanggal','>=',$jadwal->start)->where('tanggal','<=',$jadwal->end)->forceDelete();
@@ -207,18 +209,26 @@ class PegawaiJadwalController extends Controller
       $data = [];
       foreach ($date as  $value) {
         $tanggal = Carbon::parse($value);
-        $event = Event::where('start_date', '=',$value)->orWhere('end_date','=',$value)->first();
+        $hari_id = $tanggal->format('N');       
 
         foreach ($request->peg_id as $p) {
+          $status = null;
+          if(!$hari_kerja->contains($hari_id)){
+            $status = 'L';
+          }
+
           $data[] = [
             'tanggal' => $tanggal,
             'peg_id'  => $p,
             'jadwal_id' => $request->jadwal_id,
-            'event_id' => isset($event)?$event->id:null
+            'status' => $status
           ];       
         }      
       }
       PegawaiJadwal::insert($data);
+
+      $m_presensi = new MasterPresensi();
+      $m_presensi->sinkronisasiEventByPegawai($jadwal->start, $jadwal->end, $request->peg_id);
 
       return response()->json(true);
     }
@@ -255,6 +265,6 @@ class PegawaiJadwalController extends Controller
             ]);
       }
 
-      return view('partial.hari_kerja')->withHari($data);    
+      return view('partial.hari_kerja')->withHari($data)->withJadwal($jadwal);    
     }
 }

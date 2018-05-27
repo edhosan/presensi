@@ -51,6 +51,8 @@
 
         <li class="{{ active('kalkulasi.form') }}"><a href="{{ route('kalkulasi.form') }}"><i class="icon-tasks"></i><span>Perhitungan Kehadiran</span> </a> </li>
 
+        <li class="{{ active('sinkronisasi.index') }}"><a href="{{ route('sinkronisasi.index') }}"><i class="icon-tasks"></i><span>Sinkronisasi Data</span> </a> </li>
+
         <li class="dropdown {{ active(['laporan.bulanan','laporan.harian','laporan.ketidakhadiran']) }}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-bar-chart"></i><span>Laporan</span> </a>
           <ul class="dropdown-menu">

@@ -159,6 +159,13 @@ Breadcrumbs::register('kalkulasi.form', function($breadcrumbs)
     $breadcrumbs->push('Kalkulasi Kehadiran Pegawai', route('kalkulasi.form'));
 });
 
+// Home > Sinkronisasi
+Breadcrumbs::register('sinkronisasi', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Sinkronisasi Data', route('sinkronisasi.index'));
+});
+
 // Home > Auth Log
 Breadcrumbs::register('authlog.list', function($breadcrumbs)
 {

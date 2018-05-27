@@ -89,6 +89,8 @@ class KetidakhadiranController extends Controller
         $request->file('file')->move('public/catalog/surat/tidak_hadir/', $file_name);
       }
 
+      $jumlah_hari = $this->getJumlahHariIzin($request->pegawai, Carbon::parse($request->start), Carbon::parse($request->end));
+
       $ketidakhadiran = Ketidakhadiran::create([
         'peg_id'        => $request->pegawai,
         'keterangan_id' => $request->ijin,
@@ -97,10 +99,11 @@ class KetidakhadiranController extends Controller
         'jam_start'     => $request->jam_start,
         'jam_end'       => $request->jam_end,
         'keperluan'     => $request->keperluan,
-        'filename'      => $file_name
+        'filename'      => $file_name,
+        'jml_hari'      => $jumlah_hari
       ]);
 
-      $this->updateKalkulasi($request->pegawai, $request->start, $request->end, $ketidakhadiran->id);
+      //$this->updateKalkulasi($request->pegawai, $request->start, $request->end, $ketidakhadiran->id);
 
       return redirect()->route('ketidakhadiran.list')->with('success','Data berhasil disimpan!');
     }
@@ -120,6 +123,8 @@ class KetidakhadiranController extends Controller
         $request->file('file')->move('public/catalog/surat/tidak_hadir/', $file_name);
       }
 
+      $jumlah_hari = $this->getJumlahHariIzin($request->pegawai, Carbon::parse($request->start), Carbon::parse($request->end));
+
       $ketidakhadiran->update([
         'peg_id'        => $request->pegawai,
         'keterangan_id' => $request->ijin,
@@ -128,10 +133,11 @@ class KetidakhadiranController extends Controller
         'jam_start'     => $request->jam_start,
         'jam_end'       => $request->jam_end,
         'keperluan'     => $request->keperluan,
-        'filename'      => $file_name
+        'filename'      => $file_name,
+        'jml_hari'      => $jumlah_hari
       ]);
 
-      $this->updateKalkulasi($request->pegawai, $request->start, $request->end, $ketidakhadiran->id);
+      //$this->updateKalkulasi($request->pegawai, $request->start, $request->end, $ketidakhadiran->id);
 
       return redirect()->route('ketidakhadiran.list')->with('success','Data berhasil disimpan!');
     }
@@ -152,7 +158,7 @@ class KetidakhadiranController extends Controller
                          'peg_data_induk.gelar_depan','peg_data_induk.gelar_belakang','peg_data_induk.id_unker','peg_data_induk.nama_unker',
                          'peg_data_induk.nama_subunit','peg_data_induk.nama_jabatan','peg_data_induk.golru','peg_data_induk.pangkat',
                          'ketidakhadiran.start','ketidakhadiran.end','ketidakhadiran.jam_start','ketidakhadiran.jam_end','ketidakhadiran.id',
-                         'ketidakhadiran.keperluan',DB::raw('ref_ijin.name as status') );
+                         'ketidakhadiran.keperluan',DB::raw('ref_ijin.name as status'), 'ketidakhadiran.jml_hari' );
 
       return Datatables::of($peg_ijin_list)
             ->filter(function($query) use($unker) {
@@ -164,12 +170,8 @@ class KetidakhadiranController extends Controller
             ->editColumn('pangkat','{{ isset($pangkat)?$pangkat." (".$golru.")":"" }}')
             ->editColumn('tanggal','{{ date("d-m-Y", strtotime($start))." s/d ".date("d-m-Y", strtotime($end)) }}')
             ->editColumn('jumlah', function($peg_ijin_list){
-              $start = Carbon::parse($peg_ijin_list->start);
-              $end =  Carbon::parse($peg_ijin_list->end);
-             // $interval = $end->diffInDays($start) + 1;
-              $interval = $this->getJumlahHariIzin($peg_ijin_list->peg_id, $peg_ijin_list->start, $peg_ijin_list->end);
-
-              return $interval.' hari';
+           
+              return $peg_ijin_list->jml_hari.' hari';
             })
             ->make(true);
     }
@@ -201,21 +203,21 @@ class KetidakhadiranController extends Controller
 
     }
 
-    private function getJumlahHariIzin($peg_id, $start, $end)
+   private function getJumlahHariIzin($peg_id, $start, $end)
     {
       $date = dateRange($start, $end);
       $count_hari = 0;
       foreach ($date as $value) {
-         $tanggal = Carbon::parse($value);
-         $peg_jadwal = PegawaiJadwal::where('peg_id', $peg_id)->where('tanggal','=',$value)->first();
-         $jadwal = Jadwal::where('id', $peg_jadwal->jadwal_id)->first();
-         $hari_id = $tanggal->format('N');
-         $hari = $jadwal->hari()->where('hari', $hari_id)->first();
-         if(!empty($hari) && $peg_jadwal->event_id == null){
+        $tanggal = Carbon::parse($value);
+        $peg_jadwal = PegawaiJadwal::where('peg_id', $peg_id)->where('tanggal','=',$value)->first();
+        $jadwal = Jadwal::where('id', $peg_jadwal->jadwal_id)->first();
+        $hari_id = $tanggal->format('N');
+        $hari = $jadwal->hari()->where('hari', $hari_id)->first();
+        if(!empty($hari) && $peg_jadwal->event_id == null){
           $count_hari = $count_hari + 1;
-         }
+        }
       }
 
-      return $count_hari;
+      return $count_hari;     
     }
 }

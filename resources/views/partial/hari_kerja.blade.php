@@ -32,5 +32,10 @@
         </tr>
         @endforeach
       </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="9">Berlaku dari : {{ date("d-M-Y", strtotime($jadwal->start)) }} - {{ date("d-M-Y", strtotime($jadwal->end)) }}</td>
+        </tr>
+      </tfoot>
 
 </table>              

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Event;
 use Illuminate\Support\Collection;
+use App\Library\MasterPresensi;
 
 class EventController extends Controller
 {
@@ -46,11 +47,14 @@ class EventController extends Controller
     {
       $this->validateEvent($request);
 
-      Event::create([
+      $event = Event::create([
         'title' => $request->title,
         'start_date' => date('Y-m-d', strtotime($request->start_date) ),
         'end_date' => date('Y-m-d', strtotime($request->end_date) )
       ]);
+
+      $master_presensi = new MasterPresensi();
+      $master_presensi->sinkronisasiEvent($request->start_date, $request->end_date, $event->id);
 
       return redirect('kalendar_list')->with('success','Data berhasil disimpan!');
     }
@@ -69,6 +73,9 @@ class EventController extends Controller
           'start_date' => date('Y-m-d', strtotime($request->start_date) ),
           'end_date' => date('Y-m-d', strtotime($request->end_date) )
         ]);
+
+        $master_presensi = new MasterPresensi();
+        $master_presensi->sinkronisasiEvent($request->start_date, $request->end_date, $event->id);
       }
 
       return redirect('kalendar_list')->with('success','Data berhasil diupdate!');
@@ -77,6 +84,9 @@ class EventController extends Controller
     public function delete($id)
     {
       $event = Event::find($id)->delete();
+
+      $master_presensi = new MasterPresensi();
+      $master_presensi->deleteEvent($id);
 
       return redirect('kalendar_list')->with('success','Data berhasil dihapus!');
     }
