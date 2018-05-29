@@ -52,6 +52,16 @@ class SinkronisasiController extends Controller
     			$result = $this->sinkronisasiDispensasi($request);
     			return response()->json($result);
     		break;
+   			case '5':
+    			$result = $this->sinkronisasiKehadiran($request);
+    			return response()->json($result);
+    		break;
+    		default:
+    			$this->sinkronisasiIzin($request);
+    			$this->sinkronisasiKehadiran($request);
+    			$result = $this->sinkronisasiDispensasi($request);
+    			return response()->json($result);
+    		break;
     	}
 
     }
@@ -227,6 +237,59 @@ class SinkronisasiController extends Controller
 	       	$m_presensi = new MasterPresensi();
 	    	$hasil = $m_presensi->sinkronisasiDispensasi($unker, $request->start, $request->end, $request->peg);
       	}
+
+    	return [
+    		'status' => $status,
+    		'validator'	 => $validator->messages(),
+    		'hasil' => $hasil
+    	];
+    }
+
+    private function sinkronisasiKehadiran($request)
+    {
+    	set_time_limit(0);
+    	$user = Auth::user();
+    	if($user->hasRole('admin')){
+    		$unker = $request->opd;
+    	}else{
+    		$unker = $user->unker;
+    	}
+
+    	$status = false;
+    	$messages = [
+    		'start.required' => "Tanggal mulai harus diisi!",
+    		'end.required' => "Tanggal akhir harus diisi!",
+    		'start.before' => "Tanggal mulai harus kurang dari tanggal akhir!"
+    	];
+
+    	$validator = Validator::make($request->all(), [
+ 			'start' => 'required|before:end',
+      		'end' => 'required'
+   	 	], $messages);
+
+      	$validator->after(function($validator) use($request, $user) {
+	        $start =  Carbon::parse($request->start);
+	        $end   =  Carbon::parse($request->end);
+	        $interval = $end->diffInDays($start);
+
+	        if($interval > 31){
+	          $validator->errors()->add('date_range', 'Maksimum range tanggal tidak lebih dari 31 hari!');
+	        }
+
+	        if($user->hasRole('admin')){
+	        	if(!$request->has('opd')){
+	        		$validator->errors()->add('OPD', 'OPD harus diisi!');
+	        	}
+	        }
+	    });
+
+	     $hasil = array();
+	    if(!$validator->fails()) {
+	       	$status = true;
+	       	$m_presensi = new MasterPresensi();
+	    	$hasil = $m_presensi->sinkronisasiKehadiran($unker, $request->start, $request->end, $request->peg);
+      	}
+
 
     	return [
     		'status' => $status,

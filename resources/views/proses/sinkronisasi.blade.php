@@ -103,7 +103,7 @@
 
                           <div class="controls">
                               <label class="radio inline">
-                                <input type="radio" name="type_sinkronisasi" value="1" @if(old("type_sinkronisasi")=="1") checked @else checked @endif>
+                                <input type="radio" name="type_sinkronisasi" value="1" @if(old("type_sinkronisasi")=="1") checked @endif>
                                 Kalendar Kerja
                               </label>
 
@@ -127,6 +127,11 @@
                                 Kehadiran
                               </label>
 
+                              <label class="radio inline">
+                                <input type="radio" name="type_sinkronisasi" value="6" @if(old("type_sinkronisasi")=="6") checked @endif>
+                                Sinkronisasi
+                              </label>
+
                               @if ($errors->has('sinkronisasi'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('sinkronisasi') }}</strong>
@@ -142,7 +147,25 @@
                     </fieldset>
 
                   </form>
-                </div>
+
+                  <table class="table table-striped table-bordered display nowrap" id="pegjadwal-table" width="100%" >
+                      <thead>
+                          <tr>                           
+                              <th>TANGGAL</th>
+                              <th>NAMA</th>
+                              <th>JADWAL KERJA</th>
+                              <th>IN</th>
+                              <th>OUT</th>
+                              <th>JAM KERJA</th>
+                              <th>SIANG 1</th>
+                              <th>SIANG 2</th>
+                              <th>TERLAMBAT</th>
+                              <th>PULANG AWAL</th>
+                              <th>STATUS</th>
+                          </tr>
+                      </thead>
+                  </table>
+                </div>                
               </div>
             </div>
           </div>
@@ -251,7 +274,7 @@ $(function() {
           },
           error     : function( jqXhr, json, errorThrown) {
             NProgress.done();
-            console.log(jqXhr);
+            console.log(errorThrown);
             $('#loader').hide();
             var errors = $.parseJSON(jqXhr.responseText);
             var errorsHtml= '';
