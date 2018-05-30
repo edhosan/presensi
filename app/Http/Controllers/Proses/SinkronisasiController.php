@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use App\Model\Ketidakhadiran;
 use App\Model\PegawaiJadwal;
 use App\Model\Jadwal;
+use Yajra\Datatables\Datatables;
 
 class SinkronisasiController extends Controller
 {
@@ -296,5 +297,32 @@ class SinkronisasiController extends Controller
     		'validator'	 => $validator->messages(),
     		'hasil' => $hasil
     	];
+    }
+
+    public function apiGetHasilSinkronisasi(Request $request)
+    {
+        $user = Auth::user();
+        if($user->hasRole('admin')){
+            $unker = $request->opd;
+        }else{
+            $unker = $user->unker;
+        }
+
+        $peg_jadwal = PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
+                      ->leftJoin('jadwal_kerja','jadwal_kerja.id','=','peg_jadwal.jadwal_id')
+            ->where(function($query) use($request, $unker){
+                $query->where('peg_data_induk.id_unker', $unker);
+
+                if($request->has('start') && $request->has('end')){
+                   $query->where('peg_jadwal.tanggal','>=',Carbon::parse($request->start))
+                          ->where('peg_jadwal.tanggal','<=',Carbon::parse($request->end));
+                }
+                /*if(isset($request->peg)){
+                    $query->whereIn('peg_data_induk.id', $request->peg);
+                }*/
+            })
+            ->select('peg_jadwal.tanggal','peg_data_induk.nama','peg_jadwal.in','jadwal_kerja.name','peg_jadwal.out','peg_jadwal.jam_kerja','peg_jadwal.terlambat','peg_jadwal.pulang_awal','peg_jadwal.status','peg_jadwal.scan_1','peg_jadwal.scan_2');
+
+        return Datatables::of($peg_jadwal)->make(true);
     }
 }

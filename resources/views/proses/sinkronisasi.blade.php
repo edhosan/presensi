@@ -2,6 +2,10 @@
 @push('css')
 <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
+<link href="{{ asset('datatables.net-dt/css/jquery.dataTables.css') }}" rel="stylesheet">
+<link href="{{ asset('datatables.net-buttons-dt/buttons.dataTables.css') }}" rel="stylesheet">
+<link href="{{ asset('datatables.net-select-dt/select.dataTables.css') }}" rel="stylesheet">
+<link href="{{ asset('css/rowGroup.dataTables.min.css') }}" rel="stylesheet">
 <style media="screen">
 .loader {
   border: 5px solid #f3f3f3; /* Light grey */
@@ -179,6 +183,11 @@
 <script src="{{ asset('js/select2.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
 <script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
+<script src="{{ asset('datatables.net/js/jquery.dataTables.js') }}"></script>
+<script src="{{ asset('js/twitter.datatables.js') }}"></script>
+<script src="{{ asset('datatables.net-buttons/dataTables.buttons.js') }}"></script>
+<script src="{{ asset('datatables.net-select/dataTables.select.js') }}"></script>
+<script src="{{ asset('js/dataTables.rowGroup.min.js') }}"></script>
 <script>
 $(function() {
   $('#loader').hide();
@@ -268,6 +277,7 @@ $(function() {
               toastr.error( errorsHtml , "Error ");
             }else{
               toastr.success( "Sinkronisasi Data Berhasil" , "Success ");
+              table.ajax.url('{{ url("api/hasil_sinkronisasi?api_token=") }}{{ Auth::user()->api_token }}&opd='+$("#opd").val()+'&start='+$("#start").val()+'&end='+$("#end").val()+'&peg='+$("#peg").val()).load();
             }
             console.log(json.hasil);
             NProgress.done();
@@ -285,6 +295,45 @@ $(function() {
           }
         });
         return false;
+    });
+
+      var table = $('#pegjadwal-table').DataTable({
+        scrollX: true,
+        processing: true,
+        language:{
+          processing: '<i><span class="loader"></span></i>'
+        },
+        serverSide: true,
+        ajax: '{{ url("api/hasil_sinkronisasi?api_token=") }}{{ Auth::user()->api_token }}&opd='+$("#opd").val()+'&start='+$("#start").val()+'&end='+$("#end").val()+'&peg='+$("#peg").val(),
+        columns: [
+            { data: 'tanggal', name: 'tanggal', width: '50px' },
+            { data: 'nama', name: 'nama', width: '150px',visible: false },
+            { data: 'name', name: 'name', width: '100px' },
+            { data: 'in', name: 'in', width: '20px' },
+            { data: 'out', name: 'out', width: '20px' },
+            { data: 'jam_kerja', name: 'jam_kerja', width: '20px' },
+            { data: 'scan_1', name: 'jam_kerja', width: '20px' },
+            { data: 'scan_2', name: 'jam_kerja', width: '20px' },
+            { data: 'terlambat', name: 'terlambat', width: '20px' },
+            { data: 'pulang_awal', name: 'pulang_awal', width: '20px' },
+            { data: 'status', name: 'status', width: '20px' }
+        ],
+        drawCallback: function( settings ){
+          var api = this.api();
+          var rows = api.rows( {page:'current'} ).nodes();
+          var last=null;
+
+          api.column(1, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group"><td colspan="10">'+group+'</td></tr>'
+                    );
+
+                    last = group;
+                }
+            } );
+        }
+
     });
 
 

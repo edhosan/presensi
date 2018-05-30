@@ -64,6 +64,8 @@ Route::group(['middleware' => 'auth:api'], function() {
 
   Route::get('dispensasi_list', 'Proses\DispensasiController@apiListDispensasi')->name('dispensasi.list');
   Route::post('dispensasi_delete', 'Proses\DispensasiController@apiDeleteDispensasi')->name('dispensasi.delete');
+
+  Route::get('hasil_sinkronisasi', 'Proses\SinkronisasiController@apiGetHasilSinkronisasi');
 });
 
 Route::group(['namespace' => 'api\v1', 'middleware' => 'auth:api'], function() {

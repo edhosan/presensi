@@ -18,7 +18,7 @@
         "snowfire/beautymail": "dev-master",
         "watson/active": "^2.0",
         "yajra/laravel-datatables-buttons": "2.0",
-        "yajra/laravel-datatables-oracle": "7.0",
+        "yajra/laravel-datatables-oracle": "8.0",
         "zizaco/entrust": "5.2.x-dev"
     },
     "require-dev": {
