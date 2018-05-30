@@ -63,9 +63,8 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::get('search_peg', 'Proses\DataIndukController@apiSearchPegawai');
 
   Route::get('dispensasi_list', 'Proses\DispensasiController@apiListDispensasi')->name('dispensasi.list');
-  Route::post('dispensasi_delete', 'Proses\DispensasiController@apiDeleteDispensasi')->name('dispensasi.delete');
-
-  Route::get('hasil_sinkronisasi', 'Proses\SinkronisasiController@apiGetHasilSinkronisasi');
+  Route::post('dispensasi_delete', 'Proses\DispensasiController@apiDeleteDispensasi')->name('dispensasi.delete');  
+  Route::get('/sinkronisasi/hasil', 'Proses\SinkronisasiController@apiGetHasilSinkronisasi')->name('sinkronisasi.hasil');
 });
 
 Route::group(['namespace' => 'api\v1', 'middleware' => 'auth:api'], function() {

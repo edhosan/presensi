@@ -95,13 +95,7 @@ class SinkronisasiController extends Controller
 
     private function sinkronisasiJumlahHariIzin($request)
     {
-    	/*$user = Auth::user();
-    	$unker = $user->unker;
-
-    	if($user->hasRole('admin')){
-    		$unker = $request->opd;
-    	}*/
-	 	set_time_limit(0);
+    	set_time_limit(0);
     	$ketidakharian = Ketidakhadiran::where(function($query) use($request){
     		if($request->has('start') && $request->has('end')){
     			$query->where('start','>=',Carbon::parse($request->start))->where('start','<=',Carbon::parse($request->end));
@@ -146,7 +140,7 @@ class SinkronisasiController extends Controller
     private function sinkronisasiIzin($request)
     {    	
     	$user = Auth::user();
-    	if($user->hasRole('admin')){
+    	if($user->hasRole('super-admin')){
     		$unker = $request->opd;
     	}else{
     		$unker = $user->unker;
@@ -197,7 +191,7 @@ class SinkronisasiController extends Controller
 
     private function sinkronisasiDispensasi($request)
     {   $user = Auth::user();
-    	if($user->hasRole('admin')){
+    	if($user->hasRole('super-admin')){
     		$unker = $request->opd;
     	}else{
     		$unker = $user->unker;
@@ -224,7 +218,7 @@ class SinkronisasiController extends Controller
 	          $validator->errors()->add('date_range', 'Maksimum range tanggal tidak lebih dari 31 hari!');
 	        }
 
-	        if($user->hasRole('admin')){
+	        if($user->hasRole('super-admin')){
 	        	if(!$request->has('opd')){
 	        		$validator->errors()->add('OPD', 'OPD harus diisi!');
 	        	}
@@ -250,7 +244,7 @@ class SinkronisasiController extends Controller
     {
     	set_time_limit(0);
     	$user = Auth::user();
-    	if($user->hasRole('admin')){
+    	if($user->hasRole('super-admin')){
     		$unker = $request->opd;
     	}else{
     		$unker = $user->unker;
@@ -277,7 +271,7 @@ class SinkronisasiController extends Controller
 	          $validator->errors()->add('date_range', 'Maksimum range tanggal tidak lebih dari 31 hari!');
 	        }
 
-	        if($user->hasRole('admin')){
+	        if($user->hasRole('super-admin')){
 	        	if(!$request->has('opd')){
 	        		$validator->errors()->add('OPD', 'OPD harus diisi!');
 	        	}
@@ -302,7 +296,7 @@ class SinkronisasiController extends Controller
     public function apiGetHasilSinkronisasi(Request $request)
     {
         $user = Auth::user();
-        if($user->hasRole('admin')){
+        if($user->hasRole('super-admin')){
             $unker = $request->opd;
         }else{
             $unker = $user->unker;
@@ -317,11 +311,11 @@ class SinkronisasiController extends Controller
                    $query->where('peg_jadwal.tanggal','>=',Carbon::parse($request->start))
                           ->where('peg_jadwal.tanggal','<=',Carbon::parse($request->end));
                 }
-                /*if(isset($request->peg)){
+                if(isset($request->peg)){
                     $query->whereIn('peg_data_induk.id', $request->peg);
-                }*/
+                }
             })
-            ->select('peg_jadwal.tanggal','peg_data_induk.nama','peg_jadwal.in','jadwal_kerja.name','peg_jadwal.out','peg_jadwal.jam_kerja','peg_jadwal.terlambat','peg_jadwal.pulang_awal','peg_jadwal.status','peg_jadwal.scan_1','peg_jadwal.scan_2');
+            ->select('peg_jadwal.tanggal','peg_data_induk.nama','peg_jadwal.in','jadwal_kerja.name','peg_jadwal.out','peg_jadwal.jam_kerja','peg_jadwal.terlambat','peg_jadwal.pulang_awal','peg_jadwal.status','peg_jadwal.scan_1','peg_jadwal.scan_2');            
 
         return Datatables::of($peg_jadwal)->make(true);
     }

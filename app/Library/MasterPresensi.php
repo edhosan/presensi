@@ -126,6 +126,9 @@ class MasterPresensi{
 					if($koreksi_jam->lte($jm) && $out->gte($jp)){
 						$status = 'H';
 					}
+					if($item->out == '00:00:00'){
+						$status = 'HP';
+					}
 					PegawaiJadwal::where('id', $item->id)->update([
 						'in' => $koreksi_jam, 
 						'dispensasi_id' => $item->dispensasi_id,
@@ -181,6 +184,8 @@ class MasterPresensi{
 	{
 		$data = array();
 		$peg_jadwal = PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
+					  ->leftJoin('ketidakhadiran','ketidakhadiran.id','=','peg_jadwal.ketidakhadiran_id')
+					  ->leftJoin('ref_ijin','ketidakhadiran.keterangan_id','=','ref_ijin.id')
 					  ->where(function($filter) use($unker, $start, $end, $peg) {
 					  	if(!empty($unker)){
 					  		$filter->where('peg_data_induk.id_unker', $unker);
@@ -191,113 +196,138 @@ class MasterPresensi{
 					  	if(!empty($peg)){
 					  		$filter->whereIn('peg_jadwal.peg_id', $peg);
 					  	}
-					  })
-					  ->where('peg_jadwal.status','<>','L')
-					  ->where(function($filter_izin) {
-					  	$filter_izin->whereNull('peg_jadwal.ketidakhadiran_id')->orWhere('peg_jadwal.ketidakhadiran_id','=',0);
-					  })	
-					  ->where(function($filter_event) {
-					  	$filter_event->whereNull('peg_jadwal.event_id')->orWhere('peg_jadwal.event_id','=',0);
-					  })	
-					  ->get(['peg_jadwal.peg_id','peg_jadwal.jadwal_id','dispensasi_id','peg_data_induk.id_finger','peg_jadwal.tanggal','peg_jadwal.id']);
+					  })					
+					  ->get(['peg_jadwal.peg_id','peg_jadwal.jadwal_id','dispensasi_id','peg_data_induk.id_finger','peg_jadwal.tanggal','peg_jadwal.id','peg_jadwal.event_id','ref_ijin.symbol','peg_jadwal.ketidakhadiran_id']);
 
-		foreach ($peg_jadwal as $item) {
+
+		foreach ($peg_jadwal as $item) {			
 			$tanggal = Carbon::parse($item->tanggal);
 			$jadwal = Jadwal::find($item->jadwal_id);
-			if(isset($jadwal)){
-				$hari_id = $tanggal->format('N');
-				$hari_kerja = $jadwal->hari()->where('hari', $hari_id)->first();	
-				$jm = Carbon::parse($hari_kerja->jam_masuk);
-				$toleransi_terlambat = Carbon::parse($hari_kerja->toleransi_terlambat);
-				$jm = $jm->addMinutes($toleransi_terlambat->minute);				
-			    $jp = Carbon::parse($hari_kerja->jam_pulang);
- 		        $toleransi_pulang = Carbon::parse($hari_kerja->toleransi_pulang);
-	         	$jp = $jp->subMinutes($toleransi_pulang->minute);
 
-				$query = "select min(x.cin) cin,max(x.COUT) cout,max(x.COUT_SIANG)cout_siang, min(x.CIN_SIANG)cin_siang
-						  from (
-							select 
-								CIN = (SELECT b.TransactionTime FROM NGAC_AUTHLOG b where a.IndexKey = b.IndexKey and Cast(b.TransactionTime as time) >= :in_start and Cast(b.TransactionTime as time) <= :in_end),
-								COUT = (SELECT b.TransactionTime FROM NGAC_AUTHLOG b where a.IndexKey = b.IndexKey and Cast(b.TransactionTime as time) >= :out_start and Cast(b.TransactionTime as time) <= :out_end),
-								COUT_SIANG = (SELECT b.TransactionTime FROM NGAC_AUTHLOG b where a.IndexKey = b.IndexKey and Cast(b.TransactionTime as time) >= :out_siang_start and Cast(b.TransactionTime as time) <= :out_siang_end),
-								CIN_SIANG = (SELECT b.TransactionTime FROM NGAC_AUTHLOG b where a.IndexKey = b.IndexKey and Cast(b.TransactionTime as time) >= :in_siang_start and Cast(b.TransactionTime as time) <= :in_siang_end)
-						  from NGAC_AUTHLOG a
-						  where a.UserID = :id and cast(a.TransactionTime as date) = :tanggal 
-						  )x";
-				$authlog = DB::connection('sqlsrv')->select($query, [
-								'id'	=> $item->id_finger,
-								'tanggal' => $tanggal,
-								'in_start'	=> date('H:i', strtotime($hari_kerja->scan_in1)),
-								'in_end'	=> date('H:i', strtotime($hari_kerja->scan_in2)),
-								'out_start'	=> date('H:i', strtotime($hari_kerja->scan_out1)),
-								'out_end'	=> date('H:i', strtotime($hari_kerja->scan_out2)),
-								'out_siang_start'	=> date('H:i', strtotime($hari_kerja->absensi_siang_out1)),
-								'out_siang_end'	=> date('H:i', strtotime($hari_kerja->absensi_siang_out2)),
-								'in_siang_start'	=> date('H:i', strtotime($hari_kerja->absensi_siang_in1)),
-								'in_siang_end'	=> date('H:i', strtotime($hari_kerja->absensi_siang_in2)),
-							]);
-
-				foreach ($authlog as $log) {					
-					if(empty($log->cin) && !empty($log->cout)){
-						$status = "HP";
-					}
-					if(!empty($log->cin) && empty($log->cout)) {
-						$status = "HT";
-					}
-
-					$cin_date = Carbon::parse($log->cin);
-					$cin_time = Carbon::parse($cin_date->toTimeString());
-					$terlambat = Carbon::createFromTime(0, 0, 0);
-					if($cin_time->gt($jm)){
-						$status = 'HT';
-						$terlambat = $cin_time->diff($jm)->format('%H:%I:%S');
-					}
-
-					$cout_date = Carbon::parse($log->cout);
-					$cout_time = Carbon::parse($cout_date->toTimeString());
-					$pulang_awal = Carbon::createFromTime(0, 0, 0);
-					if($cout_time->lt($jp)){
-						$status = 'HP';
-					}
-
-					if(empty($log->cin) && empty($log->cout)){
-						$status = 'A';
-					}
-
-					if($cin_time->lte($jm) && $cout_time->gte($jp)){
-						$status = 'H';
-					}
-
-					$scan_1 = Carbon::createFromTime(0, 0, 0);
-					if(!empty($log->cout_siang)){
-						$cout_siang_date = Carbon::parse($log->cout_siang);
-						$cout_siang_time = Carbon::parse($cout_siang_date->toTimeString());
-						$scan_1 = $cout_siang_time;
-					}
-
-					$scan_2 = Carbon::createFromTime(0, 0, 0);
-					if(!empty($log->cin_siang)){
-						$cin_siang_date = Carbon::parse($log->cin_siang);
-						$cin_siang_time = Carbon::parse($cin_siang_date->toTimeString());
-						$scan_2 = $cin_siang_time;
-					}							
-				}
-				$item->where('id',$item->id)->update([
-					'in' => $cin_time->toTimeString(),
-					'out'	=> $cout_time->toTimeString(),
-					'jam_kerja' => $cout_time->diff($cin_time)->format('%H:%I:%S'),
-					'terlambat'	=> $terlambat,
-					'pulang_awal' => $jp->diff($cout_time)->format('%H:%I:%S'),
-					'status' => $status,
-					'scan_1' => $scan_1->toTimeString(),
-					'scan_2' => $scan_2->toTimeString()
-				]);			
+			if(!empty($item->event_id)){
+				$item->where('id', $item->id)->update(['status' => 'L']);			
 			}
-			$data[] = ['peg_jadwal' => $item, 'authlog' => $authlog, 'status' => $status];
+			elseif(!empty($item->ketidakhadiran_id)){
+				$item->where('id', $item->id)->update(['status' => $item->symbol]);
+			}
+			else{
+				if(!empty($jadwal)){
+					$hari_id = $tanggal->format('N');
+					$hari_kerja = $jadwal->hari()->where('hari', $hari_id)->first();
+
+					if(!empty($hari_kerja)){
+						$kalkulasi = $this->kalkulasi($hari_kerja, $tanggal, $item->id_finger);
+						$item->where('id', $item->id)->update($kalkulasi);
+					}else{
+						$item->where('id', $item->id)->update(['status' => 'L']);
+						return $hari_kerja;
+					}
+				}
+			}			
 		}
 
-		return $data;
+		return $peg_jadwal;
 	}
+
+	private function kalkulasi($hari_kerja, $tanggal, $id_finger)
+	{
+		$jm = Carbon::parse($hari_kerja->jam_masuk);
+		$toleransi_terlambat = Carbon::parse($hari_kerja->toleransi_terlambat);
+		$jm = $jm->addMinutes($toleransi_terlambat->minute);				
+		$jp = Carbon::parse($hari_kerja->jam_pulang);
+	 	$toleransi_pulang = Carbon::parse($hari_kerja->toleransi_pulang);
+		$jp = $jp->subMinutes($toleransi_pulang->minute);
+		$status = '';
+
+		$query = "select min(x.cin) cin,max(x.COUT) cout,max(x.COUT_SIANG)cout_siang, min(x.CIN_SIANG)cin_siang
+				  from (
+					select 
+						CIN = (SELECT b.TransactionTime FROM NGAC_AUTHLOG b where a.IndexKey = b.IndexKey and Cast(b.TransactionTime as time) >= :in_start and Cast(b.TransactionTime as time) <= :in_end),
+						COUT = (SELECT b.TransactionTime FROM NGAC_AUTHLOG b where a.IndexKey = b.IndexKey and Cast(b.TransactionTime as time) >= :out_start and Cast(b.TransactionTime as time) <= :out_end),
+						COUT_SIANG = (SELECT b.TransactionTime FROM NGAC_AUTHLOG b where a.IndexKey = b.IndexKey and Cast(b.TransactionTime as time) >= :out_siang_start and Cast(b.TransactionTime as time) <= :out_siang_end),
+						CIN_SIANG = (SELECT b.TransactionTime FROM NGAC_AUTHLOG b where a.IndexKey = b.IndexKey and Cast(b.TransactionTime as time) >= :in_siang_start and Cast(b.TransactionTime as time) <= :in_siang_end)
+				  from NGAC_AUTHLOG a
+				  where a.UserID = :id and cast(a.TransactionTime as date) = :tanggal 
+				  )x";
+		$authlog = DB::connection('sqlsrv')->select($query, [
+					'id'	=> $id_finger,
+					'tanggal' => $tanggal,
+					'in_start'	=> date('H:i', strtotime($hari_kerja->scan_in1)),
+					'in_end'	=> date('H:i', strtotime($hari_kerja->scan_in2)),
+					'out_start'	=> date('H:i', strtotime($hari_kerja->scan_out1)),
+					'out_end'	=> date('H:i', strtotime($hari_kerja->scan_out2)),
+					'out_siang_start'	=> date('H:i', strtotime($hari_kerja->absensi_siang_out1)),
+					'out_siang_end'	=> date('H:i', strtotime($hari_kerja->absensi_siang_out2)),
+					'in_siang_start'	=> date('H:i', strtotime($hari_kerja->absensi_siang_in1)),
+					'in_siang_end'	=> date('H:i', strtotime($hari_kerja->absensi_siang_in2)),
+				]);
+
+		foreach ($authlog as $log) {
+			$cin_time = Carbon::createFromTime(0, 0, 0);
+			$cout_time = Carbon::createFromTime(0, 0, 0);
+			$terlambat = Carbon::createFromTime(0, 0, 0);
+			$pulang_awal = Carbon::createFromTime(0, 0, 0);
+			$scan_1 = Carbon::createFromTime(0, 0, 0);
+			$scan_2 = Carbon::createFromTime(0, 0, 0);
+
+			if(empty($log->cin) && empty($log->cout)){
+				$cin_time = '00:00:00';
+				$status = 'A';
+			}elseif(empty($log->cin)){
+				$status = 'HT';
+				$cout_date = Carbon::parse($log->cout);
+				$cout_time = Carbon::parse($cout_date->toTimeString());		
+				if($cout_time->lt($jp)){					
+					$pulang_awal = $cin_time->diff($jm);
+				}			
+			}elseif(empty($log->cout)){
+				$status = 'HP';
+				$cin_date = Carbon::parse($log->cin);
+				$cin_time = Carbon::parse($cin_date->toTimeString());
+				if($cin_time->gt($jm)){
+					$terlambat = $cin_time->diff($jm);
+				}	
+			}else{
+				$status = 'H';
+
+				$cin_date = Carbon::parse($log->cin);
+				$cin_time = Carbon::parse($cin_date->toTimeString());
+				if($cin_time->gt($jm)){
+					$status = 'HT';
+					$terlambat = $cin_time->diff($jm);
+				}
+
+				$cout_date = Carbon::parse($log->cout);
+				$cout_time = Carbon::parse($cout_date->toTimeString());		
+				if($cout_time->lt($jp)){	
+					$status = 'HP';				
+					$pulang_awal = $cin_time->diff($jm);
+				}
+			}
+			
+			if(!empty($log->cout_siang)){
+				$cout_siang_date = Carbon::parse($log->cout_siang);
+				$scan_1 = Carbon::parse($cout_siang_date->toTimeString());			
+			}
+
+			if(!empty($log->cin_siang)){
+				$cin_siang_date = Carbon::parse($log->cin_siang);
+				$scan_2 = Carbon::parse($cin_siang_date->toTimeString());
+			}
+		}
+
+		return [
+			'in' => $cin_time->toTimeString(),
+			'out' => $cout_time->toTimeString(),
+			'terlambat' => $terlambat->format('%H:%I:%S'),
+			'pulang_awal' => $pulang_awal->format('%H:%I:%S'),	
+			'jam_kerja' => $cout_time->diff($cin_time)->format('%H:%I:%S'),		
+			'status'	=> $status,
+			'scan_1' => $scan_1->toTimeString(),
+			'scan_2' => $scan_2->toTimeString()
+		];
+	}
+
 }
 
 ?>

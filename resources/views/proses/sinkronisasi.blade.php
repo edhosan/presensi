@@ -42,6 +42,7 @@
                   <form class="form-horizontal" role="form" method="POST" id="form" action="{{ route('sinkronisasi.proses') }}" novalidate="novalidate">
                     {{ csrf_field() }}
                     <fieldset>
+                      @role(['super-admin'])
                       <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
                           <label for="type" class="control-label">OPD</label>
 
@@ -56,6 +57,7 @@
                               @endif
                           </div>
                       </div>
+                      @endrole
 
                       <div class="control-group {{ $errors->has('start') ? 'error' : '' }} {{ $errors->has('end') ? 'error' : '' }}">
                           <label for="start" class="control-label">Tanggal</label>
@@ -101,7 +103,8 @@
                               @endif
                           </div>
                       </div>
-
+    
+                       @role(['super-admin'])
                       <div class="control-group {{ $errors->has('sinkronisasi') ? 'error' : '' }}">
                           <label for="nama" class="control-label">Sinkronisasi Data</label>
 
@@ -143,6 +146,7 @@
                               @endif
                           </div>
                       </div>
+                      @endrole
 
                       <div class="form-actions">
                         <button type="submit" class="btn btn-primary">Sinkronisasi</button>
@@ -256,55 +260,24 @@ $(function() {
     return repo.nama || repo.nip;
   }
 
-  var form = $('#form');
-  form.on('submit', function() {
-      $('#loader').show();
-       NProgress.start();
-       var errorsHtml= '';
-
-        $.ajax({
-          url       : form.attr('action'),
-          type      : form.attr('method'),
-          data      : form.serialize(),
-          dataType  : 'json',
-          async     : true,
-          success   : function( json ) {
-            $('#loader').hide();
-            if(json.status == false){
-              $.each( json.validator, function( key, value ) {
-                errorsHtml += '<li>' + value[0] + '</li>';
-              });
-              toastr.error( errorsHtml , "Error ");
-            }else{
-              toastr.success( "Sinkronisasi Data Berhasil" , "Success ");
-              table.ajax.url('{{ url("api/hasil_sinkronisasi?api_token=") }}{{ Auth::user()->api_token }}&opd='+$("#opd").val()+'&start='+$("#start").val()+'&end='+$("#end").val()+'&peg='+$("#peg").val()).load();
-            }
-            console.log(json.hasil);
-            NProgress.done();
-          },
-          error     : function( jqXhr, json, errorThrown) {
-            NProgress.done();
-            console.log(errorThrown);
-            $('#loader').hide();
-            var errors = $.parseJSON(jqXhr.responseText);
-            var errorsHtml= '';
-            $.each( errors, function( key, value ) {
-               errorsHtml += '<li>' + value[0] + '</li>';
-            });
-            toastr.error( errorsHtml , "Error " + jqXhr.status +': ');            
-          }
-        });
-        return false;
-    });
-
-      var table = $('#pegjadwal-table').DataTable({
+  var table = $('#pegjadwal-table').DataTable({
+        dom: 'lfrtip',
         scrollX: true,
         processing: true,
+        paging: true,
+        searching: true,
+        pageLength: 10,
         language:{
           processing: '<i><span class="loader"></span></i>'
         },
         serverSide: true,
-        ajax: '{{ url("api/hasil_sinkronisasi?api_token=") }}{{ Auth::user()->api_token }}&opd='+$("#opd").val()+'&start='+$("#start").val()+'&end='+$("#end").val()+'&peg='+$("#peg").val(),
+        ajax: {
+          url: '{{ url("/api/sinkronisasi/hasil?api_token=") }}{{ Auth::user()->api_token }}',
+          type: 'GET',
+          data: function(d) {
+            return $('#form').serialize();
+          }
+        },
         columns: [
             { data: 'tanggal', name: 'tanggal', width: '50px' },
             { data: 'nama', name: 'nama', width: '150px',visible: false },
@@ -335,6 +308,50 @@ $(function() {
         }
 
     });
+
+  var form = $('#form');
+  form.on('submit', function() {
+      $('#loader').show();
+       NProgress.start();
+       var errorsHtml= '';
+
+        $.ajax({
+          url       : form.attr('action'),
+          type      : form.attr('method'),
+          data      : form.serialize(),
+          dataType  : 'json',
+          async     : true,
+          success   : function( json ) {
+            $('#loader').hide();
+            if(json.status == false){
+              $.each( json.validator, function( key, value ) {
+                errorsHtml += '<li>' + value[0] + '</li>';
+              });
+              toastr.error( errorsHtml , "Error ");
+            }else{
+              toastr.success( "Sinkronisasi Data Berhasil" , "Success ");
+              table.ajax.reload();
+            }
+            console.log(json.hasil);
+            NProgress.done();
+          },
+          error     : function( jqXhr, json, errorThrown) {
+            NProgress.done();
+            console.log(errorThrown);
+            $('#loader').hide();
+            var errors = $.parseJSON(jqXhr.responseText);
+            var errorsHtml= '';
+            $.each( errors, function( key, value ) {
+               errorsHtml += '<li>' + value[0] + '</li>';
+            });
+            table.ajax.reload();
+            toastr.error( errorsHtml , "Error " + jqXhr.status +': ');            
+          }
+        });
+        return false;
+    });
+
+
 
 
 
