@@ -38,6 +38,7 @@
                   <th rowspan="2" width="10">NIP</th>
                   <th colspan="2">JAM KERJA</th>
                   <th colspan="2">ABSENSI</th>
+                  <th colspan="2">ABSENSI SIANG</th>
                   <th rowspan="2">TERLAMBAT</th>
                   <th rowspan="2">PULANG AWAL</th>
                   <th rowspan="2">KETERANGAN</th>
@@ -47,20 +48,22 @@
                   <th>PULANG</th>
                   <th>MASUK</th>
                   <th>PULANG</th>
+                  <th>I</th>
+                  <th>II</th>
                 </tr>
                 </thead>
                 <tbody>
                   @for($i=0;$i<=$interval;$i++)
                     <tr>
-                      <td colspan='10' class="sub-title"><h5>Tanggal: {{ $start->format('d-m-Y') }}</h5></td>
+                      <td colspan='12' class="sub-title"><h5>Tanggal: {{ $start->format('d-m-Y') }}</h5></td>
                     </tr>
                     @if(!empty($data[$start->day]['event']->event_id))
                       <tr>
-                        <td colspan='10'>{{ $data[$start->day]['event']->title }}</td>
+                        <td colspan='12'>{{ $data[$start->day]['event']->title }}</td>
                       </tr>
                     @elseif($data[$start->day]['jadwal']->isEmpty())
                       <tr>
-                        <td colspan='10'>Hari Libur</td>
+                        <td colspan='12'>Hari Libur</td>
                       </tr>
                     @endif
                     @php $no = 1 @endphp
@@ -73,6 +76,8 @@
                         <td align="center">{{ $value->jam_pulang }}</td>
                         <td align="center">{{ $value->in }}</td>
                         <td align="center">{{ $value->out }}</td>
+                        <td align="center">{{ $value->scan_1 }}</td>
+                        <td align="center">{{ $value->scan_2 }}</td>
                         <td align="center">{{ $value->terlambat }}</td>
                         <td align="center">{{ $value->pulang_awal }}</td>
                         @if(!empty($value->name))
@@ -85,6 +90,8 @@
                             <td align="center">Hadir Pulang Awal</td>
                         @elseif($value->status === 'A')
                             <td align="center">Absent</td>
+                        @elseif($value->status === 'L')
+                            <td align="center">Libur</td>
                         @else
                             <td align="center">N/A</td>
                         @endif

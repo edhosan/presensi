@@ -169,7 +169,6 @@ class MasterPresensi{
 		}
 
 		return $dispensasi;
-
 	}
 
 	public function deleteEvent($event_id)
@@ -220,13 +219,12 @@ class MasterPresensi{
 						$item->where('id', $item->id)->update($kalkulasi);
 					}else{
 						$item->where('id', $item->id)->update(['status' => 'L']);
-						return $hari_kerja;
 					}
 				}
 			}			
 		}
 
-		return $peg_jadwal;
+		return $kalkulasi;
 	}
 
 	private function kalkulasi($hari_kerja, $tanggal, $id_finger)
@@ -237,6 +235,12 @@ class MasterPresensi{
 		$jp = Carbon::parse($hari_kerja->jam_pulang);
 	 	$toleransi_pulang = Carbon::parse($hari_kerja->toleransi_pulang);
 		$jp = $jp->subMinutes($toleransi_pulang->minute);
+		$cin_time = Carbon::createFromTime(0, 0, 0);
+		$cout_time = Carbon::createFromTime(0, 0, 0);
+		$terlambat = Carbon::createFromTime(0, 0, 0);
+		$pulang_awal = Carbon::createFromTime(0, 0, 0);
+		$scan_1 = Carbon::createFromTime(0, 0, 0);
+		$scan_2 = Carbon::createFromTime(0, 0, 0);
 		$status = '';
 
 		$query = "select min(x.cin) cin,max(x.COUT) cout,max(x.COUT_SIANG)cout_siang, min(x.CIN_SIANG)cin_siang
@@ -256,22 +260,14 @@ class MasterPresensi{
 					'in_end'	=> date('H:i', strtotime($hari_kerja->scan_in2)),
 					'out_start'	=> date('H:i', strtotime($hari_kerja->scan_out1)),
 					'out_end'	=> date('H:i', strtotime($hari_kerja->scan_out2)),
-					'out_siang_start'	=> date('H:i', strtotime($hari_kerja->absensi_siang_out1)),
-					'out_siang_end'	=> date('H:i', strtotime($hari_kerja->absensi_siang_out2)),
-					'in_siang_start'	=> date('H:i', strtotime($hari_kerja->absensi_siang_in1)),
-					'in_siang_end'	=> date('H:i', strtotime($hari_kerja->absensi_siang_in2)),
+					'out_siang_start'	=> date('H:i', strtotime($hari_kerja->absensi_siang_out_1)),
+					'out_siang_end'	=> date('H:i', strtotime($hari_kerja->absensi_siang_out_2)),
+					'in_siang_start'	=> date('H:i', strtotime($hari_kerja->absensi_siang_in_1)),
+					'in_siang_end'	=> date('H:i', strtotime($hari_kerja->absensi_siang_in_2)),
 				]);
 
 		foreach ($authlog as $log) {
-			$cin_time = Carbon::createFromTime(0, 0, 0);
-			$cout_time = Carbon::createFromTime(0, 0, 0);
-			$terlambat = Carbon::createFromTime(0, 0, 0);
-			$pulang_awal = Carbon::createFromTime(0, 0, 0);
-			$scan_1 = Carbon::createFromTime(0, 0, 0);
-			$scan_2 = Carbon::createFromTime(0, 0, 0);
-
 			if(empty($log->cin) && empty($log->cout)){
-				$cin_time = '00:00:00';
 				$status = 'A';
 			}elseif(empty($log->cin)){
 				$status = 'HT';
@@ -304,7 +300,7 @@ class MasterPresensi{
 					$pulang_awal = $cin_time->diff($jm);
 				}
 			}
-			
+
 			if(!empty($log->cout_siang)){
 				$cout_siang_date = Carbon::parse($log->cout_siang);
 				$scan_1 = Carbon::parse($cout_siang_date->toTimeString());			
@@ -314,18 +310,63 @@ class MasterPresensi{
 				$cin_siang_date = Carbon::parse($log->cin_siang);
 				$scan_2 = Carbon::parse($cin_siang_date->toTimeString());
 			}
+
 		}
 
 		return [
 			'in' => $cin_time->toTimeString(),
 			'out' => $cout_time->toTimeString(),
 			'terlambat' => $terlambat->format('%H:%I:%S'),
-			'pulang_awal' => $pulang_awal->format('%H:%I:%S'),	
+			'pulang_awal' => $pulang_awal->toTimeString(),	
 			'jam_kerja' => $cout_time->diff($cin_time)->format('%H:%I:%S'),		
 			'status'	=> $status,
 			'scan_1' => $scan_1->toTimeString(),
 			'scan_2' => $scan_2->toTimeString()
 		];
+
+	}
+
+	public function kalkulasiDispensasi($unker, $start, $end, $peg)
+	{
+		$dispensasi = Dispensasi::join('peg_data_induk','peg_data_induk.id','=','dispensasi.peg_id')
+						->where(function($filter) use($unker, $start, $end, $peg) {
+					  	if(!empty($unker)){
+					  		$filter->where('peg_data_induk.id_unker', $unker);
+					  	}
+					  	if(!empty($start) && !empty($end)){
+					  		$filter->where('dispensasi.tanggal','>=',Carbon::parse($start))->where('dispensasi.tanggal','<=',Carbon::parse($end));	
+					  	}
+					  	if(!empty($peg)){
+					  		$filter->whereIn('dispensasi.peg_id', $peg);
+					  	}
+					  })
+					  ->get(['dispensasi.peg_id','dispensasi.tanggal','dispensasi.id']);
+
+		foreach ($dispensasi as $item) {
+			$peg_jadwal = PegawaiJadwal::where('peg_id',$item->peg_id)->where('tanggal',$item->tanggal)->get();	
+
+			$tanggal = Carbon::parse($item->tanggal);
+			foreach ($peg_jadwal as $value) {
+				$jadwal = Jadwal::find($value->jadwal_id);
+				if(!empty($jadwal)){
+					$hari_id = $tanggal->format('N');
+					$hari_kerja = $jadwal->hari()->where('hari', $hari_id)->first();
+					if(!empty($hari_kerja)){
+						$jm = Carbon::parse($hari_kerja->jam_masuk);
+						$toleransi_terlambat = Carbon::parse($hari_kerja->toleransi_terlambat);
+						$jm = $jm->addMinutes($toleransi_terlambat->minute);				
+						$jp = Carbon::parse($hari_kerja->jam_pulang);
+					 	$toleransi_pulang = Carbon::parse($hari_kerja->toleransi_pulang);
+						$jp = $jp->subMinutes($toleransi_pulang->minute);
+						$status = '';
+
+
+					}
+				}
+			}
+		}
+
+		return $peg_jadwal;
 	}
 
 }

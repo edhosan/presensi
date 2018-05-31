@@ -285,8 +285,8 @@ $(function() {
             { data: 'in', name: 'in', width: '20px' },
             { data: 'out', name: 'out', width: '20px' },
             { data: 'jam_kerja', name: 'jam_kerja', width: '20px' },
-            { data: 'scan_1', name: 'jam_kerja', width: '20px' },
-            { data: 'scan_2', name: 'jam_kerja', width: '20px' },
+            { data: 'scan_1', name: 'scan_1', width: '20px' },
+            { data: 'scan_2', name: 'scan_2', width: '20px' },
             { data: 'terlambat', name: 'terlambat', width: '20px' },
             { data: 'pulang_awal', name: 'pulang_awal', width: '20px' },
             { data: 'status', name: 'status', width: '20px' }

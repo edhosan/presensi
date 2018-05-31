@@ -26,6 +26,7 @@
                       <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
                           <label for="type" class="control-label">OPD</label>
 
+                          @role(['super-admin'])
                           <div class="controls">
                               <?php $selected_data = isset($data)?$data->opd:old('opd') ?>
                               {{ Form::select('opd', $opd, $selected_data, ['id' => 'opd', 'placeholder' => "Please Select", 'class' => 'span5']) }}
@@ -36,6 +37,8 @@
                                   </span>
                               @endif
                           </div>
+                          @endrole
+                          
                       </div>
 
                       <div class="control-group {{ $errors->has('start') ? 'error' : '' }} {{ $errors->has('end') ? 'error' : '' }}">

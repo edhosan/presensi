@@ -36,6 +36,13 @@ class LapHarianController extends Controller
 
     public function cetak(Request $request)
     {
+      $user = Auth::user();
+      if($user->hasRole('super-admin')){
+        $unker = $request->opd;
+      }else{
+        $unker = $user->unker;
+      }
+
       $start =  Carbon::parse($request->start);
       $end   =  Carbon::parse($request->end);
       $interval = $end->diffInDays($start);
@@ -54,7 +61,7 @@ class LapHarianController extends Controller
       }
 
       $opd = DataInduk::orderBy('nama_unker','asc')
-             ->where('id_unker', $request->opd)
+             ->where('id_unker', $unker)
              ->first();
 
       $data = [];
@@ -68,7 +75,7 @@ class LapHarianController extends Controller
                       ->leftJoin('event','event.id','=','peg_jadwal.event_id')
                       ->leftJoin('ketidakhadiran','ketidakhadiran.id','=','peg_jadwal.ketidakhadiran_id')
                       ->leftJoin('ref_ijin','ref_ijin.id','=','ketidakhadiran.keterangan_id')
-                      ->where('peg_data_induk.id_unker', $request->opd)
+                      ->where('peg_data_induk.id_unker', $unker)
                       ->where('peg_jadwal.tanggal','=', $start->format('Y-m-d'))
                       ->where(function($query) use($request) {
                         if($request->has('peg')) {
@@ -81,7 +88,7 @@ class LapHarianController extends Controller
                       ->orderBy('peg_data_induk.tmt_pangkat','desc')
                       ->select('peg_jadwal.id','peg_data_induk.nama','peg_data_induk.nip','hari_kerja.jam_masuk','hari_kerja.jam_pulang',
                       'peg_jadwal.in','peg_jadwal.out','peg_jadwal.terlambat','peg_jadwal.pulang_awal','peg_jadwal.event_id','event.title',
-                      'ref_ijin.name','peg_jadwal.status')
+                      'ref_ijin.name','peg_jadwal.status','peg_jadwal.scan_1','peg_jadwal.scan_2')
                       ->get();
 
         $event =  PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')

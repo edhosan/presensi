@@ -53,16 +53,17 @@ class SinkronisasiController extends Controller
     			$result = $this->sinkronisasiDispensasi($request);
     			return response()->json($result);
     		break;
-   			case '5':
+   			default:
+                $this->sinkronisasiIzin($request);
     			$result = $this->sinkronisasiKehadiran($request);
     			return response()->json($result);
     		break;
-    		default:
+/*    		default:
     			$this->sinkronisasiIzin($request);
     			$this->sinkronisasiKehadiran($request);
     			$result = $this->sinkronisasiDispensasi($request);
     			return response()->json($result);
-    		break;
+    		break;*/
     	}
 
     }
@@ -283,6 +284,7 @@ class SinkronisasiController extends Controller
 	       	$status = true;
 	       	$m_presensi = new MasterPresensi();
 	    	$hasil = $m_presensi->sinkronisasiKehadiran($unker, $request->start, $request->end, $request->peg);
+            $dispensasi = $m_presensi->sinkronisasiDispensasi($unker, $request->start, $request->end, $request->peg);
       	}
 
 
