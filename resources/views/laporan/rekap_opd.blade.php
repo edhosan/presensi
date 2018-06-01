@@ -114,6 +114,7 @@
       </div>
   </div>
 </div>
+<pre>{{Auth::user()->unker}}</pre>
 @endsection
 
 @push('script')

@@ -322,10 +322,11 @@ class DataIndukController extends Controller
 
     public function apiSearchPegawai(Request $request)
     {
-      $unker = Auth::user()->unker;
-
-      if($request->has('opd')){
+      $user = Auth::user();
+      if($user->hasRole('super-admin')){
         $unker = $request->opd;
+      }else{
+        $unker = $user->unker;
       }
 
       $term = trim($request->q);
