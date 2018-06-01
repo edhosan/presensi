@@ -152,18 +152,18 @@ Breadcrumbs::register('ketidakhadiran.form', function($breadcrumbs)
     $breadcrumbs->push('Form Ketidakhadiran Pegawai', route('ketidakhadiran.create'));
 });
 
-// Home > Kalkulasi Kehadiran
-Breadcrumbs::register('kalkulasi.form', function($breadcrumbs)
-{
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push('Kalkulasi Kehadiran Pegawai', route('kalkulasi.form'));
-});
-
 // Home > Sinkronisasi
 Breadcrumbs::register('sinkronisasi', function($breadcrumbs)
 {
     $breadcrumbs->parent('home');
     $breadcrumbs->push('Sinkronisasi Data', route('sinkronisasi.index'));
+});
+
+// Home > Riwayat Absensi
+Breadcrumbs::register('riwayat', function($breadcrumbs)
+{
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Riwayat Finger', route('riwayat.index'));
 });
 
 // Home > Auth Log

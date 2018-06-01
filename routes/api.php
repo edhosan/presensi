@@ -58,7 +58,7 @@ Route::group(['middleware' => 'auth:api'], function() {
   Route::get('authlog_list', 'Referensi\AuthLogController@apiAuthLogList');
   Route::post('authlog_delete', 'Referensi\AuthLogController@apiDeleteAuthLog');
 
-  Route::post('kalkulasi_proses', 'Proses\KalkulasiController@prosesKalkulasi')->name('kalkulasi.proses');
+  Route::post('/riwayat/get_riwayat_absensi', 'Proses\RiwayatAbsensiController@getLogFinger')->name('riwayat.absensi');
 
   Route::get('search_peg', 'Proses\DataIndukController@apiSearchPegawai');
 
