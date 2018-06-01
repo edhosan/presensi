@@ -57,24 +57,27 @@ class MasterPresensi{
 						  		$filter->whereIn('ketidakhadiran.peg_id', $peg);
 						  	}
 						  })->select('ketidakhadiran.peg_id','ketidakhadiran.start','ketidakhadiran.end','ketidakhadiran.id','ref_ijin.symbol')
-						  ->get();
-
+						  ->get();		
+	
 		foreach ($ketidakhadiran as $item) {
-			$date = dateRange($item->start, $item->end);
+			$date = dateRange($item->start, $item->end);			
 			foreach ($date as $tanggal) {
 				$tanggal = Carbon::parse($tanggal);
 				$peg_jadwal = PegawaiJadwal::where('peg_jadwal.peg_id', $item->peg_id)
 							  ->where('peg_jadwal.tanggal','=',$tanggal)
 							  ->first();
-				$jadwal = Jadwal::find($peg_jadwal->jadwal_id);
-				$hari_id = $tanggal->format('N');
-				$hari = $jadwal->hari()->where('hari', $hari_id)->first();
-				if(!empty($hari)){						
-					$peg_jadwal->update(['ketidakhadiran_id' => $item->id,'status' => $item->symbol]);					
-				}else{
-					$peg_jadwal->update(['status' => 'L']);
+				if(!empty($peg_jadwal)){
+					$jadwal = Jadwal::find($peg_jadwal->jadwal_id);
+					$hari_id = $tanggal->format('N');
+					$hari = $jadwal->hari()->where('hari', $hari_id)->first();
+					if(!empty($hari)){						
+						$peg_jadwal->update(['ketidakhadiran_id' => $item->id,'status' => $item->symbol]);										
+					}else{
+						$peg_jadwal->update(['status' => 'L']);					
+					}									
 				}
-			}		
+
+			}						
 		}
 
 		return $ketidakhadiran;
