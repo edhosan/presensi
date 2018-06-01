@@ -269,7 +269,7 @@ class RegisterController extends Controller
          'username' => $data['username'],
          'password' => bcrypt($data['password']),
          'unker' =>array_key_exists('opd', $data)?$data['opd']:'',
-         'nm_unker' =>array_key_exists('opd', $data)?$opd->nama_unker:'',
+         'nm_unker' =>isset($opd)?$opd->nama_unker:'',
          'email' => $data['email'],
          'phone' => $data['phone']
        );

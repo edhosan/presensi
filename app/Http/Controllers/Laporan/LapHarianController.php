@@ -12,10 +12,10 @@ use Carbon\Carbon;
 
 class LapHarianController extends Controller
 {
-    private $rules = [
-      'opd' => 'required',
+    private $rules = [   
       'start' => 'required|before:end',
-      'end' => 'required'
+      'end' => 'required',
+      'pejabat' => 'required'
     ];
 
     public function index()
@@ -48,9 +48,15 @@ class LapHarianController extends Controller
       $interval = $end->diffInDays($start);
 
       $validator = Validator::make($request->all(), $this->rules);
-      $validator->after(function($validator) use($interval) {
+      $validator->after(function($validator) use($interval, $user) {
         if($interval > 31){
           $validator->errors()->add('start', 'Maksimum range tanggal tidak lebih dari 31 hari!');
+        }
+
+       if($user->hasRole('super-admin')){
+          if(!$request->has('opd')){
+            $validator->errors()->add('OPD', 'OPD harus diisi!');
+          }
         }
       });
 
@@ -93,7 +99,7 @@ class LapHarianController extends Controller
 
         $event =  PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
                   ->leftJoin('event','event.id','=','peg_jadwal.event_id')
-                  ->where('peg_data_induk.id_unker', $request->opd)
+                  ->where('peg_data_induk.id_unker', $unker)
                   ->where('peg_jadwal.tanggal','=', $start->format('Y-m-d'))
                   ->where(function($query) use($request) {
                     if($request->has('peg')) {
@@ -111,7 +117,7 @@ class LapHarianController extends Controller
         $start->addDay();
       }
 
-      $kepala =  DataInduk::where('id_unker', $opd->id_unker)->kepala()->first();
+      $kepala =  DataInduk::where('id', $request->pejabat)->first();
 
 
       return view('laporan.cetak_laporan_harian')->withOpd($opd)->withStart($request->start)->withEnd($request->end)

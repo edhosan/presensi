@@ -57,7 +57,7 @@
               <a class="shortcut" href="{{ route('peg_jadwal.list') }}"><i class="shortcut-icon icon-time"></i><span class="shortcut-label">Jadwal</span></a>
               <a class="shortcut" href="{{ route('ketidakhadiran.list') }}"><i class="shortcut-icon icon-exclamation-sign"></i><span class="shortcut-label">Berhalangan Hadir</span></a>
               <a class="shortcut" href="{{ route('dispensasi.list') }}"><i class="shortcut-icon icon-warning-sign"></i><span class="shortcut-label">Dispensasi</span></a>
-              <a class="shortcut" href="{{ route('kalkulasi.form') }}"><i class="shortcut-icon icon-tasks"></i><span class="shortcut-label">Kalkulasi Kehadiran</span></a>
+              <a class="shortcut" href="{{ route('sinkronisasi.index') }}"><i class="shortcut-icon icon-tasks"></i><span class="shortcut-label">Sinkronisasi Data</span></a>
                 <a class="shortcut" href="{{ route('laporan.bulanan') }}"><i class="shortcut-icon icon-bar-chart"></i><span class="shortcut-label">Laporan Bulanan</span></a>
             </div>
           </div>

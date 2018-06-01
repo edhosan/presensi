@@ -346,7 +346,7 @@ class DataIndukController extends Controller
                       $value = "{$request->q}%";
                       $query->where('nama', 'like', $value)
                         ->orWhere('nip', 'like', $value);
-                    }
+                    }                  
                   })
                   ->paginate($request->per_page);
 

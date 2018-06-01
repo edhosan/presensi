@@ -23,10 +23,10 @@
                   <form class="form-horizontal" target="_blank" role="form" method="POST" id="form" action="{{ route('cetak.laporan.harian') }}" novalidate="novalidate">
                     {{ csrf_field() }}
                     <fieldset>
+                      @role(['super-admin'])
                       <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
                           <label for="type" class="control-label">OPD</label>
-
-                          @role(['super-admin'])
+                          
                           <div class="controls">
                               <?php $selected_data = isset($data)?$data->opd:old('opd') ?>
                               {{ Form::select('opd', $opd, $selected_data, ['id' => 'opd', 'placeholder' => "Please Select", 'class' => 'span5']) }}
@@ -36,10 +36,9 @@
                                       <strong>{{ $errors->first('opd') }}</strong>
                                   </span>
                               @endif
-                          </div>
-                          @endrole
-                          
+                          </div>                          
                       </div>
+                      @endrole
 
                       <div class="control-group {{ $errors->has('start') ? 'error' : '' }} {{ $errors->has('end') ? 'error' : '' }}">
                           <label for="start" class="control-label">Tanggal</label>
@@ -82,6 +81,20 @@
                               @if ($errors->has('nama'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('nama') }}</strong>
+                                  </span>
+                              @endif
+                          </div>
+                      </div>
+
+                      <div class="control-group {{ $errors->has('pejabat') ? 'error' : '' }}">
+                          <label for="nama" class="control-label">Mengetahui Pejabat Berwenang</label>
+
+                          <div class="controls">
+                            <select name="pejabat" id="pejabat" class="span5"></select>
+
+                              @if ($errors->has('pejabat'))
+                                  <span class="help-block">
+                                      <strong>{{ $errors->first('pejabat') }}</strong>
                                   </span>
                               @endif
                           </div>
@@ -178,8 +191,44 @@ $(function() {
     return repo.nama || repo.nip;
   }
 
+  $('#pejabat').select2({
+    placeholder: 'Pilih Pegawai',
+    allowClear: true,
+    ajax: {
+      url: "{{ url('api/search_peg?api_token=') }}{{ Auth::user()->api_token }}",
+      dataType: 'json',
+      delay: 250,
+      data: function(params){
+        return {
+          q: params.term,
+          page: params.page,
+          per_page: 10,
+          opd: {{ Auth::user()->unker }}          
+        };
+      },
+      processResults: function(data, params) {
+        params.page = params.page || 1;
+        return {
+          results: data.data,
+          pagination: {
+            more: (params.page * data.per_page) < data.total
+          }
+        };
+      },
+      cache: true
+    },
+    escapeMarkup: function( markup ){ return markup; },
+    minimumInputLength: 1,
+    templateResult: formatRepo,
+    templateSelection: formatRepoSelection
+  });
+
+  
+
 
 });
+
+
 
 
 </script>

@@ -53,17 +53,10 @@ class SinkronisasiController extends Controller
     			$result = $this->sinkronisasiDispensasi($request);
     			return response()->json($result);
     		break;
-   			default:
-                $this->sinkronisasiIzin($request);
+   			case '5':              
     			$result = $this->sinkronisasiKehadiran($request);
     			return response()->json($result);
     		break;
-/*    		default:
-    			$this->sinkronisasiIzin($request);
-    			$this->sinkronisasiKehadiran($request);
-    			$result = $this->sinkronisasiDispensasi($request);
-    			return response()->json($result);
-    		break;*/
     	}
 
     }
@@ -168,7 +161,7 @@ class SinkronisasiController extends Controller
 	          $validator->errors()->add('date_range', 'Maksimum range tanggal tidak lebih dari 31 hari!');
 	        }
 
-	        if($user->hasRole('admin')){
+	        if($user->hasRole('super-admin')){
 	        	if(!$request->has('opd')){
 	        		$validator->errors()->add('OPD', 'OPD harus diisi!');
 	        	}
@@ -284,7 +277,6 @@ class SinkronisasiController extends Controller
 	       	$status = true;
 	       	$m_presensi = new MasterPresensi();
 	    	$hasil = $m_presensi->sinkronisasiKehadiran($unker, $request->start, $request->end, $request->peg);
-            $dispensasi = $m_presensi->sinkronisasiDispensasi($unker, $request->start, $request->end, $request->peg);
       	}
 
 
@@ -309,15 +301,16 @@ class SinkronisasiController extends Controller
             ->where(function($query) use($request, $unker){
                 $query->where('peg_data_induk.id_unker', $unker);
 
-                if($request->has('start') && $request->has('end')){
-                   $query->where('peg_jadwal.tanggal','>=',Carbon::parse($request->start))
-                          ->where('peg_jadwal.tanggal','<=',Carbon::parse($request->end));
+                if($request->has('start_date') && $request->has('end_date')){
+                   $query->where('peg_jadwal.tanggal','>=',Carbon::parse($request->start_date))
+                          ->where('peg_jadwal.tanggal','<=',Carbon::parse($request->end_date));
                 }
-                if(isset($request->peg)){
+                if(!empty($request->peg['data']) && $request->peg['data'] != "null"){
                     $query->whereIn('peg_data_induk.id', $request->peg);
                 }
             })
-            ->select('peg_jadwal.tanggal','peg_data_induk.nama','peg_jadwal.in','jadwal_kerja.name','peg_jadwal.out','peg_jadwal.jam_kerja','peg_jadwal.terlambat','peg_jadwal.pulang_awal','peg_jadwal.status','peg_jadwal.scan_1','peg_jadwal.scan_2');            
+            ->orderBy('tanggal', 'desc')
+            ->select('peg_jadwal.tanggal','peg_data_induk.nama','peg_jadwal.in','jadwal_kerja.name','peg_jadwal.out','peg_jadwal.jam_kerja','peg_jadwal.terlambat','peg_jadwal.pulang_awal','peg_jadwal.status','peg_jadwal.scan_1','peg_jadwal.scan_2','peg_jadwal.id');          
 
         return Datatables::of($peg_jadwal)->make(true);
     }

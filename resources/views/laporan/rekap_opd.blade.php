@@ -27,6 +27,7 @@
 @push('css')
 <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
+<link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
 @if(Auth::check())
@@ -48,6 +49,7 @@
                   <form target="_blank" class="form-horizontal" role="form" method="POST" id="form" action="{{ route('laporan.bulanan.report') }}" novalidate="novalidate">
                     {{ csrf_field() }}
                     <fieldset>
+                      @role(['super-admin'])
                       <div class="control-group {{ $errors->has('opd') ? 'error' : '' }}">
                           <label for="type" class="control-label">OPD</label>
 
@@ -62,6 +64,7 @@
                               @endif
                           </div>
                       </div>
+                      @endrole
 
                       <div class="control-group {{ $errors->has('bulan') ? 'error' : '' }} {{ $errors->has('tahun') ? 'error' : '' }}">
                           <label for="start" class="control-label">Bulan</label>
@@ -80,6 +83,20 @@
                                     <strong>{{ $errors->first('tahun') }}</strong>
                                 </span>
                             @endif
+                          </div>
+                      </div>
+
+                      <div class="control-group {{ $errors->has('peg') ? 'error' : '' }}">
+                          <label for="nama" class="control-label">Mengetahui Pejabat Berwenang</label>
+
+                          <div class="controls">
+                            <select name="peg" id="peg" class="span5"></select>
+
+                              @if ($errors->has('peg'))
+                                  <span class="help-block">
+                                      <strong>{{ $errors->first('peg') }}</strong>
+                                  </span>
+                              @endif
                           </div>
                       </div>
 
@@ -103,6 +120,7 @@
 <script src="{{ asset('js/select2.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" ></script>
 <script src="{{ asset('js/bootstrap-datepicker.id.min.js') }}" charset="UTF-8"></script>
+<script src="{{ asset('js/select2.min.js') }}"></script>
 <script>
 $(function() {
 
@@ -116,6 +134,61 @@ $(function() {
   $('#start').datepicker( formatCalendar );
   $('#end').datepicker( formatCalendar );
   $('#opd').select2({ placeholder: 'Pilih OPD' });
+
+  $('#peg').select2({
+    placeholder: 'Pilih Pegawai',
+    allowClear: true,
+    ajax: {
+      url: "{{ url('api/search_peg?api_token=') }}{{ Auth::user()->api_token }}",
+      dataType: 'json',
+      delay: 250,
+      data: function(params){
+        return {
+          q: params.term,
+          page: params.page,
+          per_page: 10,
+          opd: {{ Auth::user()->unker }}          
+        };
+      },
+      processResults: function(data, params) {
+        params.page = params.page || 1;
+        return {
+          results: data.data,
+          pagination: {
+            more: (params.page * data.per_page) < data.total
+          }
+        };
+      },
+      cache: true
+    },
+    escapeMarkup: function( markup ){ return markup; },
+    minimumInputLength: 1,
+    templateResult: formatRepo,
+    templateSelection: formatRepoSelection
+  })
+
+  function formatRepo (repo) {
+      if (repo.loading) return repo.nama;
+
+      var markup = "<div class='select2-result-repository clearfix'>" +
+        "<div class='select2-result-repository__meta'>" +
+          "<div class='select2-result-repository__title'>" + repo.nama + "</div>";
+
+      if (repo.description) {
+        markup += "<div class='select2-result-repository__description'>" + repo.nip + "</div>";
+      }
+
+      markup += "<div class='select2-result-repository__statistics'>" +
+        "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i>NIP: " + repo.nip + "</div>" +
+      "</div>" +
+      "</div></div>";
+
+      return markup;
+  }
+
+  function formatRepoSelection (repo) {
+    return repo.nama || repo.nip;
+  }
 
 });
 

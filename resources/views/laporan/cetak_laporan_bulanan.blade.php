@@ -118,7 +118,7 @@ $tot_day = $date->endOfMonth()->day;
       <td></td>
       <td></td>
       <td align="center">
-        <table style="margin-top:50px" width="50%">
+        <table style="margin-top:50px;margin-left:300px" width="50%">
           <tr align="center">
             <td>Tanjung Redeb, {{ Carbon\Carbon::now()->day }} {{ $month_name[Carbon\Carbon::now()->month] }} {{ Carbon\Carbon::now()->year }}</td>
           </tr>

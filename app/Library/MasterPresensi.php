@@ -60,13 +60,21 @@ class MasterPresensi{
 						  ->get();
 
 		foreach ($ketidakhadiran as $item) {
-			$peg_jadwal = PegawaiJadwal::where('peg_jadwal.peg_id', $item->peg_id)
-						  ->where('peg_jadwal.tanggal','>=',Carbon::parse($item->start))
-  						  ->where('peg_jadwal.tanggal','<=',Carbon::parse($item->end))
-  						  ->update([
-  						  	'ketidakhadiran_id' => $item->id,
-  						  	'status' => $item->symbol
-  						  ]);
+			$date = dateRange($item->start, $item->end);
+			foreach ($date as $tanggal) {
+				$tanggal = Carbon::parse($tanggal);
+				$peg_jadwal = PegawaiJadwal::where('peg_jadwal.peg_id', $item->peg_id)
+							  ->where('peg_jadwal.tanggal','=',$tanggal)
+							  ->first();
+				$jadwal = Jadwal::find($peg_jadwal->jadwal_id);
+				$hari_id = $tanggal->format('N');
+				$hari = $jadwal->hari()->where('hari', $hari_id)->first();
+				if(!empty($hari)){						
+					$peg_jadwal->update(['ketidakhadiran_id' => $item->id,'status' => $item->symbol]);					
+				}else{
+					$peg_jadwal->update(['status' => 'L']);
+				}
+			}		
 		}
 
 		return $ketidakhadiran;
@@ -213,8 +221,8 @@ class MasterPresensi{
 				if(!empty($jadwal)){
 					$hari_id = $tanggal->format('N');
 					$hari_kerja = $jadwal->hari()->where('hari', $hari_id)->first();
-
-					if(!empty($hari_kerja)){
+					
+					if(!empty($hari_kerja)){						
 						$kalkulasi = $this->kalkulasi($hari_kerja, $tanggal, $item->id_finger);
 						$item->where('id', $item->id)->update($kalkulasi);
 					}else{
@@ -229,7 +237,7 @@ class MasterPresensi{
 
 	private function kalkulasi($hari_kerja, $tanggal, $id_finger)
 	{
-		$jm = Carbon::parse($hari_kerja->jam_masuk);
+		$jm = Carbon::parse($hari_kerja->jam_masuk);	
 		$toleransi_terlambat = Carbon::parse($hari_kerja->toleransi_terlambat);
 		$jm = $jm->addMinutes($toleransi_terlambat->minute);				
 		$jp = Carbon::parse($hari_kerja->jam_pulang);
@@ -285,39 +293,40 @@ class MasterPresensi{
 				}	
 			}else{
 				$status = 'H';
-
+			
 				$cin_date = Carbon::parse($log->cin);
 				$cin_time = Carbon::parse($cin_date->toTimeString());
 				if($cin_time->gt($jm)){
 					$status = 'HT';
 					$terlambat = $cin_time->diff($jm);
 				}
-
+				
 				$cout_date = Carbon::parse($log->cout);
 				$cout_time = Carbon::parse($cout_date->toTimeString());		
 				if($cout_time->lt($jp)){	
 					$status = 'HP';				
 					$pulang_awal = $cin_time->diff($jm);
-				}
+				}				
 			}
 
-			if(!empty($log->cout_siang)){
+			if(!empty($log->cout_siang)){				
 				$cout_siang_date = Carbon::parse($log->cout_siang);
-				$scan_1 = Carbon::parse($cout_siang_date->toTimeString());			
+				$scan_1 = Carbon::parse($cout_siang_date->toTimeString());							
 			}
 
 			if(!empty($log->cin_siang)){
 				$cin_siang_date = Carbon::parse($log->cin_siang);
-				$scan_2 = Carbon::parse($cin_siang_date->toTimeString());
+				$scan_2 = Carbon::parse($cin_siang_date->toTimeString());				
 			}
 
-		}
 
+		}
+		
 		return [
 			'in' => $cin_time->toTimeString(),
 			'out' => $cout_time->toTimeString(),
 			'terlambat' => $terlambat->format('%H:%I:%S'),
-			'pulang_awal' => $pulang_awal->toTimeString(),	
+			'pulang_awal' => $pulang_awal->format('%H:%I:%S'),	
 			'jam_kerja' => $cout_time->diff($cin_time)->format('%H:%I:%S'),		
 			'status'	=> $status,
 			'scan_1' => $scan_1->toTimeString(),

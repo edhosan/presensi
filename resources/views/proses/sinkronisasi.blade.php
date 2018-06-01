@@ -104,11 +104,12 @@
                           </div>
                       </div>
     
-                       @role(['super-admin'])
+                      
                       <div class="control-group {{ $errors->has('sinkronisasi') ? 'error' : '' }}">
                           <label for="nama" class="control-label">Sinkronisasi Data</label>
 
                           <div class="controls">
+                             @role(['super-admin'])
                               <label class="radio inline">
                                 <input type="radio" name="type_sinkronisasi" value="1" @if(old("type_sinkronisasi")=="1") checked @endif>
                                 Kalendar Kerja
@@ -118,6 +119,7 @@
                                 <input type="radio" name="type_sinkronisasi" value="2" @if(old("type_sinkronisasi")=="2") checked @endif>
                                 Jumlah Hari Izin
                               </label>
+                              @endrole
 
                               <label class="radio inline">
                                 <input type="radio" name="type_sinkronisasi" value="3" @if(old("type_sinkronisasi")=="3") checked @endif>
@@ -132,12 +134,7 @@
                               <label class="radio inline">
                                 <input type="radio" name="type_sinkronisasi" value="5" @if(old("type_sinkronisasi")=="5") checked @endif>
                                 Kehadiran
-                              </label>
-
-                              <label class="radio inline">
-                                <input type="radio" name="type_sinkronisasi" value="6" @if(old("type_sinkronisasi")=="6") checked @endif>
-                                Sinkronisasi
-                              </label>
+                              </label>                              
 
                               @if ($errors->has('sinkronisasi'))
                                   <span class="help-block">
@@ -145,8 +142,7 @@
                                   </span>
                               @endif
                           </div>
-                      </div>
-                      @endrole
+                      </div>                 
 
                       <div class="form-actions">
                         <button type="submit" class="btn btn-primary">Sinkronisasi</button>
@@ -261,12 +257,17 @@ $(function() {
   }
 
   var table = $('#pegjadwal-table').DataTable({
-        dom: 'lfrtip',
+        dom: 'lBfrtip',
+        buttons: [
+            {
+                text: 'Reload',
+                action: function ( e, dt, node, config ) {
+                    dt.ajax.reload();
+                }
+            }
+        ],
         scrollX: true,
-        processing: true,
-        paging: true,
-        searching: true,
-        pageLength: 10,
+        processing: true,      
         language:{
           processing: '<i><span class="loader"></span></i>'
         },
@@ -275,13 +276,16 @@ $(function() {
           url: '{{ url("/api/sinkronisasi/hasil?api_token=") }}{{ Auth::user()->api_token }}',
           type: 'GET',
           data: function(d) {
-            return $('#form').serialize();
+            d.opd = $('#opd').val();
+            d.start_date = $('#start').val();
+            d.end_date = $('#end').val();
+            d.peg = {data : $('#peg').val()};           
           }
         },
         columns: [
             { data: 'tanggal', name: 'tanggal', width: '50px' },
-            { data: 'nama', name: 'nama', width: '150px',visible: false },
-            { data: 'name', name: 'name', width: '100px' },
+            { data: 'nama', name: 'nama', width: '150px' },
+            { data: 'name', name: 'name', width: '100px',visible: false },
             { data: 'in', name: 'in', width: '20px' },
             { data: 'out', name: 'out', width: '20px' },
             { data: 'jam_kerja', name: 'jam_kerja', width: '20px' },
@@ -296,7 +300,7 @@ $(function() {
           var rows = api.rows( {page:'current'} ).nodes();
           var last=null;
 
-          api.column(1, {page:'current'} ).data().each( function ( group, i ) {
+          api.column(2, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
                         '<tr class="group"><td colspan="10">'+group+'</td></tr>'
@@ -337,7 +341,7 @@ $(function() {
           },
           error     : function( jqXhr, json, errorThrown) {
             NProgress.done();
-            console.log(errorThrown);
+            console.log(jqXhr);
             $('#loader').hide();
             var errors = $.parseJSON(jqXhr.responseText);
             var errorsHtml= '';

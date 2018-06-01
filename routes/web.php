@@ -87,10 +87,6 @@ Route::group(['middleware' => 'auth'], function() {
   Route::post('ketidakhadiran_save', 'Proses\KetidakhadiranController@saveCreate')->name('ketidakhadiran.save');
   Route::post('ketidakhadiran_update', 'Proses\KetidakhadiranController@saveUpdate')->name('ketidakhadiran.update');
 
-  Route::get('kalkulasi_form', 'Proses\KalkulasiController@index')->name('kalkulasi.form');
-  Route::post('kalkulasi_proses', 'Proses\KalkulasiController@prosesKalkulasi')->name('kalkulasi.proses');
-  Route::get('kalkulasi_progress', 'Proses\KalkulasiController@apiGetProgress')->name('kalkulasi.progress');
-
   Route::get('authlog_list', 'Referensi\AuthLogController@index')->name('authlog.list');
 
   Route::get('lap_bulanan', 'Laporan\RekapOPDController@index')->name('laporan.bulanan');
