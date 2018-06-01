@@ -353,4 +353,33 @@ class DataIndukController extends Controller
 
       return response()->json($dataInduk);
     }
+
+    public function apiGetIdFinger(Request $request)
+    {
+      $unker = Auth::user()->unker;
+
+      $term = trim($request->q);
+
+      if(empty($term)) {
+        return response()->json([]);
+      }
+
+      $dataInduk = DataInduk::orderBy('nama', 'asc')
+                  ->select(DB::raw('id_finger as id'),'nama','nip','id_unker')
+                  ->where(function($query) use($unker) {
+                    if(!empty($unker)) {
+                      $query->where('id_unker', $unker);
+                    }
+                  })
+                  ->where(function($query) use($request) {
+                    if($request->exists('q')) {
+                      $value = "{$request->q}%";
+                      $query->where('nama', 'like', $value)
+                        ->orWhere('nip', 'like', $value);
+                    }                  
+                  })
+                  ->paginate($request->per_page);
+
+      return response()->json($dataInduk);
+    }
 }

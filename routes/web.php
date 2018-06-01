@@ -115,4 +115,6 @@ Route::group(['namespace' => 'Referensi', 'middleware' => 'auth'], function() {
 Route::group(['namespace' => 'Proses', 'middleware' => 'auth'], function() {
   Route::get('/sinkronisasi','SinkronisasiController@index')->name('sinkronisasi.index');
   Route::post('/sinkronisasi/proses','SinkronisasiController@proses')->name('sinkronisasi.proses');
+
+  Route::get('/riwayat','RiwayatAbsensiController@index')->name('riwayat.index');
 });
