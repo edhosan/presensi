@@ -67,14 +67,19 @@ class MasterPresensi{
 							  ->where('peg_jadwal.tanggal','=',$tanggal)
 							  ->first();
 				if(!empty($peg_jadwal)){
-					$jadwal = Jadwal::find($peg_jadwal->jadwal_id);
-					$hari_id = $tanggal->format('N');
-					$hari = $jadwal->hari()->where('hari', $hari_id)->first();
-					if(!empty($hari)){						
-						$peg_jadwal->update(['ketidakhadiran_id' => $item->id,'status' => $item->symbol]);										
+					if(!empty($peg_jadwal->event_id)){
+						$peg_jadwal->update(['status' => 'L','ketidakhadiran_id' => 0]);			
 					}else{
-						$peg_jadwal->update(['status' => 'L']);					
-					}									
+						$jadwal = Jadwal::find($peg_jadwal->jadwal_id);
+						$hari_id = $tanggal->format('N');
+						$hari = $jadwal->hari()->where('hari', $hari_id)->first();
+						if(!empty($hari)){						
+							$peg_jadwal->update(['ketidakhadiran_id' => $item->id,'status' => $item->symbol, 'in'=>'00:00:00','out'=>'00:00:00','jam_kerja' => '00:00:00','terlambat' => '00:00:00', 'pulang_awal' => '00:00:00','scan_1' => '00:00:00', 'scan_2' => '00:00:00']);										
+						}else{
+							$peg_jadwal->update(['status' => 'L']);					
+						}															
+					}
+
 				}
 
 			}						
@@ -208,24 +213,24 @@ class MasterPresensi{
 					  	}
 					  })					
 					  ->get(['peg_jadwal.peg_id','peg_jadwal.jadwal_id','dispensasi_id','peg_data_induk.id_finger','peg_jadwal.tanggal','peg_jadwal.id','peg_jadwal.event_id','ref_ijin.symbol','peg_jadwal.ketidakhadiran_id']);
-
-
+		
 		foreach ($peg_jadwal as $item) {			
 			$tanggal = Carbon::parse($item->tanggal);
 			$jadwal = Jadwal::find($item->jadwal_id);
-
+			
 			if(!empty($item->event_id)){
 				$item->where('id', $item->id)->update(['status' => 'L']);			
 			}
 			elseif(!empty($item->ketidakhadiran_id)){
-				$item->where('id', $item->id)->update(['status' => $item->symbol]);
+				$item->where('id', $item->id)->update(['status' => $item->symbol,'in' => '00:00:00', 'out' => '00:00:00']);
 			}
 			else{
 				if(!empty($jadwal)){
 					$hari_id = $tanggal->format('N');
 					$hari_kerja = $jadwal->hari()->where('hari', $hari_id)->first();
-					
-					if(!empty($hari_kerja)){						
+										
+					if(!empty($hari_kerja)){	
+
 						$kalkulasi = $this->kalkulasi($hari_kerja, $tanggal, $item->id_finger);
 						if($kalkulasi){
 							$item->where('id', $item->id)->update($kalkulasi);							

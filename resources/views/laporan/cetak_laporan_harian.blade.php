@@ -70,7 +70,7 @@
                     @foreach($data[$start->day]['jadwal'] as $value)
                       <tr>
                         <td align="center">{{ $no }}</td>
-                        <td>{{ $value->nama }}</td>
+                        <td>{{ $value->gelar_depan.' '.$value->nama.' '.$value->belakang }}</td>
                         <td align="center">{{ $value->nip }}</td>
                         <td align="center">{{ $value->jam_masuk }}</td>
                         <td align="center">{{ $value->jam_pulang }}</td>

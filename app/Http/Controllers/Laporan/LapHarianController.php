@@ -48,7 +48,7 @@ class LapHarianController extends Controller
       $interval = $end->diffInDays($start);
 
       $validator = Validator::make($request->all(), $this->rules);
-      $validator->after(function($validator) use($interval, $user) {
+      $validator->after(function($validator) use($interval, $user, $request) {
         if($interval > 31){
           $validator->errors()->add('start', 'Maksimum range tanggal tidak lebih dari 31 hari!');
         }
@@ -94,7 +94,7 @@ class LapHarianController extends Controller
                       ->orderBy('peg_data_induk.tmt_pangkat','desc')
                       ->select('peg_jadwal.id','peg_data_induk.nama','peg_data_induk.nip','hari_kerja.jam_masuk','hari_kerja.jam_pulang',
                       'peg_jadwal.in','peg_jadwal.out','peg_jadwal.terlambat','peg_jadwal.pulang_awal','peg_jadwal.event_id','event.title',
-                      'ref_ijin.name','peg_jadwal.status','peg_jadwal.scan_1','peg_jadwal.scan_2')
+                      'ref_ijin.name','peg_jadwal.status','peg_jadwal.scan_1','peg_jadwal.scan_2','peg_data_induk.gelar_depan','peg_data_induk.gelar_belakang')
                       ->get();
 
         $event =  PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')

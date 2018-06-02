@@ -14,6 +14,7 @@ use DB;
 use Carbon\Carbon;
 use File;
 use App\Model\Jadwal;
+use App\Library\MasterPresensi;
 
 class KetidakhadiranController extends Controller
 {
@@ -182,10 +183,20 @@ class KetidakhadiranController extends Controller
 
       foreach ($data as $id) {
         $ketidakhadiran = Ketidakhadiran::find($id);
+        $status = $ketidakhadiran->forceDelete();
+        PegawaiJadwal::where('ketidakhadiran_id', $id)->update([
+            'ketidakhadiran_id' => null,
+            'status' => null, 
+            'in'=>'00:00:00',
+            'out'=>'00:00:00',
+            'jam_kerja' => '00:00:00',
+            'terlambat' => '00:00:00', 
+            'pulang_awal' => '00:00:00',
+            'scan_1' => '00:00:00', 
+            'scan_2' => '00:00:00'
+         ]);
 
         File::delete('catalog/surat/tidak_hadir/'.$ketidakhadiran->filename);
-
-        $status = $ketidakhadiran->forceDelete();
       }
 
       return response()->json($status);

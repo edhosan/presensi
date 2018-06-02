@@ -91,7 +91,7 @@ class RekapOPDController extends Controller
 
           $data->push([
             'no'  => $no,
-            'nama'  => $peg->nama,
+            'nama'  => $peg->gelar_depan.' '.$peg->nama.' '.$peg->gelar_belakang,
             'nip' => $peg->nip,
             'jadwal'  => $arr,
             'total' => $tot
