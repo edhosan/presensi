@@ -192,7 +192,7 @@ class MasterPresensi{
 
 	public function sinkronisasiKehadiran($unker, $start, $end, $peg)
 	{
-		$data = array();
+		$kalkulasi = null;
 		$peg_jadwal = PegawaiJadwal::join('peg_data_induk','peg_data_induk.id','=','peg_jadwal.peg_id')
 					  ->leftJoin('ketidakhadiran','ketidakhadiran.id','=','peg_jadwal.ketidakhadiran_id')
 					  ->leftJoin('ref_ijin','ketidakhadiran.keterangan_id','=','ref_ijin.id')
@@ -227,7 +227,9 @@ class MasterPresensi{
 					
 					if(!empty($hari_kerja)){						
 						$kalkulasi = $this->kalkulasi($hari_kerja, $tanggal, $item->id_finger);
-						$item->where('id', $item->id)->update($kalkulasi);
+						if($kalkulasi){
+							$item->where('id', $item->id)->update($kalkulasi);							
+						}
 					}else{
 						$item->where('id', $item->id)->update(['status' => 'L']);
 					}

@@ -203,7 +203,7 @@ $(function() {
           q: params.term,
           page: params.page,
           per_page: 10,
-          opd: {{ Auth::user()->unker }}          
+          opd: '{{ Auth::user()->unker }}'          
         };
       },
       processResults: function(data, params) {
