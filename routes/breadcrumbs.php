@@ -222,5 +222,42 @@ Breadcrumbs::register('widget.pengumuman.index', function($breadcrumbs)
     $breadcrumbs->push('Widget Pengumuman', route('widget.pengumuman.index'));
 });
 
+// Home > Referensi 
+Breadcrumbs::register('referensi', function($breadcrumbs)
+{
+    $breadcrumbs->push('Referensi', route('home'));
+});
+
+// Home > Referensi > Standarisasi Biaya TPP
+Breadcrumbs::register('referensi.tpp', function($breadcrumbs)
+{
+    $breadcrumbs->parent('referensi');
+    $breadcrumbs->push('Standarisasi Biaya TPP', route('tpp.kategori.index'));
+});
+
+// Home > Referensi > Form Standarisasi Biaya TPP
+Breadcrumbs::register('referensi.tpp.create', function($breadcrumbs)
+{
+    $breadcrumbs->parent('referensi.tpp');
+    $breadcrumbs->push('Form Kategori TPP', route('tpp.kategori.create'));
+});
+
+// Home > Referensi > [Kategori TPP] > Jenis Pengeluaran
+Breadcrumbs::register('referensi.tpp.jenis_pengeluaran', function($breadcrumbs, $kategori)
+{
+    $breadcrumbs->parent('referensi.tpp');
+    $breadcrumbs->push($kategori->nm_kategori, route('tpp.jenis_pengeluaran', $kategori->id));
+});
+
+// Home > Referensi > [Kategori TPP] > Jenis Pengeluaran
+Breadcrumbs::register('referensi.tpp.jenis_pengeluaran.create', function($breadcrumbs, $kategori)
+{
+    $breadcrumbs->parent('referensi.tpp.jenis_pengeluaran',$kategori);
+    $breadcrumbs->push("Form Jenis Pengeluaran", route('tpp.jenis_pengeluaran', $kategori->id));
+});
+
+
+
+
 
 ?>

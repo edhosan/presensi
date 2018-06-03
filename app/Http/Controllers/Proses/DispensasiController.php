@@ -85,7 +85,7 @@ class DispensasiController extends Controller
         'filename'      => $file_name
       ]);
 
-      $this->updateKalkulasi($request);
+      //$this->updateKalkulasi($request);
 
       return redirect()->route('dispensasi.list')->with('success','Data berhasil disimpan!');
   }
@@ -113,7 +113,11 @@ class DispensasiController extends Controller
       'filename'        => $file_name
     ]);
 
-    $this->updateKalkulasi($request);
+    //$this->updateKalkulasi($request);
+
+    PegawaiJadwal::where('dispensasi_id', $request->id)->update([
+      'dispensasi_id' => '','status' => '', 'in'=>'00:00:00','out'=>'00:00:00','jam_kerja' => '00:00:00','terlambat' => '00:00:00', 'pulang_awal' => '00:00:00','scan_1' => '00:00:00', 'scan_2' => '00:00:00'
+    ]);
 
     return redirect()->route('dispensasi.list')->with('success','Data berhasil disimpan!');
   }

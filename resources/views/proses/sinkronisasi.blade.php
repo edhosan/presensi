@@ -127,15 +127,16 @@
                               </label>
 
                               <label class="radio inline">
+                                <input type="radio" name="type_sinkronisasi" value="5" @if(old("type_sinkronisasi")=="5") checked @endif>
+                                Kehadiran
+                              </label>     
+
+                              <label class="radio inline">
                                 <input type="radio" name="type_sinkronisasi" value="4" @if(old("type_sinkronisasi")=="4") checked @endif>
                                 Dispensasi
                               </label>
 
-                              <label class="radio inline">
-                                <input type="radio" name="type_sinkronisasi" value="5" @if(old("type_sinkronisasi")=="5") checked @endif>
-                                Kehadiran
-                              </label>                              
-
+                                                     
                               @if ($errors->has('sinkronisasi'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('sinkronisasi') }}</strong>

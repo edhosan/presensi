@@ -138,6 +138,10 @@ class KetidakhadiranController extends Controller
         'jml_hari'      => $jumlah_hari
       ]);
 
+      PegawaiJadwal::where('ketidakhadiran_id', $request->id)->update([
+        'ketidakhadiran_id' => '','status' => '', 'in'=>'00:00:00','out'=>'00:00:00','jam_kerja' => '00:00:00','terlambat' => '00:00:00', 'pulang_awal' => '00:00:00','scan_1' => '00:00:00', 'scan_2' => '00:00:00'
+      ]);
+
       //$this->updateKalkulasi($request->pegawai, $request->start, $request->end, $ketidakhadiran->id);
 
       return redirect()->route('ketidakhadiran.list')->with('success','Data berhasil disimpan!');

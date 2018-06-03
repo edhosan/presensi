@@ -70,3 +70,9 @@ Route::group(['middleware' => 'auth:api'], function() {
 Route::group(['namespace' => 'api\v1', 'middleware' => 'auth:api'], function() {
   Route::get('/pengumuman_index','api\v1\WidgetController@pengumumanList');
 });
+
+Route::group(['namespace' => 'Referensi', 'middleware' => 'auth:api'], function() {
+  Route::get('/get_kategori','MasterTPPController@apiGetKategori');
+  Route::get('/get_jns_pengeluaran/{kategori_id}','MasterTPPController@apiGetJenisPengeluaran');
+  Route::post('/delete_kategori','MasterTPPController@apiDeleteKategori');
+});
