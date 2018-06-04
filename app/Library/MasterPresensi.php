@@ -141,6 +141,8 @@ class MasterPresensi{
 					$out = Carbon::parse($item->out);
 					if($koreksi_jam->lte($jm) && $out->gte($jp)){
 						$status = 'H';
+					}elseif($out->lt($jp)){
+						$status = 'HP';
 					}
 					if($item->out == '00:00:00'){
 						$status = 'HP';
@@ -155,13 +157,15 @@ class MasterPresensi{
 				}
 
 				if($koreksi_jam >= $scan_out1  && $koreksi_jam <= $scan_out2){
-					$pulang_awal = $jp->diff($koreksi_jam);
+					$pulang_awal = $jp->diff($koreksi_jam);				
 					if($koreksi_jam->lt($jp)){
 						$status = 'HP';
 					}
 					$in = Carbon::parse($item->in);
 					if($in->lte($jm) && $koreksi_jam->gte($jp)){
 						$status = 'H';
+					}elseif($in->gt($jm)){
+						$status = 'HT';
 					}
 					PegawaiJadwal::where('id', $item->id)->update([
 						'out' => $koreksi_jam, 

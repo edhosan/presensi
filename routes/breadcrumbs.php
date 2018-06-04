@@ -256,6 +256,20 @@ Breadcrumbs::register('referensi.tpp.jenis_pengeluaran.create', function($breadc
     $breadcrumbs->push("Form Jenis Pengeluaran", route('tpp.jenis_pengeluaran', $kategori->id));
 });
 
+// Home > Referensi > [Kategori TPP] > [Jenis Pengeluaran] > Rincian
+Breadcrumbs::register('referensi.tpp.rincian_pengeluaran', function($breadcrumbs, $kategori, $pengeluaran)
+{
+    $breadcrumbs->parent('referensi.tpp.jenis_pengeluaran',$kategori);
+    $breadcrumbs->push($pengeluaran->jns_pengeluaran, route('tpp.jenis_pengeluaran', $kategori->id));
+});
+
+// Home > Referensi > [Kategori TPP] > [Jenis Pengeluaran] > Rincian
+Breadcrumbs::register('referensi.tpp.rincian_pengeluaran.create', function($breadcrumbs, $kategori, $pengeluaran)
+{
+    $breadcrumbs->parent('referensi.tpp.rincian_pengeluaran',$kategori, $pengeluaran);
+    $breadcrumbs->push("Form Rincian Pengeluaran", route('tpp.jenis_pengeluaran', $kategori->id));
+});
+
 
 
 

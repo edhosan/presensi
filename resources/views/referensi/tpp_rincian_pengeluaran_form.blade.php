@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @push('css')
+<link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
 @endpush
 @section('content')
 <div class="main">
@@ -7,11 +8,11 @@
         <div class="container">
           <div class="row">
               <div class="span12">
-                {!! Breadcrumbs::render('referensi.tpp.jenis_pengeluaran.create', $kategori) !!}
+                {!! Breadcrumbs::render('referensi.tpp.rincian_pengeluaran.create', $kategori, $pengeluaran) !!}
                 <div class="widget">
                   <div class="widget-header">
                     <i class="icon-file"></i>
-                    <h3>Form Jenis Pengeluaran [{{ $kategori->nm_kategori }}]</h3>
+                    <h3>Form Rincian Pengeluaran [{{ $pengeluaran->jns_pengeluaran }}]</h3>
                   </div>
 
                   <div class="widget-content">
@@ -19,20 +20,22 @@
                       {{ csrf_field() }}
                       <input type="hidden" name="id" value="{{ $data->id or 0 }}">
                       <input type="hidden" name="kategori_id" value="{{ $kategori->id }}">
+                      <input type="hidden" name="tpp_jenis_pengeluaran_id" value="{{ $pengeluaran->id }}">
                       <fieldset>
-                        <div class="control-group {{ $errors->has('jns_pengeluaran') ? 'error' : '' }}">
-                            <label for="name" class="control-label">Nama Jenis Pengeluaran</label>
+                        <div class="control-group {{ $errors->has('kriteria_id') ? 'error' : '' }}">
+                            <label for="kriteria_id" class="control-label">Kriteria</label>
 
                             <div class="controls">
-                                <input type="text" name="jns_pengeluaran" value="{{ $data->jns_pengeluaran or old('jns_pengeluaran') }}" class="span5">
-                                                   
-                                @if ($errors->has('jns_pengeluaran'))
+                              <?php $selected_kriteria = isset($data)?$data->kriteria_id:old('kriteria_id') ?>
+                              {{ Form::select('kriteria_id', $kriteria, $selected_kriteria, ['id' => 'kriteria_id', 'placeholder' => "Please Select", 'class' => 'span4']) }}
+
+                                @if ($errors->has('kriteria_id'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('jns_pengeluaran') }}</strong>
+                                        <strong>{{ $errors->first('kriteria_id') }}</strong>
                                     </span>
                                 @endif
                             </div>
-                        </div>  
+                        </div>
 
                         <div class="control-group {{ $errors->has('kriteria') ? 'error' : '' }}">
                             <label for="name" class="control-label">Dihitung berdasarkan</label>
@@ -86,4 +89,8 @@
 </div>
 @endsection
 @push('script')
+<script src="{{ asset('js/select2.min.js') }}"></script>
+<script type="text/javascript">
+$('#kriteria_id').select2({placeholder: 'Pilih Kriteria',allowClear: true});
+</script>
 @endpush

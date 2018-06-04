@@ -114,9 +114,13 @@ Route::group(['namespace' => 'Referensi', 'middleware' => 'auth'], function() {
   Route::get('/tpp/kategori/edit/{id}','MasterTPPController@editKategori')->name('tpp.kategori.edit');
   Route::get('/tpp/jenis_pengeluaran/{kategori_id}','MasterTPPController@jenisPengeluaran')->name('tpp.jenis_pengeluaran');
   Route::get('/tpp/jenis_pengeluaran/create/{kategori_id}','MasterTPPController@createJenisPengeluaran')->name('tpp.jenis_pengeluaran.create');
+  Route::get('/tpp/jenis_pengeluaran/edit/{kategori_id}/{id}','MasterTPPController@editJenisPengeluaran')->name('tpp.jenis_pengeluaran.edit');
+  Route::get('/tpp/rincian_pengeluaran/{kategori_id}/{jenis_pengeluaran_id}','MasterTPPController@rincianPengeluaran')->name('tpp.rincian_pengeluaran');
+  Route::get('/tpp/rincian_pengeluaran/create/{kategori_id}/{jenis_pengeluaran_id}','MasterTPPController@createRincianPengeluaran')->name('tpp.rincian_pengeluaran.create');
   Route::post('/tpp/kategori/saveKategori','MasterTPPController@saveKategori')->name('tpp.kategori.save');
   Route::post('/tpp/kategori/updateKategori','MasterTPPController@updateKategori')->name('tpp.kategori.update');
   Route::post('/tpp/jenis_pengeluaran/save','MasterTPPController@saveJenisPengeluaran')->name('tpp.jenis_pengeluaran.save');
+  Route::post('/tpp/jenis_pengeluaran/update','MasterTPPController@updateJenisPengeluaran')->name('tpp.jenis_pengeluaran.update');
   Route::get('/pengumuman_index','WidgetPengumumanController@index')->name('widget.pengumuman.index');
 });
 

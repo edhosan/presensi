@@ -14,4 +14,6 @@ class JenisPengeluaran extends Model
 	{
 		return $this->belongsTo('App\Model\TPPKategori','tpp_kategori_id');
 	}
+
+	
 }

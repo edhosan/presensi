@@ -43,7 +43,7 @@ $tot_day = $date->endOfMonth()->day;
   </thead>
   <tbody>
     <tr>
-      <td align="center" colspan="4">
+      <td align="center" colspan="2">
         <table class="border thick data">
           <thead>
             <tr class="thick">
@@ -98,14 +98,12 @@ $tot_day = $date->endOfMonth()->day;
                 <td>{{ $item['total']['L'] }}</td>
               </tr>
             @endforeach
-          </tbody>
+          </tbody>          
         </table>
       </td>
     </tr>
-  </tbody>
-  <tfoot>
     <tr>
-      <td colspan="3">
+       <td colspan="2">
         <blockquote>
           <strong>Keterangan:</strong>
           <small>H = Hadir&nbsp;&nbsp;&nbsp;HT = Hadir Terlambat&nbsp;&nbsp;&nbsp;HP = Hadir Pulang Awal&nbsp;&nbsp;&nbsp;A = Absent</small>
@@ -114,11 +112,8 @@ $tot_day = $date->endOfMonth()->day;
       </td>
     </tr>
     <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td align="center">
-        <table style="margin-top:50px;margin-left:300px" width="50%">
+      <td colspan="2" align="right">
+          <table style="margin-top:50px;margin-left:300px" width="50%">
           <tr align="center">
             <td>Tanjung Redeb, {{ Carbon\Carbon::now()->day }} {{ $month_name[Carbon\Carbon::now()->month] }} {{ Carbon\Carbon::now()->year }}</td>
           </tr>
@@ -150,8 +145,9 @@ $tot_day = $date->endOfMonth()->day;
           </tr>       
         </table>
       </td>
-    </tr>   
-  </tfoot>
+    </tr>
+  </tbody>
+  
 </table>
 
 @endsection

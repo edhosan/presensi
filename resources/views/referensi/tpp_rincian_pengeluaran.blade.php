@@ -12,13 +12,13 @@
 <div class="main">
   <div class="main-inner">
       <div class="container">
-          {!! Breadcrumbs::render('referensi.tpp.jenis_pengeluaran', $kategori) !!}
+          {!! Breadcrumbs::render('referensi.tpp.rincian_pengeluaran', $kategori, $pengeluaran) !!}
           <div class="row">
             <div class="span12">
               <div class="widget">
                 <div class="widget-header">
                   <i class="icon-list"></i>
-                  <h3>Daftar Jenis Pengeluaran [{{ $kategori->nm_kategori }}]</h3>
+                  <h3>Daftar Rincian Pengeluaran [{{ $pengeluaran->jns_pengeluaran }}]</h3>
                 </div>
 
                 <div class="widget-content">
@@ -61,8 +61,8 @@ $(function() {
             {
                 text: '<i class="icon-plus"> Tambah Data</i>',
                 titleAttr: 'Tambah Data',
-                action: function ( e, dt, node, config ) {
-                  window.location.href = "{{ route('tpp.jenis_pengeluaran.create', $kategori->id) }}";
+                action: function ( e, dt, node, config ) {               
+                  window.location.href = "{{ route('tpp.rincian_pengeluaran.create', [$kategori->id, $pengeluaran->id]) }}";
                 }
             },
             {
@@ -123,8 +123,8 @@ $(function() {
               text: '<i class="icon-list"> Rincian Pengeluaran</i>',
               action: function ( e, dt, node, config ) {
                   var data = dt.row( { selected: true } ).data();
-                  var newUrl = "{{ url('/tpp/rincian_pengeluaran') }}";
-                  window.location.href = newUrl+"/{{ $kategori->id }}/"+data.id;
+                  var newUrl = "{{ url('/tpp/kategori/edit') }}";
+                  window.location.href = newUrl+"/"+data.id;
               },
               enabled: false
             },

@@ -24,7 +24,7 @@ class KetidakhadiranController extends Controller
       'start' => 'required',
       'end' => 'required|after_or_equal:start',
       'keperluan' => 'required',
-      'file' => 'mimes:pdf,doc,docx,jpeg'
+      'file' => 'mimes:pdf,doc,docx,jpeg|size:8000'
     ];
 
     public function index()
