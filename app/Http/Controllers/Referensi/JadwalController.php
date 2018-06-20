@@ -57,12 +57,12 @@ class JadwalController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, $this->rules);
+        $this->validate($request, $this->rules);      
 
         $unker = Auth::user()->unker;
         $nm_unker = Auth::user()->nm_unker;
-
-        if(empty($unker)){
+        
+        if(!empty($unker)){
           $unker = $request->opd;
 
           $opd = OPD::where('id_unker', $unker)->where('status', 1)->first();
@@ -76,7 +76,7 @@ class JadwalController extends Controller
           'end' => date('Y-m-d', strtotime($request->end) ),
           'id_unker' => $unker,
           'nama_unker' => $nm_unker
-        ]);
+        ]); 
 
         return redirect('jadwal_list')->with('success','Data berhasil disimpan!');
     }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\TPPKategori;
 use Yajra\Datatables\Datatables;
 use App\Model\Eselon;
+use App\Model\RincianPengeluaran;
 
 class MasterTPPController extends Controller
 {
@@ -18,6 +19,14 @@ class MasterTPPController extends Controller
 	    'jns_pengeluaran'  => 'required',
 	    'kriteria'  => 'required'
 	  ];
+
+    private $rules_rincian_pengeluaran = [
+        'kriteria_id'  => 'required',
+        'lokasi_biasa'  => 'numeric',
+        'lokasi_terpencil'  => 'numeric',
+        'lokasi_sangat_terpencil'  => 'numeric',
+        'tahun'  => 'required|numeric'
+      ];
 
     public function index()
     {
@@ -119,6 +128,14 @@ class MasterTPPController extends Controller
         return redirect()->route('tpp.jenis_pengeluaran', $request->kategori_id)->with('success','Data berhasil disimpan!');
     }
 
+    public function saveRincianPengeluaran(Request $request)
+    {
+        $this->validate($request, $this->rules_rincian_pengeluaran);     
+        RincianPengeluaran::create($request->all());
+
+        return redirect()->route('tpp.rincian_pengeluaran', [$request->kategori_id, $request->tpp_jenis_pengeluaran_id])->with('success','Data berhasil disimpan!');
+    }
+
     public function apiGetKategori()
     {
    	 	$data = TPPKategori::orderBy('nm_kategori','asc');
@@ -151,5 +168,19 @@ class MasterTPPController extends Controller
 
     	return Datatables::of($data)
 	    	->make(true);
+    }
+
+    public function apiGetRincianPengeluaran($kategori_id, $jenis_pengeluaran_id)
+    {
+        $kategori = TPPKategori::find($kategori_id);
+        $jenis_pengeluaran = $kategori->jenis_pengeluaran()->find($jenis_pengeluaran_id);
+        if($jenis_pengeluaran){
+            if($jenis_pengeluaran->kriteria == 'ESELON'){
+                $data = RincianPengeluaran::where('tpp_jenis_pengeluaran_id', $jenis_pengeluaran_id)->get();
+            }
+        }
+
+        return Datatables::of($data)
+            ->make(true);
     }
 }

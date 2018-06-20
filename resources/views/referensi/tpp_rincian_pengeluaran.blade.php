@@ -27,7 +27,7 @@
                           <tr>                     
                               <th></th>
                               <th></th>                       
-                              <th>Jenis Pengeluaran</th>
+                              <th></th>
                               <th>Dasar Pengeluaran</th>
                           </tr>
                       </thead>
