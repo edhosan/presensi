@@ -424,7 +424,7 @@ $(function() {
 
   $('#loaderSubUnit').hide();
 
-  $('#opd').on('select2:select', function(e) {
+  $('#opd').on('select2:select', function(e) {  
     $('#loaderSubUnit').show();
     $.ajax({
       url: "{{ url('api/subunit?api_token=') }}{{ Auth::user()->api_token }}",
@@ -432,16 +432,13 @@ $(function() {
       dataType: "json",
       data: { opd: e.params.data.id },
       success: function(response){
+        console.log(response);
         $('#loaderSubUnit').hide();
         var subunit = $('#subunit');
         subunit.empty();
         subunit.append('<option value="">Please Select</option>');
         $.each(response, function(index, value){
-          subunit.append('<optgroup label="'+value.nama_unker+'">');
-          $.each(value.sub_unit, function(i, el) {
-            subunit.append('<option value="'+el.id_subunit+'">'+el.nama_subunit+'</option>');
-          });
-          subunit.append('</optgroup>');
+          subunit.append('<option value="'+value.id_subunit+'">'+value.nama_subunit+'</option>');         
         });
       },
       error: function(error){

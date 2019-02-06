@@ -20,12 +20,21 @@ class MasterTPPController extends Controller
 	    'kriteria'  => 'required'
 	  ];
 
+<<<<<<< HEAD
     private $rules_rincian_pengeluaran = [
         'kriteria_id'  => 'required',
         'lokasi_biasa'  => 'numeric',
         'lokasi_terpencil'  => 'numeric',
         'lokasi_sangat_terpencil'  => 'numeric',
         'tahun'  => 'required|numeric'
+=======
+    private $rincian_pengeluaran = [
+        'kriteria_id'  => 'required',
+        'tahun'  => 'required',
+        'lokasi_biasa' => 'required',
+        'lokasi_terpencil' => 'required',
+        'lokasi_sangat_terpencil' => 'required'
+>>>>>>> 6273a34b43f3376acdcc2edf5767e88eddce0d3b
       ];
 
     public function index()
@@ -81,6 +90,7 @@ class MasterTPPController extends Controller
                         ->pluck('nama','id_eselon');
                 }
         }
+
         return view('referensi.tpp_rincian_pengeluaran_form')->withKategori($kategori)->withPengeluaran($jenisPengeluaran)->withKriteria($kriteria);
     }
 
@@ -130,10 +140,17 @@ class MasterTPPController extends Controller
 
     public function saveRincianPengeluaran(Request $request)
     {
+<<<<<<< HEAD
         $this->validate($request, $this->rules_rincian_pengeluaran);     
         RincianPengeluaran::create($request->all());
 
         return redirect()->route('tpp.rincian_pengeluaran', [$request->kategori_id, $request->tpp_jenis_pengeluaran_id])->with('success','Data berhasil disimpan!');
+=======
+        $this->validate($request, $this->rincian_pengeluaran);
+
+        return $request;
+
+>>>>>>> 6273a34b43f3376acdcc2edf5767e88eddce0d3b
     }
 
     public function apiGetKategori()

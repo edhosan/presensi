@@ -20,6 +20,7 @@
     "vue": "^2.1.10"
   },
   "dependencies": {
+    "autonumeric": "^4.2.15",
     "bootstrap-timepicker": "^0.5.2",
     "chart.js": "^2.7.0",
     "datatables.net": "^1.10.15",
