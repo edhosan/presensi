@@ -19,6 +19,14 @@ class MasterTPPController extends Controller
 	    'kriteria'  => 'required'
 	  ];
 
+    private $rincian_pengeluaran = [
+        'kriteria_id'  => 'required',
+        'tahun'  => 'required',
+        'lokasi_biasa' => 'required',
+        'lokasi_terpencil' => 'required',
+        'lokasi_sangat_terpencil' => 'required'
+      ];
+
     public function index()
     {
     	return view('referensi.tpp_kategori');
@@ -72,6 +80,7 @@ class MasterTPPController extends Controller
                         ->pluck('nama','id_eselon');
                 }
         }
+
         return view('referensi.tpp_rincian_pengeluaran_form')->withKategori($kategori)->withPengeluaran($jenisPengeluaran)->withKriteria($kriteria);
     }
 
@@ -117,6 +126,14 @@ class MasterTPPController extends Controller
         $jenisPengeluaran->update($request->all());
 
         return redirect()->route('tpp.jenis_pengeluaran', $request->kategori_id)->with('success','Data berhasil disimpan!');
+    }
+
+    public function saveRincianPengeluaran(Request $request)
+    {
+        $this->validate($request, $this->rincian_pengeluaran);
+
+        return $request;
+
     }
 
     public function apiGetKategori()

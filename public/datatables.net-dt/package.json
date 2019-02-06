@@ -2,7 +2,7 @@
   "_args": [
     [
       "datatables.net-dt@1.10.16",
-      "D:\\Work\\System\\presensi"
+      "F:\\Software\\e-Governement\\presensi"
     ]
   ],
   "_from": "datatables.net-dt@1.10.16",
@@ -28,7 +28,7 @@
   ],
   "_resolved": "https://registry.npmjs.org/datatables.net-dt/-/datatables.net-dt-1.10.16.tgz",
   "_spec": "1.10.16",
-  "_where": "D:\\Work\\System\\presensi",
+  "_where": "F:\\Software\\e-Governement\\presensi",
   "author": {
     "name": "SpryMedia Ltd",
     "url": "http://datatables.net"

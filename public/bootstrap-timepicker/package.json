@@ -2,7 +2,7 @@
   "_args": [
     [
       "bootstrap-timepicker@0.5.2",
-      "D:\\Work\\System\\presensi"
+      "F:\\Software\\e-Governement\\presensi"
     ]
   ],
   "_from": "bootstrap-timepicker@0.5.2",
@@ -26,7 +26,7 @@
   ],
   "_resolved": "https://registry.npmjs.org/bootstrap-timepicker/-/bootstrap-timepicker-0.5.2.tgz",
   "_spec": "0.5.2",
-  "_where": "D:\\Work\\System\\presensi",
+  "_where": "F:\\Software\\e-Governement\\presensi",
   "author": {
     "name": "Joris de Wit",
     "email": "joris.w.dewit@gmail.com",

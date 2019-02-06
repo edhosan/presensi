@@ -62,7 +62,7 @@ class JadwalController extends Controller
         $unker = Auth::user()->unker;
         $nm_unker = Auth::user()->nm_unker;
 
-        if(empty($unker)){
+        if(!empty($unker)){
           $unker = $request->opd;
 
           $opd = OPD::where('id_unker', $unker)->where('status', 1)->first();
@@ -88,7 +88,7 @@ class JadwalController extends Controller
       $unker = Auth::user()->unker;
       $nm_unker = Auth::user()->nm_unker;
 
-      if(empty($unker)){
+      if(!empty($unker)){
         $unker = $request->opd;
 
         $opd = OPD::where('id_unker', $unker)->where('status', 1)->first();

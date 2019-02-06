@@ -190,16 +190,16 @@ class DataIndukController extends Controller
 
     public function apiGetSubUnit(Request $request)
     {
-      $subunit = OPD::with('subUnit')
+      $subunit = DB::connection('mysql2')->table('ref_subunit')
                 ->where(function($query) use($request) {
                   if($request->has('opd')){
-                    $query->where('id_unker', $request->opd);
+                    $query->where('id_unker', str_pad($request->opd, 8,'0',STR_PAD_LEFT));
                   }
                 })
                 ->where('status', 1)
-                ->get();
+                ->select();              
 
-      return response()->json($subunit);
+      return response()->json($subunit->get());
 
     }
 

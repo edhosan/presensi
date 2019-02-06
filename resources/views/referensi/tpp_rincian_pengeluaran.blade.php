@@ -25,10 +25,16 @@
                   <table class="table table-striped table-bordered" id="kategori-table" width="100%" >
                       <thead>
                           <tr>                     
-                              <th></th>
-                              <th></th>                       
-                              <th>Jenis Pengeluaran</th>
-                              <th>Dasar Pengeluaran</th>
+                              <th rowspan="2"></th>
+                              <th rowspan="2"></th>                       
+                              <th rowspan="2">Nama Pengeluaran</th>
+                              <th colspan="3">Lokasi</th>
+                              <th rowspan="2">Keterangan</th>
+                          </tr>
+                          <tr>                                    
+                            <th>Biasa</th>
+                            <th>Terpencil</th>
+                            <th>Sangat Terpencil</th>                            
                           </tr>
                       </thead>
                   </table>

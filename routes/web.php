@@ -122,6 +122,7 @@ Route::group(['namespace' => 'Referensi', 'middleware' => 'auth'], function() {
   Route::post('/tpp/jenis_pengeluaran/save','MasterTPPController@saveJenisPengeluaran')->name('tpp.jenis_pengeluaran.save');
   Route::post('/tpp/jenis_pengeluaran/update','MasterTPPController@updateJenisPengeluaran')->name('tpp.jenis_pengeluaran.update');
   Route::get('/pengumuman_index','WidgetPengumumanController@index')->name('widget.pengumuman.index');
+  Route::post('/tpp/rincian_pengeluaran/create/save','MasterTPPController@saveRincianPengeluaran')->name('tpp.rincian_pengeluaran.save');
 });
 
 Route::group(['namespace' => 'Proses', 'middleware' => 'auth'], function() {

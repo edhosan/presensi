@@ -31,3 +31,4 @@ mix.copyDirectory('node_modules/paper-css', 'public/paper-css');
 mix.copyDirectory('node_modules/normalize.css', 'public/normalize.css');
 mix.copyDirectory('node_modules/chart.js/dist', 'public/chart.js');
 mix.copyDirectory('node_modules/nprogress', 'public/nprogress');
+mix.copyDirectory('node_modules/autonumeric/dist', 'public/autonumeric');
