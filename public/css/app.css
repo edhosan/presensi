@@ -1,15 +1,1 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600);
-.autocomplete {
-  background-image: url("../images/icon_search.png");
-  background-position: right 10px center;
-  background-repeat: no-repeat;
-}
-
-td.details-control {
-  background: url("../images/details_open.png") no-repeat center center;
-  cursor: pointer;
-}
-
-tr.shown td.details-control {
-  background: url("../images/details_close.png") no-repeat center center;
-}
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600);.autocomplete{background-image:url(../images/icon_search.png);background-position:right 10px center;background-repeat:no-repeat}td.details-control{background:url(../images/details_open.png) center center no-repeat;cursor:pointer}tr.shown td.details-control{background:url(../images/details_close.png) center center no-repeat}

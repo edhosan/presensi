@@ -2,7 +2,7 @@
   "_args": [
     [
       "paper-css@0.3.0",
-      "F:\\Software\\e-Governement\\presensi"
+      "D:\\Software\\e-government\\presensi"
     ]
   ],
   "_from": "paper-css@0.3.0",
@@ -26,7 +26,7 @@
   ],
   "_resolved": "https://registry.npmjs.org/paper-css/-/paper-css-0.3.0.tgz",
   "_spec": "0.3.0",
-  "_where": "F:\\Software\\e-Governement\\presensi",
+  "_where": "D:\\Software\\e-government\\presensi",
   "author": {
     "name": "Tsutomu Kawamura"
   },

@@ -2,7 +2,7 @@
   "_args": [
     [
       "easy-autocomplete@1.3.5",
-      "F:\\Software\\e-Governement\\presensi"
+      "D:\\Software\\e-government\\presensi"
     ]
   ],
   "_from": "easy-autocomplete@1.3.5",
@@ -26,7 +26,7 @@
   ],
   "_resolved": "https://registry.npmjs.org/easy-autocomplete/-/easy-autocomplete-1.3.5.tgz",
   "_spec": "1.3.5",
-  "_where": "F:\\Software\\e-Governement\\presensi",
+  "_where": "D:\\Software\\e-government\\presensi",
   "author": {
     "name": "Łukasz Pawełczak",
     "url": "http://github.com/pawelczak"
