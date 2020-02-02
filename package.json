@@ -11,7 +11,7 @@
     "build": "babel src -d lib"
   },
   "devDependencies": {
-    "axios": "^0.15.3",
+    "axios": "^0.18.1",
     "babel-cli": "^6.26.0",
     "bootstrap-sass": "^3.3.7",
     "cross-env": "^3.2.3",
